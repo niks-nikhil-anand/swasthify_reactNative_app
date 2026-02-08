@@ -41,3 +41,35 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
+
+# React Native
+# Android
+*.iml
+.gradle
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+android/app/build/
+android/app/src/main/assets/index.android.bundle
+
+# iOS
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+.DS_Store
+/ios/build/
+/ios/Pods/
+/ios/DerivedData/
+/ios/*.mode1v3
+/ios/*.mode2v3
+/ios/*.moved-aside
+/ios/*.permissions
+
+# CocoaPods
+/Pods

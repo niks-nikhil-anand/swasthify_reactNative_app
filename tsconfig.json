@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "esnext",
+        "useDefineForClassFields": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "checkJs": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "jsx": "react-native",
+        "strict": true,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "include": [
+        "**/*.ts",
+        "**/*.tsx",
+        ".",
+        "nativewind-env.d.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

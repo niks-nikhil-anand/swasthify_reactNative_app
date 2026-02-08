@@ -3,16 +3,23 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start"
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios"
   },
   "dependencies": {
     "nativewind": "^4.2.1",
+    "react": "19.2.0",
     "react-native": "0.83.1",
     "react-native-reanimated": "^4.2.1",
     "react-native-safe-area-context": "^5.6.2"
   },
   "devDependencies": {
     "@react-native-community/cli": "^20.1.1",
+    "@react-native/babel-preset": "0.83.1",
+    "@react-native/metro-config": "0.83.1",
+    "@types/react": "^19.2.13",
+    "metro-config": "^0.83.3",
     "tailwindcss": "^3.4.19"
   }
 }
