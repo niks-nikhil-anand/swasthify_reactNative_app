@@ -92,8 +92,8 @@ const PricingScreen = () => {
                             <View
                                 key={item.name}
                                 className={`rounded-2xl overflow-hidden relative ${item.mostPopular
-                                        ? 'border-2 border-[#0DA96E]/50 shadow-xl bg-white'
-                                        : 'border border-gray-300/50 shadow-sm bg-white'
+                                    ? 'border-2 border-[#0DA96E]/50 shadow-xl bg-white'
+                                    : 'border border-gray-300/50 shadow-sm bg-white'
                                     }`}
                             >
                                 {/* Most Popular Badge */}
@@ -149,8 +149,8 @@ const PricingScreen = () => {
                                     <TouchableOpacity
                                         activeOpacity={0.85}
                                         className={`w-full h-12 rounded-lg items-center justify-center flex-row shadow-lg ${item.mostPopular
-                                                ? 'bg-[#0DA96E]'
-                                                : 'bg-white border-2 border-[#0DA96E]/20'
+                                            ? 'bg-[#0DA96E]'
+                                            : 'bg-white border-2 border-[#0DA96E]/20'
                                             }`}
                                     >
                                         <Text className={`text-base font-bold ${item.mostPopular ? 'text-white' : 'text-[#0DA96E]'
@@ -234,8 +234,8 @@ const PricingScreen = () => {
                         </View>
                     </View>
                 </View>
+                <Footer />
             </ScrollView>
-            <Footer />
         </SafeAreaView>
     );
 };

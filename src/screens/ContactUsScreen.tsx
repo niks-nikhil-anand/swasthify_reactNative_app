@@ -294,8 +294,8 @@ const ContactUsScreen = () => {
                         </View>
                     </View>
                 </View>
+                <Footer />
             </ScrollView>
-            <Footer />
         </SafeAreaView>
     );
 };

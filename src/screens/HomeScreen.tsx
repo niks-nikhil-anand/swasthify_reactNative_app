@@ -23,8 +23,8 @@ const HomeScreen = () => {
                 <HowItWorks />
                 <AbhaIdSection />
                 <View className="h-4" />
+                <Footer />
             </ScrollView>
-            <Footer />
         </SafeAreaView>
     );
 };

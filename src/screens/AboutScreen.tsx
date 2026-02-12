@@ -343,8 +343,8 @@ const AboutScreen = () => {
                 <ValuesSection />
                 <LocationSection />
                 <CTASection />
+                <Footer />
             </ScrollView>
-            <Footer />
         </SafeAreaView>
     );
 };

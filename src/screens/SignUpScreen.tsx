@@ -70,8 +70,8 @@ const SignUpScreen = () => {
                         </TouchableOpacity>
                     </View>
                 </View>
+                <Footer />
             </ScrollView>
-            <Footer />
         </SafeAreaView>
     );
 };
