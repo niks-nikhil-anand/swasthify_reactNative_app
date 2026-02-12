@@ -55,6 +55,70 @@
           "isPureCxxDependency": false
         }
       }
+    },
+    "react-native-screens": {
+      "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-screens",
+      "name": "react-native-screens",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-screens/RNScreens.podspec",
+          "version": "4.23.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-screens/android",
+          "packageImportPath": "import com.swmansion.rnscreens.RNScreensPackage;",
+          "packageInstance": "new RNScreensPackage()",
+          "buildTypes": [],
+          "libraryName": "rnscreens",
+          "componentDescriptors": [
+            "RNSFullWindowOverlayComponentDescriptor",
+            "RNSScreenContainerComponentDescriptor",
+            "RNSScreenNavigationContainerComponentDescriptor",
+            "RNSScreenStackHeaderConfigComponentDescriptor",
+            "RNSScreenStackHeaderSubviewComponentDescriptor",
+            "RNSScreenStackComponentDescriptor",
+            "RNSSearchBarComponentDescriptor",
+            "RNSScreenComponentDescriptor",
+            "RNSScreenFooterComponentDescriptor",
+            "RNSScreenContentWrapperComponentDescriptor",
+            "RNSModalScreenComponentDescriptor",
+            "RNSBottomTabsComponentDescriptor",
+            "RNSSafeAreaViewComponentDescriptor"
+          ],
+          "cmakeListsPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
+    "react-native-worklets": {
+      "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-worklets",
+      "name": "react-native-worklets",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-worklets/RNWorklets.podspec",
+          "version": "0.7.3",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-worklets/android",
+          "packageImportPath": "import com.swmansion.worklets.WorkletsPackage;",
+          "packageInstance": "new WorkletsPackage()",
+          "buildTypes": [],
+          "libraryName": "rnworklets",
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-worklets/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
     }
   },
   "commands": [
@@ -275,7 +339,8 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
+          "default": "vscode"
         },
         {
           "name": "--binary-path <string>",
@@ -442,7 +507,8 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
+          "default": "vscode"
         },
         {
           "name": "--appId <string>",

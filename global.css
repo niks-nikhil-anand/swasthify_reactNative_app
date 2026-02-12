@@ -1,3 +1,96 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    :root {
+        /* ── Core Brand ── */
+        --primary: oklch(0.72 0.14 162.7);
+        /* #0DA96E  Swasthify Green */
+        --primary-foreground: oklch(1 0 0);
+        /* #FFFFFF  White           */
+        --accent: oklch(0.80 0.15 164.9);
+        /* #00C68A  Accent Green    */
+        --accent-foreground: oklch(0.23 0.03 255.1);
+        /* #111827  Dark text       */
+
+        /* ── Surfaces ── */
+        --background: oklch(1 0 0);
+        /* #FFFFFF  */
+        --foreground: oklch(0.23 0.03 255.1);
+        /* #111827  */
+        --card: oklch(1 0 0);
+        /* #FFFFFF  */
+        --card-foreground: oklch(0.23 0.03 255.1);
+        /* #111827  */
+        --popover: oklch(1 0 0);
+        /* #FFFFFF  */
+        --popover-foreground: oklch(0.23 0.03 255.1);
+        /* #111827  */
+
+        /* ── Muted ── */
+        --muted: oklch(0.96 0.01 255.1);
+        /* #F3F4F6 */
+        --muted-foreground: oklch(0.53 0.04 259.8);
+        /* #6B7280 */
+
+        /* ── Borders / Inputs ── */
+        --border: oklch(0.88 0.02 255.1);
+        /* #D1D5DB  */
+        --input: oklch(0.88 0.02 255.1);
+        /* #D1D5DB  */
+        --ring: oklch(0.72 0.14 162.7);
+        /* #0DA96E  matches primary */
+
+        /* ── Semantic ── */
+        --destructive: oklch(0.64 0.24 28.0);
+        /* #DC2626  Red    */
+        --destructive-foreground: oklch(1 0 0);
+        /* #FFFFFF  */
+
+        /* ── Misc ── */
+        --radius: 0.625rem;
+        /* 10px     */
+    }
+
+    .dark {
+        /* ── Core Brand (swapped primary ↔ accent) ── */
+        --primary: oklch(0.80 0.15 164.9);
+        /* #00C68A  */
+        --primary-foreground: oklch(0.23 0.03 255.1);
+        /* #111827  */
+        --accent: oklch(0.72 0.14 162.7);
+        /* #0DA96E  */
+        --accent-foreground: oklch(0.98 0 0);
+        /* #F9FAFB  */
+
+        /* ── Surfaces ── */
+        --background: oklch(0.22 0.03 255.1);
+        /* #1a1b2e  */
+        --foreground: oklch(0.98 0 0);
+        /* #F9FAFB  */
+        --card: oklch(0.26 0.03 255.1);
+        /* slightly lighter than bg */
+        --card-foreground: oklch(0.98 0 0);
+        /* #F9FAFB  */
+        --popover: oklch(0.26 0.03 255.1);
+        --popover-foreground: oklch(0.98 0 0);
+
+        /* ── Muted ── */
+        --muted: oklch(0.30 0.03 255.1);
+        --muted-foreground: oklch(0.70 0.04 259.8);
+        /* #9CA3AF */
+
+        /* ── Borders / Inputs ── */
+        --border: oklch(0.35 0.03 255.1);
+        --input: oklch(0.35 0.03 255.1);
+        --ring: oklch(0.80 0.15 164.9);
+        /* matches dark primary */
+
+        /* ── Semantic ── */
+        --destructive: oklch(0.64 0.24 28.0);
+        /* #DC2626  */
+        --destructive-foreground: oklch(1 0 0);
+        /* #FFFFFF  */
+    }
+}
