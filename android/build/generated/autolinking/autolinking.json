@@ -3,6 +3,34 @@
   "reactNativePath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native",
   "reactNativeVersion": "0.83",
   "dependencies": {
+    "react-native-gesture-handler": {
+      "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-gesture-handler",
+      "name": "react-native-gesture-handler",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-gesture-handler/RNGestureHandler.podspec",
+          "version": "2.30.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-gesture-handler/android",
+          "packageImportPath": "import com.swmansion.gesturehandler.RNGestureHandlerPackage;",
+          "packageInstance": "new RNGestureHandlerPackage()",
+          "buildTypes": [],
+          "libraryName": "rngesturehandler_codegen",
+          "componentDescriptors": [
+            "RNGestureHandlerButtonComponentDescriptor",
+            "RNGestureHandlerRootViewComponentDescriptor"
+          ],
+          "cmakeListsPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-reanimated": {
       "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-reanimated",
       "name": "react-native-reanimated",

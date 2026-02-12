@@ -1,6 +1,6 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
 
-export type RootStackParamList = {
+export type RootDrawerParamList = {
     Home: undefined;
     SignIn: undefined;
     SignUp: undefined;
@@ -9,17 +9,17 @@ export type RootStackParamList = {
     Pricing: undefined;
 };
 
-export type HomeScreenNavigationProp = NativeStackNavigationProp<
-    RootStackParamList,
+export type HomeScreenNavigationProp = DrawerNavigationProp<
+    RootDrawerParamList,
     'Home'
 >;
 
-export type SignInScreenNavigationProp = NativeStackNavigationProp<
-    RootStackParamList,
+export type SignInScreenNavigationProp = DrawerNavigationProp<
+    RootDrawerParamList,
     'SignIn'
 >;
 
-export type SignUpScreenNavigationProp = NativeStackNavigationProp<
-    RootStackParamList,
+export type SignUpScreenNavigationProp = DrawerNavigationProp<
+    RootDrawerParamList,
     'SignUp'
 >;
