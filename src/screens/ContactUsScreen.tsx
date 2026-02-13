@@ -23,7 +23,7 @@ const contactItems = [
     {
         emoji: '✉️',
         title: 'Email Address',
-        lines: ['support@swasthify.com', 'info@swasthify.com'],
+        lines: ['support@swasthify.com'],
         iconBg: 'bg-green-500/10',
         action: () => Linking.openURL('mailto:support@swasthify.com'),
     },
