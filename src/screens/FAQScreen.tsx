@@ -4,7 +4,11 @@ import {
     Text,
     ScrollView,
     SafeAreaView,
+    TouchableOpacity,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { RootDrawerParamList } from '../navigation/types';
 import Footer from '../components/Footer';
 
 /* ─── Data ─── */
@@ -35,7 +39,11 @@ const faqData = [
     },
 ];
 
+type NavigationProp = DrawerNavigationProp<RootDrawerParamList>;
+
 const FAQScreen = () => {
+    const navigation = useNavigation<NavigationProp>();
+
     return (
         <SafeAreaView className="flex-1 bg-white">
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -75,6 +83,27 @@ const FAQScreen = () => {
                                 <Text className="text-sm text-gray-500 leading-relaxed">{faq.a}</Text>
                             </View>
                         ))}
+                    </View>
+                </View>
+
+                {/* ═══════════════ CTA SECTION ═══════════════ */}
+                <View className="px-4 py-8">
+                    <View className="bg-[#0DA96E]/5 rounded-2xl border border-[#0DA96E]/10 p-8 items-center">
+                        <Text className="text-xl font-bold text-center mb-3 text-gray-900">
+                            Still have questions?
+                        </Text>
+                        <Text className="text-sm text-gray-500 text-center leading-6 mb-6 px-2">
+                            Can't find the answer you're looking for? Our support team is here to help you with any queries or concerns you might have.
+                        </Text>
+                        <View className="flex-row items-center">
+                            <TouchableOpacity
+                                activeOpacity={0.85}
+                                onPress={() => navigation.navigate('ContactUs')}
+                                className="bg-[#0DA96E] px-6 py-3 rounded-lg shadow-md"
+                            >
+                                <Text className="text-white font-semibold text-sm">Contact Us</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
 
