@@ -98,7 +98,7 @@ const FAQScreen = () => {
                         <View className="flex-row items-center">
                             <TouchableOpacity
                                 activeOpacity={0.85}
-                                onPress={() => navigation.navigate('ContactUs')}
+                                onPress={() => navigation.navigate('Contact')}
                                 className="bg-[#0DA96E] px-6 py-3 rounded-lg shadow-md"
                             >
                                 <Text className="text-white font-semibold text-sm">Contact Us</Text>
