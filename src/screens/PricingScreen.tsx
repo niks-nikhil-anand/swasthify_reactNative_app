@@ -6,7 +6,12 @@ import {
     ScrollView,
     SafeAreaView,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { RootDrawerParamList } from '../navigation/types';
 import Footer from '../components/Footer';
+
+type NavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 
 /* ─── Data ─── */
 const patientServices = [
@@ -55,6 +60,8 @@ const patientServices = [
  *  PRICING SCREEN
  * ═══════════════════════════════════════════════════ */
 const PricingScreen = () => {
+    const navigation = useNavigation<NavigationProp>();
+
     return (
         <SafeAreaView className="flex-1 bg-white">
             <ScrollView showsVerticalScrollIndicator={false}>
@@ -227,6 +234,7 @@ const PricingScreen = () => {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 activeOpacity={0.7}
+                                onPress={() => navigation.navigate('ContactUs')}
                                 className="border border-gray-300 px-6 py-3 rounded-lg"
                             >
                                 <Text className="text-gray-900 font-semibold text-sm">Contact Support</Text>

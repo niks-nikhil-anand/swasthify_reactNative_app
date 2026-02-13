@@ -9,7 +9,12 @@ import {
     Linking,
     ActivityIndicator,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { RootDrawerParamList } from '../navigation/types';
 import Footer from '../components/Footer';
+
+type NavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 
 /* ─── Contact Info items ─── */
 const contactItems = [
@@ -43,6 +48,7 @@ const contactItems = [
 
 /* ─── Main Screen ─── */
 const ContactUsScreen = () => {
+    const navigation = useNavigation<NavigationProp>();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -285,6 +291,7 @@ const ContactUsScreen = () => {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 activeOpacity={0.7}
+                                onPress={() => navigation.navigate('FAQ')}
                                 className="border border-gray-300 px-6 py-3 rounded-lg"
                             >
                                 <Text className="text-gray-900 font-semibold text-sm">
