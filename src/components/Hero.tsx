@@ -32,7 +32,7 @@ const Hero = () => {
                     </Text>
 
                     {/* Search Bar */}
-                    <View className="bg-white rounded-full flex-row items-center p-1.5 shadow-xl shadow-black/5 mb-10 border border-gray-100">
+                    <View className="bg-white rounded-full flex-row items-center p-1.5 shadow-xl shadow-black/5 mb-2 border border-gray-100">
                         <View className="pl-4 pr-3">
                             <Text className="text-gray-400 text-lg">🔍</Text>
                         </View>
@@ -44,41 +44,6 @@ const Hero = () => {
                         <TouchableOpacity className="bg-[#48C496] px-6 h-10 rounded-full items-center justify-center">
                             <Text className="text-white font-bold">Search</Text>
                         </TouchableOpacity>
-                    </View>
-
-                    {/* Main Actions */}
-                    <View className="flex-row items-center gap-4 mb-12">
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('Contact')}
-                            className="bg-[#0DA96E] py-4 px-8 rounded-xl flex-row items-center shadow-lg shadow-[#0DA96E]/20"
-                        >
-                            <Text className="text-white font-bold text-base">Book Appointment</Text>
-                            <Text className="text-white ml-2 text-lg">→</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('About')}
-                            className="bg-white border border-gray-200 py-4 px-8 rounded-xl shadow-sm"
-                        >
-                            <Text className="text-[#111827] font-bold text-base">Learn More</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {/* Social Proof */}
-                    <View className="flex-row items-center gap-10">
-                        <View className="flex-row items-center">
-                            <View className="flex-row">
-                                {[1, 2, 3].map((i) => (
-                                    <View key={i} className={`w-8 h-8 rounded-full border-2 border-white bg-gray-200 ${i > 1 ? '-ml-3' : ''}`}>
-                                        <Text className="text-[10px] text-center mt-1.5">👤</Text>
-                                    </View>
-                                ))}
-                            </View>
-                            <Text className="ml-3 text-sm font-semibold text-[#6B7280]">10k+ Patients</Text>
-                        </View>
-                        <View className="h-4 w-[1px] bg-gray-300" />
-                        <View>
-                            <Text className="text-base font-bold text-[#111827]">4.9/5 <Text className="text-gray-400 font-normal text-sm">Ratings</Text></Text>
-                        </View>
                     </View>
                 </View>
 
