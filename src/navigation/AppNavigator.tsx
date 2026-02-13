@@ -8,6 +8,7 @@ import AboutScreen from '../screens/AboutScreen';
 import ContactUsScreen from '../screens/ContactUsScreen';
 import PricingScreen from '../screens/PricingScreen';
 import FAQScreen from '../screens/FAQScreen';
+import PlaceholderScreen from '../screens/PlaceholderScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 import { RootDrawerParamList } from './types';
 
@@ -37,16 +38,16 @@ const AppNavigator = () => {
                         color: '#111827', // foreground
                     },
                     drawerActiveTintColor: BRAND_GREEN,
-                    drawerInactiveTintColor: '#6B7280', // muted-foreground
-                    drawerActiveBackgroundColor: 'rgba(13,169,110,0.10)', // primary/10
+                    drawerInactiveTintColor: '#4B5563', // gray-600
+                    drawerActiveBackgroundColor: 'rgba(13,169,110,0.06)', // primary/6
                     drawerItemStyle: {
-                        borderRadius: 10,
-                        marginHorizontal: 8,
+                        borderRadius: 12,
+                        marginHorizontal: 12,
                         paddingVertical: 2,
                     },
                     drawerLabelStyle: {
-                        fontSize: 15,
-                        fontWeight: '600',
+                        fontSize: 16,
+                        fontWeight: '500',
                         marginLeft: -8,
                     },
                 }}
@@ -57,9 +58,19 @@ const AppNavigator = () => {
                     options={{ title: 'Home' }}
                 />
                 <Drawer.Screen
-                    name="About"
-                    component={AboutScreen}
-                    options={{ title: 'About Us' }}
+                    name="Doctors"
+                    component={PlaceholderScreen}
+                    options={{ title: 'Doctors' }}
+                />
+                <Drawer.Screen
+                    name="Labs"
+                    component={PlaceholderScreen}
+                    options={{ title: 'Labs' }}
+                />
+                <Drawer.Screen
+                    name="LabTests"
+                    component={PlaceholderScreen}
+                    options={{ title: 'Lab Tests' }}
                 />
                 <Drawer.Screen
                     name="Pricing"
@@ -67,21 +78,26 @@ const AppNavigator = () => {
                     options={{ title: 'Pricing' }}
                 />
                 <Drawer.Screen
-                    name="ContactUs"
+                    name="About"
+                    component={AboutScreen}
+                    options={{ title: 'About' }}
+                />
+                <Drawer.Screen
+                    name="Contact"
                     component={ContactUsScreen}
-                    options={{ title: 'Contact Us' }}
+                    options={{ title: 'Contact' }}
                 />
                 <Drawer.Screen
                     name="FAQ"
                     component={FAQScreen}
-                    options={{ title: 'FAQ' }}
+                    options={{ title: 'FAQ', drawerItemStyle: { display: 'none' } }}
                 />
                 <Drawer.Screen
                     name="SignIn"
                     component={SignInScreen}
                     options={{
                         title: 'Sign In',
-                        drawerItemStyle: { display: 'none' }, // hidden from drawer list
+                        drawerItemStyle: { display: 'none' },
                     }}
                 />
                 <Drawer.Screen
@@ -89,7 +105,7 @@ const AppNavigator = () => {
                     component={SignUpScreen}
                     options={{
                         title: 'Sign Up',
-                        drawerItemStyle: { display: 'none' }, // hidden from drawer list
+                        drawerItemStyle: { display: 'none' },
                     }}
                 />
             </Drawer.Navigator>
