@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView } from 'react-native';
 import {
     DrawerContentScrollView,
     DrawerItemList,
@@ -10,121 +10,114 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const { navigation } = props;
 
     return (
-        <DrawerContentScrollView
-            {...props}
-            contentContainerStyle={styles.container}
-        >
-            {/* ── Branded Header ── */}
+        <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.header}>
-                <Text style={styles.logoEmoji}>🩺</Text>
-                <Text style={styles.logoText}>Swasthify</Text>
-                <Text style={styles.tagline}>Your Health Companion</Text>
+                <View style={styles.logoContainer}>
+                    <Image
+                        source={require('../../public/icons/logo.png')}
+                        style={styles.logoImage}
+                        resizeMode="contain"
+                    />
+                    <Text style={styles.logoText}>Swasthify</Text>
+                </View>
+                <View style={styles.headerIcons}>
+                    <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={() => navigation.closeDrawer()}
+                    >
+                        <Text style={styles.iconText}>✕</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
 
-            {/* ── Navigation Items ── */}
-            <View style={styles.navSection}>
-                <DrawerItemList {...props} />
-            </View>
+            <DrawerContentScrollView
+                {...props}
+                contentContainerStyle={styles.scrollContainer}
+            >
+                <View style={styles.navSection}>
+                    <DrawerItemList {...props} />
+                </View>
+            </DrawerContentScrollView>
 
-            {/* ── Auth Section ── */}
-            <View style={styles.authSection}>
-                <View style={styles.divider} />
-
+            <View style={styles.footer}>
                 <TouchableOpacity
-                    style={styles.signInButton}
+                    style={styles.loginButton}
                     onPress={() => navigation.navigate('SignIn')}
                     activeOpacity={0.8}
                 >
-                    <Text style={styles.signInText}>Sign In</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={styles.signUpLink}
-                    onPress={() => navigation.navigate('SignUp')}
-                    activeOpacity={0.7}
-                >
-                    <Text style={styles.signUpLinkText}>
-                        Don't have an account?{' '}
-                        <Text style={styles.signUpBold}>Sign Up</Text>
-                    </Text>
+                    <Text style={styles.loginButtonText}>Log in</Text>
                 </TouchableOpacity>
             </View>
-        </DrawerContentScrollView>
+        </SafeAreaView>
     );
 };
 
 const BRAND_GREEN = '#0DA96E';
-const ACCENT_GREEN = '#00C68A';
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    // ── Header ──
     header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
         paddingHorizontal: 20,
-        paddingTop: 16,
-        paddingBottom: 24,
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(209,213,219,0.4)', // border/40
+        paddingTop: 20,
+        paddingBottom: 20,
     },
-    logoEmoji: {
-        fontSize: 32,
-        marginBottom: 8,
+    logoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    logoImage: {
+        width: 36,
+        height: 36,
+        marginRight: 10,
     },
     logoText: {
-        fontSize: 26,
-        fontWeight: '800',
+        fontSize: 24,
+        fontWeight: '700',
         color: BRAND_GREEN,
-        letterSpacing: -0.5,
     },
-    tagline: {
-        fontSize: 13,
-        color: '#6B7280', // muted-foreground
-        marginTop: 4,
+    headerIcons: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
-    // ── Nav items ──
+    iconButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 8,
+        backgroundColor: '#F3F4F6', // gray-100
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 8,
+    },
+    iconText: {
+        fontSize: 18,
+        color: '#374151', // gray-700
+    },
+    scrollContainer: {
+        paddingTop: 0,
+    },
     navSection: {
-        flex: 1,
-        paddingTop: 8,
+        paddingTop: 10,
     },
-    // ── Auth footer ──
-    authSection: {
+    footer: {
         paddingHorizontal: 20,
-        paddingBottom: 24,
+        paddingBottom: 30,
+        paddingTop: 10,
     },
-    divider: {
-        height: 1,
-        backgroundColor: 'rgba(209,213,219,0.4)',
-        marginBottom: 20,
-    },
-    signInButton: {
-        backgroundColor: BRAND_GREEN,
-        paddingVertical: 14,
+    loginButton: {
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: '#E5E7EB', // gray-200
+        paddingVertical: 12,
         borderRadius: 12,
         alignItems: 'center',
-        shadowColor: BRAND_GREEN,
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.25,
-        shadowRadius: 8,
-        elevation: 4,
+        justifyContent: 'center',
     },
-    signInText: {
-        color: '#FFFFFF',
-        fontWeight: '700',
-        fontSize: 16,
-    },
-    signUpLink: {
-        alignItems: 'center',
-        marginTop: 16,
-    },
-    signUpLinkText: {
-        color: '#6B7280',
-        fontSize: 14,
-    },
-    signUpBold: {
+    loginButtonText: {
         color: BRAND_GREEN,
-        fontWeight: '700',
+        fontWeight: '600',
+        fontSize: 16,
     },
 });
 
