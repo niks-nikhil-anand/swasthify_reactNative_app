@@ -15,7 +15,7 @@ const BookAppointmentCTA = () => {
                     Book an appointment for an in-clinic consultation with top specialists near you.
                 </Text>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('ContactUs')}
+                    onPress={() => navigation.navigate('Contact')}
                     className="bg-white self-start px-6 py-2 rounded-full"
                 >
                     <Text className="text-primary font-bold">Book Now</Text>
