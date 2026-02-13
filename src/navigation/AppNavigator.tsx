@@ -38,6 +38,9 @@ const AppNavigator = () => {
                     fontSize: 18,
                     color: '#111827', // foreground
                 },
+                headerRightContainerStyle: {
+                    paddingRight: 20,
+                },
                 drawerActiveTintColor: '#0DA96E',
                 drawerInactiveTintColor: '#4B5563', // gray-600
                 drawerActiveBackgroundColor: '#D1F2E2', // light green
@@ -48,10 +51,23 @@ const AppNavigator = () => {
                     marginBottom: 4,
                 },
                 drawerLabelStyle: {
-                    fontSize: 15,
+                    fontSize: 16,
                     fontWeight: '500',
-                    marginLeft: -16,
+                    marginLeft: -2,
                 },
+                headerRight: () => (
+                    <TouchableOpacity
+                        onPress={() => {
+                            // Navigate to profile or open menu in future
+                            console.log('Profile icon pressed');
+                        }}
+                    >
+                        <Image
+                            source={require('../../public/images/user_avatar.png')}
+                            className="w-10 h-10 rounded-full border border-gray-200"
+                        />
+                    </TouchableOpacity>
+                ),
             }}
         >
             <Drawer.Screen
