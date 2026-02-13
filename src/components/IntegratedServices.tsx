@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ImageSourcePropType } from 'react-native';
 
 interface ServiceCardProps {
     title: string;
     description: string;
-    icon: string;
+    icon: ImageSourcePropType;
     iconBg: string;
 }
 
@@ -13,8 +13,8 @@ const ServiceCard = ({ title, description, icon, iconBg }: ServiceCardProps) => 
         className="bg-white p-4 rounded-[24px] border border-gray-100 shadow-sm mb-3 w-[48.5%]"
         style={{ elevation: 2 }}
     >
-        <View className={`w-10 h-10 ${iconBg} rounded-xl items-center justify-center mb-3`}>
-            <Text className="text-xl">{icon}</Text>
+        <View className={`w-10 h-10 ${iconBg} rounded-xl items-center justify-center mb-3 overflow-hidden`}>
+            <Image source={icon} className="w-8 h-8" resizeMode="contain" />
         </View>
         <Text className="text-sm font-bold text-[#111827] mb-1 leading-4" numberOfLines={2}>
             {title}
@@ -35,25 +35,25 @@ const IntegratedServices = () => {
         {
             title: "Doctor Near Me",
             description: "Locate and book best doctors in your neighborhood.",
-            icon: "📍",
+            icon: require('../../public/images/icons/doctor_location.png'),
             iconBg: "bg-green-50",
         },
         {
             title: "Lab Tests",
             description: "Book tests online & get sample collection from home.",
-            icon: "🔬",
+            icon: require('../../public/images/icons/lab_tests_new.png'),
             iconBg: "bg-purple-50",
         },
         {
             title: "Surgeries",
             description: "Expert surgical care with end-to-end assistance.",
-            icon: "🩺",
+            icon: require('../../public/images/icons/surgeries.png'),
             iconBg: "bg-orange-50",
         },
         {
-            title: "Video Consult",
-            description: "Connect with specialists from comfort of your home.",
-            icon: "📹",
+            title: "Video Consultation",
+            description: "Connect with top specialists from the comfort of your home via secure video calls.",
+            icon: require('../../public/images/icons/video_consultation_new.png'),
             iconBg: "bg-blue-50",
         }
     ];
