@@ -7,6 +7,7 @@ import SignUpScreen from '../screens/SignUpScreen';
 import AboutScreen from '../screens/AboutScreen';
 import ContactUsScreen from '../screens/ContactUsScreen';
 import PricingScreen from '../screens/PricingScreen';
+import FAQScreen from '../screens/FAQScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 import { RootDrawerParamList } from './types';
 
@@ -69,6 +70,11 @@ const AppNavigator = () => {
                     name="ContactUs"
                     component={ContactUsScreen}
                     options={{ title: 'Contact Us' }}
+                />
+                <Drawer.Screen
+                    name="FAQ"
+                    component={FAQScreen}
+                    options={{ title: 'FAQ' }}
                 />
                 <Drawer.Screen
                     name="SignIn"

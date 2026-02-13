@@ -7,6 +7,7 @@ export type RootDrawerParamList = {
     About: undefined;
     ContactUs: undefined;
     Pricing: undefined;
+    FAQ: undefined;
 };
 
 export type HomeScreenNavigationProp = DrawerNavigationProp<
