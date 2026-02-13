@@ -95,7 +95,7 @@ const ContactUsScreen = () => {
                         {/* Title */}
                         <Text className="text-3xl font-bold tracking-tight mb-4 text-center text-gray-900">
                             Get in Touch with{' '}
-                            <Text className="text-[#0DA96E]">Swasthify</Text>
+                            <Text className="text-[#0DA96E]">Swastify</Text>
                         </Text>
 
                         {/* Subtitle */}
