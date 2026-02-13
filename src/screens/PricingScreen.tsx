@@ -234,7 +234,7 @@ const PricingScreen = () => {
                             </TouchableOpacity>
                             <TouchableOpacity
                                 activeOpacity={0.7}
-                                onPress={() => navigation.navigate('ContactUs')}
+                                onPress={() => navigation.navigate('Contact')}
                                 className="border border-gray-300 px-6 py-3 rounded-lg"
                             >
                                 <Text className="text-gray-900 font-semibold text-sm">Contact Support</Text>
