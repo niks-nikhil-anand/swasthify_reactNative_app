@@ -5,9 +5,12 @@ export type RootDrawerParamList = {
     SignIn: undefined;
     SignUp: undefined;
     About: undefined;
-    ContactUs: undefined;
+    Contact: undefined;
     Pricing: undefined;
     FAQ: undefined;
+    Doctors: undefined;
+    Labs: undefined;
+    LabTests: undefined;
 };
 
 export type HomeScreenNavigationProp = DrawerNavigationProp<
