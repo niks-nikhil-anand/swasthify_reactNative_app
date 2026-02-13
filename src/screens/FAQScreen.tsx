@@ -14,8 +14,8 @@ import Footer from '../components/Footer';
 /* ─── Data ─── */
 const faqData = [
     {
-        q: 'What is Swasthify?',
-        a: 'Swasthify is a comprehensive healthcare platform that connects patients with qualified doctors and lab services for seamless medical consultations.',
+        q: 'What is Swastify?',
+        a: 'Swastify is a comprehensive healthcare platform that connects patients with qualified doctors and lab services for seamless medical consultations.',
     },
     {
         q: 'How do I book an appointment?',
@@ -23,7 +23,7 @@ const faqData = [
     },
     {
         q: 'Are the doctors verified?',
-        a: 'Yes, every doctor on the Swasthify platform undergoes a rigorous verification process to ensure they are qualified and licensed.',
+        a: 'Yes, every doctor on the Swastify platform undergoes a rigorous verification process to ensure they are qualified and licensed.',
     },
     {
         q: 'What payment methods are accepted?',
