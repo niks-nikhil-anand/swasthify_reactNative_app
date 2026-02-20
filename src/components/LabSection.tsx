@@ -14,7 +14,7 @@ const LabSection = () => {
     useEffect(() => {
         const fetchLabs = async () => {
             try {
-                const data = await publicService.getCampaigns('lab', 3);
+                const data = await publicService.getCampaigns({ source: 'lab', limit: 3 });
                 setCampaigns(data);
             } catch (error) {
                 console.log('Error in LabSection:', error);
