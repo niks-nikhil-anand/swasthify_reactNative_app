@@ -7,13 +7,13 @@ import "./global.css";
 function App(): React.JSX.Element {
     const [showSplash, setShowSplash] = useState(true);
 
-    if (showSplash) {
-        return <SplashScreen onFinish={() => setShowSplash(false)} />;
-    }
-
     return (
         <NavigationContainer>
-            <AppNavigator />
+            {showSplash ? (
+                <SplashScreen onFinish={() => setShowSplash(false)} />
+            ) : (
+                <AppNavigator />
+            )}
         </NavigationContainer>
     );
 }

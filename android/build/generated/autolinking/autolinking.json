@@ -123,6 +123,61 @@
         }
       }
     },
+    "react-native-svg": {
+      "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-svg",
+      "name": "react-native-svg",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-svg/RNSVG.podspec",
+          "version": "15.15.3",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-svg/android",
+          "packageImportPath": "import com.horcrux.svg.SvgPackage;",
+          "packageInstance": "new SvgPackage()",
+          "buildTypes": [],
+          "libraryName": "rnsvg",
+          "componentDescriptors": [
+            "RNSVGCircleComponentDescriptor",
+            "RNSVGClipPathComponentDescriptor",
+            "RNSVGDefsComponentDescriptor",
+            "RNSVGFeBlendComponentDescriptor",
+            "RNSVGFeColorMatrixComponentDescriptor",
+            "RNSVGFeCompositeComponentDescriptor",
+            "RNSVGFeFloodComponentDescriptor",
+            "RNSVGFeGaussianBlurComponentDescriptor",
+            "RNSVGFeMergeComponentDescriptor",
+            "RNSVGFeOffsetComponentDescriptor",
+            "RNSVGFilterComponentDescriptor",
+            "RNSVGEllipseComponentDescriptor",
+            "RNSVGForeignObjectComponentDescriptor",
+            "RNSVGGroupComponentDescriptor",
+            "RNSVGImageComponentDescriptor",
+            "RNSVGLinearGradientComponentDescriptor",
+            "RNSVGLineComponentDescriptor",
+            "RNSVGMarkerComponentDescriptor",
+            "RNSVGMaskComponentDescriptor",
+            "RNSVGPathComponentDescriptor",
+            "RNSVGPatternComponentDescriptor",
+            "RNSVGRadialGradientComponentDescriptor",
+            "RNSVGRectComponentDescriptor",
+            "RNSVGSvgViewAndroidComponentDescriptor",
+            "RNSVGSymbolComponentDescriptor",
+            "RNSVGTextComponentDescriptor",
+            "RNSVGTextPathComponentDescriptor",
+            "RNSVGTSpanComponentDescriptor",
+            "RNSVGUseComponentDescriptor"
+          ],
+          "cmakeListsPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-vector-icons": {
       "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-vector-icons",
       "name": "react-native-vector-icons",
