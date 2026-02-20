@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const logout = async () => {
         try {
             // Call backend logout API
-            await apiClient.post('/api/auth/logout');
+            await apiClient.post('/api/auth/logout', { role: 'PATIENT' });
         } catch (error) {
             console.error('Backend logout failed:', error);
         } finally {
