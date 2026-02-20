@@ -36,12 +36,12 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
         <AuthWrapper
             title="Create Account"
             description="Join Swastify for the best healthcare experience"
-            showSocial={true}
+            showSocial={false}
             backButtonLabel="Already have an account? Sign In"
             onBackPress={() => navigation.navigate('SignIn')}
         >
             {/* Form Section */}
-            <View className="space-y-5">
+            <View className="gap-y-5">
                 {/* Full Name */}
                 <View>
                     <Text className="text-sm font-bold text-gray-700 mb-2">Full Name</Text>
@@ -81,10 +81,11 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
                             editable={!isLoading}
                         />
                         <TouchableOpacity
+                            activeOpacity={0.7}
                             onPress={() => setShowPassword(!showPassword)}
                             className="absolute right-4 top-3.5"
                         >
-                            {showPassword ? <Feather name="eye-off" size={20} color="#9CA3AF" /> : <Feather name="eye" size={20} color="#9CA3AF" />}
+                            <Feather name={showPassword ? "eye-off" : "eye"} size={20} color="#9CA3AF" />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -104,6 +105,7 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
 
                 {/* Sign Up Button */}
                 <TouchableOpacity
+                    activeOpacity={0.8}
                     onPress={handleSignUp}
                     disabled={isLoading}
                     className="bg-[#0DA96E] py-4 rounded-xl items-center justify-center flex-row shadow-lg shadow-[#0DA96E]/20 mt-4 active:scale-[0.98]"
