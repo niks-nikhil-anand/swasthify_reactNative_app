@@ -45,7 +45,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         <View style={styles.container}>
             <Animated.View style={[styles.logoContainer, animatedStyle]}>
                 <Image
-                    source={require('../../public/icons/logo.png')}
+                    source={require('../../src/assets/logo_splash.png')}
                     style={styles.logo}
                     resizeMode="contain"
                 />
