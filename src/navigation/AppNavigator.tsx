@@ -70,7 +70,7 @@ const AppNavigator = () => {
                         }}
                     >
                         <Image
-                            source={require('../../public/images/user_avatar.png')}
+                            source={require('../assets/user_avatar.png')}
                             className="w-10 h-10 rounded-full border border-gray-200"
                         />
                     </TouchableOpacity>
@@ -157,6 +157,7 @@ const AppNavigator = () => {
                 component={SignInScreen}
                 options={{
                     title: 'Sign In',
+                    headerShown: false,
                     drawerItemStyle: { display: 'none' },
                 }}
             />
@@ -165,6 +166,7 @@ const AppNavigator = () => {
                 component={SignUpScreen}
                 options={{
                     title: 'Sign Up',
+                    headerShown: false,
                     drawerItemStyle: { display: 'none' },
                 }}
             />
