@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, ActivityIndicator, Dimensions, SafeAreaView, Linking, Platform } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
+import { MapPin, Navigation, ExternalLink, Calendar, Clock, Award, Sparkles, ChevronLeft, Share2, Info, Shield, CheckCircle } from 'lucide-react-native';
 import { publicService, Campaign } from '../services/publicService';
 
 const { width } = Dimensions.get('window');
@@ -221,48 +222,67 @@ const CampaignDetailScreen = () => {
                     </View>
                 </View>
 
-                {/* Venue Location Section */}
-                <View className="px-6 mb-8">
-                    <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Venue location</Text>
-                    <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
-                        <View className="flex-row items-center mb-6">
-                            <View className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 items-center justify-center mr-4">
-                                <Feather name="map-pin" size={24} color="#10B981" />
-                            </View>
-                            <View className="flex-1">
-                                <Text className="text-xl font-black text-zinc-900 dark:text-white">{campaign.location?.city}</Text>
-                                <Text className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">{campaign.location?.state}, India</Text>
-                            </View>
-                        </View>
-                        <Text className="text-sm font-medium text-zinc-500 leading-relaxed bg-zinc-50 dark:bg-zinc-800/50 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                            {campaign.location?.address}
-                        </Text>
-                    </View>
-                </View>
-
-                {/* Map & Directions Section (Below Venue) */}
+                {/* Unified Venue & Map Section */}
                 <View className="px-6 mb-32">
-                    <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Navigation & Maps</Text>
-                    <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
-                        <View className="flex-row items-center justify-between mb-8">
-                            <View>
-                                <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Coordinates</Text>
-                                <Text className="text-xs font-mono font-bold text-zinc-600 dark:text-zinc-400">
-                                    {campaign.location?.latitude?.toFixed(6) || '0.000000'}, {campaign.location?.longitude?.toFixed(6) || '0.000000'}
-                                </Text>
-                            </View>
-                            <TouchableOpacity onPress={openMaps} className="w-12 h-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 items-center justify-center border border-zinc-100 dark:border-zinc-800">
-                                <Feather name="external-link" size={20} color="#10B981" />
-                            </TouchableOpacity>
+                    <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Venue & Location</Text>
+                    <View className="bg-white dark:bg-zinc-900 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm overflow-hidden">
+                        {/* Card Header */}
+                        <View className="px-8 py-5 border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/20 flex-row items-center">
+                            <MapPin size={20} color="#10B981" className="mr-3" />
+                            <Text className="text-lg font-black text-zinc-900 dark:text-white">Venue Location</Text>
                         </View>
 
-                        <TouchableOpacity
-                            onPress={getDirections}
-                            className="bg-zinc-900 dark:bg-zinc-800 h-16 rounded-[2rem] flex-row items-center justify-center shadow-xl shadow-zinc-900/20"
-                        >
-                            <Feather name="navigation" size={20} color="white" className="mr-3" />
-                            <Text className="text-white font-black text-sm uppercase tracking-widest">Start Navigation</Text>
-                        </TouchableOpacity>
+                        <View className="p-8">
+                            <View className="flex-col">
+                                <View className="mb-8">
+                                    <Text className="text-xl font-black text-zinc-900 dark:text-white mb-2">
+                                        {campaign.doctor?.clinicName || campaign.doctor?.hospitalName || "Medical Center"}
+                                    </Text>
+                                    <Text className="text-sm font-medium text-zinc-500 leading-relaxed mb-1">
+                                        {campaign.location?.address}
+                                    </Text>
+                                    <Text className="text-xs font-bold text-zinc-400 uppercase tracking-wide">
+                                        {campaign.location?.city}, {campaign.location?.district ? `${campaign.location.district}, ` : ''}{campaign.location?.state} - {campaign.location?.pincode}
+                                    </Text>
+                                </View>
+
+                                {/* Get Directions Button */}
+                                <TouchableOpacity
+                                    onPress={getDirections}
+                                    className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 h-14 rounded-2xl flex-row items-center justify-center mb-8 px-6 self-start shadow-sm"
+                                >
+                                    <Navigation size={18} color="#10B981" className="mr-3" />
+                                    <Text className="text-zinc-900 dark:text-white font-black text-xs uppercase tracking-widest">Get Directions</Text>
+                                </TouchableOpacity>
+
+                                {/* Map Visualization Placeholder */}
+                                <TouchableOpacity
+                                    activeOpacity={0.9}
+                                    onPress={openMaps}
+                                    className="w-full h-48 bg-zinc-100 dark:bg-zinc-800 rounded-[2rem] border border-zinc-100 dark:border-zinc-700 overflow-hidden relative"
+                                >
+                                    {/* Simulated Map Background */}
+                                    <View className="absolute inset-0 items-center justify-center">
+                                        <View className="w-full h-full bg-emerald-500/5 items-center justify-center">
+                                            <MapPin size={48} color="#10B981" opacity={0.2} />
+                                        </View>
+                                    </View>
+
+                                    {/* Map Overlay Info */}
+                                    <View className="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 flex-row items-center justify-between">
+                                        <View>
+                                            <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">Coordinates</Text>
+                                            <Text className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400">
+                                                {campaign.location?.latitude?.toFixed(6) || '0.000000'}, {campaign.location?.longitude?.toFixed(6) || '0.000000'}
+                                            </Text>
+                                        </View>
+                                        <View className="w-10 h-10 rounded-full bg-emerald-500 items-center justify-center">
+                                            <ExternalLink size={16} color="white" />
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     </View>
                 </View>
             </ScrollView>
