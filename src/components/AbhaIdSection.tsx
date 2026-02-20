@@ -23,7 +23,7 @@ const AbhaIdSection = () => {
                         </Text>
                     </View>
                     <Image
-                        source={require('../../public/images/abha-illustration.jpg')}
+                        source={require('../../public/images/abha-illustration.png')}
                         className="w-24 h-24"
                         resizeMode="contain"
                     />

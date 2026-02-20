@@ -5,12 +5,16 @@ import {
     DrawerItemList,
     DrawerContentComponentProps,
 } from '@react-navigation/drawer';
+import { useColorScheme } from 'nativewind';
+import Feather from 'react-native-vector-icons/Feather';
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const { navigation } = props;
+    const { colorScheme, toggleColorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} className="bg-card">
             <View style={styles.header}>
                 <View style={styles.logoContainer}>
                     <Image
@@ -23,9 +27,21 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                 <View style={styles.headerIcons}>
                     <TouchableOpacity
                         style={styles.iconButton}
-                        onPress={() => navigation.closeDrawer()}
+                        onPress={toggleColorScheme}
+                        className="bg-muted"
                     >
-                        <Text style={styles.iconText}>✕</Text>
+                        <Feather
+                            name={isDark ? "sun" : "moon"}
+                            size={18}
+                            color={isDark ? "#FBBF24" : "#4B5563"}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.iconButton}
+                        onPress={() => navigation.closeDrawer()}
+                        className="bg-muted"
+                    >
+                        <Feather name="x" size={18} color={isDark ? "#D1D5DB" : "#374151"} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -62,6 +78,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                     style={styles.loginButton}
                     onPress={() => navigation.navigate('SignIn')}
                     activeOpacity={0.8}
+                    className="bg-card border-border"
                 >
                     <Text style={styles.loginButtonText}>Log in</Text>
                 </TouchableOpacity>
@@ -124,13 +141,11 @@ const styles = StyleSheet.create({
         paddingTop: 10,
     },
     loginButton: {
-        backgroundColor: '#FFFFFF',
-        borderWidth: 1,
-        borderColor: '#E5E7EB', // gray-200
         paddingVertical: 12,
         borderRadius: 12,
         alignItems: 'center',
         justifyContent: 'center',
+        borderWidth: 1,
     },
     loginButtonText: {
         color: BRAND_GREEN,
@@ -162,7 +177,6 @@ const styles = StyleSheet.create({
     contactTitle: {
         fontSize: 16,
         fontWeight: '700',
-        color: '#111827',
         marginBottom: 12,
     },
     contactItem: {
