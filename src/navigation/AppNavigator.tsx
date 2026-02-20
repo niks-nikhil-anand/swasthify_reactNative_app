@@ -9,6 +9,7 @@ import PricingScreen from '../screens/PricingScreen';
 import FAQScreen from '../screens/FAQScreen';
 import PlaceholderScreen from '../screens/PlaceholderScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
+import CampaignDetailScreen from '../screens/CampaignDetailScreen';
 import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -191,6 +192,14 @@ const AppNavigator = () => {
                 options={{
                     title: 'Sign Up',
                     headerShown: false,
+                    drawerItemStyle: { display: 'none' },
+                }}
+            />
+            <Drawer.Screen
+                name="CampaignDetail"
+                component={CampaignDetailScreen}
+                options={{
+                    title: 'Service Details',
                     drawerItemStyle: { display: 'none' },
                 }}
             />
