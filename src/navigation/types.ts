@@ -13,6 +13,7 @@ export type RootDrawerParamList = {
     LabTests: undefined;
     HealthRecords: undefined;
     Profile: undefined;
+    CampaignDetail: { id: string };
 };
 
 export type HomeScreenNavigationProp = DrawerNavigationProp<
