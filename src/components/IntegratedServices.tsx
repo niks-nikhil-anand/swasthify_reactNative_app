@@ -10,22 +10,22 @@ interface ServiceCardProps {
 
 const ServiceCard = ({ title, description, icon, iconBg }: ServiceCardProps) => (
     <View
-        className="bg-white p-4 rounded-[24px] border border-gray-100 shadow-sm mb-3 w-[48.5%]"
+        className="bg-white dark:bg-slate-800 p-4 rounded-[24px] border border-gray-100 dark:border-slate-700 shadow-sm mb-3 w-[48.5%]"
         style={{ elevation: 2 }}
     >
         <View className={`w-10 h-10 ${iconBg} rounded-xl items-center justify-center mb-3 overflow-hidden`}>
             <Image source={icon} className="w-8 h-8" resizeMode="contain" />
         </View>
-        <Text className="text-sm font-bold text-[#111827] mb-1 leading-4" numberOfLines={2}>
+        <Text className="text-sm font-bold text-[#111827] dark:text-white mb-1 leading-4" numberOfLines={2}>
             {title}
         </Text>
-        <Text className="text-[#6B7280] text-[10px] leading-4 mb-4" numberOfLines={3}>
+        <Text className="text-[#6B7280] dark:text-gray-400 text-[10px] leading-4 mb-4" numberOfLines={3}>
             {description}
         </Text>
 
-        <TouchableOpacity className="flex-row items-center border border-gray-100 py-2 px-3 rounded-lg self-start">
-            <Text className="text-[#111827] font-semibold text-[10px]">Book Now</Text>
-            <Text className="ml-1 text-gray-400 text-[10px]">→</Text>
+        <TouchableOpacity className="flex-row items-center border border-gray-100 dark:border-slate-700 py-2 px-3 rounded-lg self-start">
+            <Text className="text-[#111827] dark:text-gray-200 font-semibold text-[10px]">Book Now</Text>
+            <Text className="ml-1 text-gray-400 dark:text-slate-500 text-[10px]">→</Text>
         </TouchableOpacity>
     </View>
 );
@@ -59,15 +59,15 @@ const IntegratedServices = () => {
     ];
 
     return (
-        <View className="px-4 py-10 bg-white">
+        <View className="px-4 py-10 bg-white dark:bg-card">
             <View className="mb-8">
                 <View className="flex-row flex-wrap items-center">
-                    <View className="bg-[#D1F2E2] px-2 py-1 rounded-md mr-1.5">
-                        <Text className="text-[#0DA96E] text-xl font-bold">Integrated Healthcare</Text>
+                    <View className="bg-[#D1F2E2] dark:bg-[#064E3B] px-2 py-1 rounded-md mr-1.5">
+                        <Text className="text-[#0DA96E] dark:text-[#48C496] text-xl font-bold">Integrated Healthcare</Text>
                     </View>
-                    <Text className="text-xl font-bold text-[#111827]">Services for Every Need</Text>
+                    <Text className="text-xl font-bold text-[#111827] dark:text-white">Services for Every Need</Text>
                 </View>
-                <Text className="text-[#6B7280] mt-3 text-sm leading-5 max-w-[95%]">
+                <Text className="text-[#6B7280] dark:text-gray-400 mt-3 text-sm leading-5 max-w-[95%]">
                     Access world-class medical expertise and surgical care through one unified platform.
                 </Text>
             </View>
