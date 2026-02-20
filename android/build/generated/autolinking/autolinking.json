@@ -3,6 +3,31 @@
   "reactNativePath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native",
   "reactNativeVersion": "0.83",
   "dependencies": {
+    "@react-native-async-storage/async-storage": {
+      "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-async-storage/async-storage",
+      "name": "@react-native-async-storage/async-storage",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-async-storage/async-storage/RNCAsyncStorage.podspec",
+          "version": "2.2.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-async-storage/async-storage/android",
+          "packageImportPath": "import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;",
+          "packageInstance": "new AsyncStoragePackage()",
+          "buildTypes": [],
+          "libraryName": "rnasyncstorage",
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-async-storage/async-storage/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-gesture-handler": {
       "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-gesture-handler",
       "name": "react-native-gesture-handler",
