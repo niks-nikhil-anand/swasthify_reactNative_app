@@ -4,7 +4,8 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../navigation/types';
@@ -15,7 +16,11 @@ type SignUpScreenProps = {
     navigation: DrawerNavigationProp<RootDrawerParamList, 'SignUp'>;
 };
 
+import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/authService';
+
 const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
+    const { login } = useAuth();
     // Form States
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -24,12 +29,32 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSignUp = () => {
+    const handleSignUp = async () => {
+        if (!name || !email || !password || !confirmPassword) {
+            return Alert.alert('Error', 'Please fill in all fields');
+        }
+
+        if (password !== confirmPassword) {
+            return Alert.alert('Error', 'Passwords do not match');
+        }
+
         setIsLoading(true);
-        setTimeout(() => {
+        try {
+            const response = await authService.register({
+                name,
+                email,
+                password,
+                role: 'PATIENT',
+            });
+
+            Alert.alert('Success', 'Account created! Please Sign In.', [
+                { text: 'OK', onPress: () => navigation.navigate('SignIn') }
+            ]);
+        } catch (error: any) {
+            Alert.alert('Registration Failed', error.toString());
+        } finally {
             setIsLoading(false);
-            navigation.navigate('SignIn');
-        }, 1500);
+        }
     };
 
     return (

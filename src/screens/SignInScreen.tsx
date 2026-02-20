@@ -16,20 +16,44 @@ type SignInScreenProps = {
     navigation: DrawerNavigationProp<RootDrawerParamList, 'SignIn'>;
 };
 
+import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/authService';
+
 const SignInScreen = ({ navigation }: SignInScreenProps) => {
+    const { login } = useAuth();
     // Auth States
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const handleSignIn = () => {
-        if (!email || !password) return Alert.alert('Error', 'Please enter both email and password');
+    const handleSignIn = async () => {
+        if (!email || !password) {
+            return Alert.alert('Error', 'Please enter both email and password');
+        }
+
         setIsLoading(true);
-        setTimeout(() => {
+        try {
+            const response = await authService.login({
+                email,
+                password,
+                role: 'PATIENT', // Defaulting to PATIENT
+            });
+
+            if (response.token && response.user) {
+                await login(response.token, response.user);
+                // Navigation to Home will be handled by auth state change ideally, 
+                // but for now we navigate manually or wait for re-render
+                // If AppNavigator handles auth state, it might redirect automatically.
+                navigation.navigate('Home');
+            } else {
+                Alert.alert('Error', 'Invalid response from server');
+            }
+        } catch (error: any) {
+            Alert.alert('Login Failed', error.toString());
+        } finally {
             setIsLoading(false);
-            navigation.navigate('Home');
-        }, 1500);
+        }
     };
 
     return (
