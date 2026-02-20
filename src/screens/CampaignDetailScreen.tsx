@@ -107,18 +107,13 @@ const CampaignDetailScreen = () => {
                         </View>
                     </View>
 
-                    <Text className="text-3xl font-black text-zinc-900 dark:text-white leading-[1.1] mb-4">
+                    <Text className="text-3xl font-black text-zinc-900 dark:text-white leading-[1.1] mb-2">
                         {campaign.name || campaign.title}
                     </Text>
 
                     <View className="flex-row items-center mb-6">
-                        <View className="bg-emerald-500/10 p-2 rounded-xl mr-3">
-                            <Feather name="check-circle" size={16} color="#059669" />
-                        </View>
-                        <View>
-                            <Text className="text-[10px] font-black uppercase tracking-widest text-emerald-600 dark:text-emerald-400">Verified Service</Text>
-                            <Text className="text-xs text-zinc-500 font-bold">Trusted Healthcare Provider</Text>
-                        </View>
+                        <Feather name="check-circle" size={14} color="#059669" className="mr-2" />
+                        <Text className="text-[10px] font-black uppercase tracking-widest text-emerald-600">Verified Healthcare Service</Text>
                     </View>
 
                     <View className="bg-white dark:bg-zinc-900 p-6 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
@@ -128,14 +123,14 @@ const CampaignDetailScreen = () => {
                     </View>
                 </View>
 
-                {/* Doctor Section */}
+                {/* Doctor Section - Enhanced */}
                 {campaign.doctor && (
                     <View className="px-6 mb-8">
-                        <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Consulting specialist</Text>
-                        <View className="bg-white dark:bg-zinc-900 p-6 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
-                            <View className="flex-row items-center mb-6">
+                        <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">About the specialist</Text>
+                        <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
+                            <View className="flex-row items-center mb-8">
                                 <View className="relative">
-                                    <View className="w-20 h-20 rounded-3xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border-2 border-zinc-50 dark:border-zinc-800 shadow-xl">
+                                    <View className="w-24 h-24 rounded-[2rem] bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border-2 border-white dark:border-zinc-800 shadow-2xl">
                                         {campaign.doctor.profilePhoto ? (
                                             <Image
                                                 source={{ uri: campaign.doctor.profilePhoto }}
@@ -146,43 +141,40 @@ const CampaignDetailScreen = () => {
                                             <Feather name="user" size={32} color="#10B981" />
                                         )}
                                     </View>
-                                    <View className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-1.5 border-4 border-white dark:border-zinc-900">
-                                        <Feather name="activity" size={12} color="white" />
+                                    <View className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-2 border-4 border-white dark:border-zinc-900 shadow-sm">
+                                        <Feather name="activity" size={14} color="white" />
                                     </View>
                                 </View>
-                                <View className="flex-1 ml-5">
-                                    <Text className="text-xl font-black text-zinc-900 dark:text-white">Dr. {campaign.doctor.user.name}</Text>
-                                    <View className="flex-row items-center mt-1">
-                                        <Text className="text-xs font-black uppercase text-emerald-600 tracking-wider">
-                                            {campaign.doctor.specializations.map(s => s.name).join(", ")}
-                                        </Text>
-                                    </View>
-                                    <View className="flex-row items-center mt-2 bg-emerald-50 dark:bg-emerald-900/20 self-start px-2 py-1 rounded-lg">
-                                        <Feather name="award" size={10} color="#10B981" className="mr-1" />
-                                        <Text className="text-[9px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">
-                                            {campaign.doctor.experienceYears}+ Years Exp.
+                                <View className="flex-1 ml-6">
+                                    <Text className="text-2xl font-black text-zinc-900 dark:text-white">Dr. {campaign.doctor.user.name}</Text>
+                                    <Text className="text-xs font-black uppercase text-emerald-600 tracking-wider mt-1">
+                                        {campaign.doctor.specializations.map(s => s.name).join(", ")}
+                                    </Text>
+                                    <View className="flex-row items-center mt-3 bg-emerald-50 dark:bg-emerald-900/20 self-start px-3 py-1.5 rounded-xl border border-emerald-500/10">
+                                        <Feather name="award" size={12} color="#10B981" className="mr-2" />
+                                        <Text className="text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">
+                                            {campaign.doctor.experienceYears}+ Years Experience
                                         </Text>
                                     </View>
                                 </View>
                             </View>
 
-                            <View className="border-t border-zinc-100 dark:border-zinc-800 pt-6">
-                                <View className="flex-row items-center mb-4">
-                                    <View className="w-8 h-8 rounded-full bg-zinc-50 dark:bg-zinc-800 items-center justify-center mr-3">
-                                        <Feather name="book-open" size={14} color="#6B7280" />
-                                    </View>
-                                    <View>
-                                        <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Qualification</Text>
-                                        <Text className="text-sm font-bold text-zinc-800 dark:text-zinc-200">{campaign.doctor.qualification}</Text>
-                                    </View>
+                            <View className="space-y-6">
+                                <View>
+                                    <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3">Professional Bio</Text>
+                                    <Text className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
+                                        {campaign.doctor.bio || "An experienced healthcare professional dedicated to providing high-quality medical services and personalized patient care."}
+                                    </Text>
                                 </View>
-                                <View className="flex-row items-center">
-                                    <View className="w-8 h-8 rounded-full bg-zinc-50 dark:bg-zinc-800 items-center justify-center mr-3">
-                                        <Feather name="home" size={14} color="#6B7280" />
+
+                                <View className="flex-row items-center justify-between pt-6 border-t border-zinc-50 dark:border-zinc-800">
+                                    <View className="flex-1 mr-4">
+                                        <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Qualification</Text>
+                                        <Text className="text-sm font-bold text-zinc-800 dark:text-zinc-200" numberOfLines={1}>{campaign.doctor.qualification}</Text>
                                     </View>
-                                    <View>
-                                        <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Clinic / Hospital</Text>
-                                        <Text className="text-sm font-bold text-zinc-800 dark:text-zinc-200">{campaign.doctor.clinicName || campaign.doctor.hospitalName || "Partner Facility"}</Text>
+                                    <View className="flex-1">
+                                        <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Clinic</Text>
+                                        <Text className="text-sm font-bold text-zinc-800 dark:text-zinc-200" numberOfLines={1}>{campaign.doctor.clinicName || "Private Clinic"}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -190,104 +182,87 @@ const CampaignDetailScreen = () => {
                     </View>
                 )}
 
-                {/* Location & Schedule Card */}
+                {/* Schedule & Timing Section (Now Above Venue) */}
                 <View className="px-6 mb-8">
-                    <View className="flex-col space-y-4">
-                        <View className="bg-white dark:bg-zinc-900 p-6 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
-                            <View className="flex-row items-center justify-between mb-4">
-                                <View className="flex-row items-center">
-                                    <Feather name="map-pin" size={20} color="#10B981" className="mr-3" />
-                                    <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Location Details</Text>
-                                </View>
-                                <TouchableOpacity onPress={openMaps} className="bg-zinc-50 dark:bg-zinc-800 py-2 px-3 rounded-xl border border-zinc-100 dark:border-zinc-800">
-                                    <Feather name="external-link" size={14} color="#10B981" />
-                                </TouchableOpacity>
+                    <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Service schedule</Text>
+                    <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
+                        <View className="flex-row items-center justify-between mb-8">
+                            <View>
+                                <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Timing</Text>
+                                <Text className="text-2xl font-black text-zinc-900 dark:text-white">
+                                    {campaign.schedule?.startTime} - {campaign.schedule?.endTime}
+                                </Text>
                             </View>
-
-                            <Text className="text-xl font-black text-zinc-900 dark:text-white mb-2">{campaign.location?.city}</Text>
-                            <Text className="text-sm font-medium text-zinc-500 mb-6">{campaign.location?.address}</Text>
-
-                            <View className="flex-row items-center justify-between border-t border-zinc-50 dark:border-zinc-800 pt-6">
-                                <View>
-                                    <Text className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1">Coordinates</Text>
-                                    <Text className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400">
-                                        {campaign.location?.latitude?.toFixed(6) || '0.000000'}, {campaign.location?.longitude?.toFixed(6) || '0.000000'}
-                                    </Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={getDirections}
-                                    className="bg-emerald-500 px-5 py-3 rounded-2xl flex-row items-center shadow-lg shadow-emerald-500/20"
-                                >
-                                    <Text className="text-white font-black text-[10px] uppercase tracking-widest mr-2">Get Directions</Text>
-                                    <Feather name="navigation" size={12} color="white" />
-                                </TouchableOpacity>
+                            <View className="bg-emerald-50 dark:bg-emerald-900/30 px-4 py-2 rounded-xl">
+                                <Text className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Active Now</Text>
                             </View>
                         </View>
 
-                        <View className="bg-white dark:bg-zinc-900 p-6 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
-                            <View className="flex-row items-center mb-6">
-                                <Feather name="calendar" size={20} color="#10B981" className="mr-3" />
-                                <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Consultation Schedule</Text>
-                            </View>
+                        <View className="flex-row items-center justify-between mb-2">
+                            <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Available Days</Text>
+                            <Text className="text-[9px] font-black text-zinc-300 uppercase tracking-widest">UTC Timezone</Text>
+                        </View>
 
-                            <View className="flex-row flex-wrap gap-2 mb-6">
-                                {['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'].map((day) => {
-                                    const isActive = campaign.schedule?.days.includes(day);
-                                    return (
-                                        <View
-                                            key={day}
-                                            className={`px-3 py-2 rounded-xl border ${isActive ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-zinc-50/50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-800 opacity-40'}`}
-                                        >
-                                            <Text className={`text-[9px] font-black uppercase ${isActive ? 'text-emerald-600 dark:text-emerald-400' : 'text-zinc-400'}`}>
-                                                {day.substring(0, 3)}
-                                            </Text>
-                                        </View>
-                                    );
-                                })}
-                            </View>
-
-                            <View className="flex-row items-center justify-between border-t border-zinc-50 dark:border-zinc-800 pt-6">
-                                <View>
-                                    <Text className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mb-1">Timing</Text>
-                                    <Text className="text-sm font-black text-zinc-900 dark:text-white">
-                                        {campaign.schedule?.startTime} - {campaign.schedule?.endTime}
-                                    </Text>
-                                </View>
-                                <View className="bg-zinc-50 dark:bg-zinc-800 px-4 py-2 rounded-xl">
-                                    <Text className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">UTC Timezone</Text>
-                                </View>
-                            </View>
+                        <View className="flex-row flex-wrap gap-2">
+                            {['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'].map((day) => {
+                                const isActive = campaign.schedule?.days.includes(day);
+                                return (
+                                    <View
+                                        key={day}
+                                        className={`px-4 py-3 rounded-2xl border ${isActive ? 'bg-emerald-500 border-emerald-500 shadow-lg shadow-emerald-500/20' : 'bg-zinc-50/50 dark:bg-zinc-800/50 border-zinc-100 dark:border-zinc-800 opacity-30'}`}
+                                    >
+                                        <Text className={`text-[10px] font-black uppercase ${isActive ? 'text-white' : 'text-zinc-400'}`}>
+                                            {day.substring(0, 3)}
+                                        </Text>
+                                    </View>
+                                );
+                            })}
                         </View>
                     </View>
                 </View>
 
-                {/* Booking Information */}
-                <View className="px-6 mb-32">
-                    <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Enter booking details</Text>
-                    <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-emerald-500/10 shadow-sm">
-                        <Text className="text-xl font-black text-zinc-900 dark:text-white mb-2">Patient Information</Text>
-                        <Text className="text-xs text-zinc-500 mb-8 font-medium">Please provide the following details of the patient seeking consultation.</Text>
-
-                        <View className="space-y-6">
-                            {campaign.requiredDetails?.map((detail, index) => (
-                                <View key={index} className="space-y-2">
-                                    <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1">{detail} *</Text>
-                                    <View className="bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 h-14 rounded-2xl px-5 flex-row items-center">
-                                        <Text className="text-zinc-300 dark:text-zinc-600 text-sm">Enter {detail.toLowerCase()}...</Text>
-                                    </View>
-                                </View>
-                            ))}
-                        </View>
-
-                        <View className="mt-10 p-5 bg-emerald-500/5 dark:bg-emerald-500/10 rounded-2xl border border-emerald-500/10 flex-row items-center">
-                            <View className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 items-center justify-center mr-4">
-                                <Feather name="shield" size={18} color="#059669" />
+                {/* Venue Location Section */}
+                <View className="px-6 mb-8">
+                    <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Venue location</Text>
+                    <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
+                        <View className="flex-row items-center mb-6">
+                            <View className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 items-center justify-center mr-4">
+                                <Feather name="map-pin" size={24} color="#10B981" />
                             </View>
                             <View className="flex-1">
-                                <Text className="text-[11px] font-black text-emerald-800 dark:text-emerald-400 uppercase tracking-widest leading-tight">Secure Booking</Text>
-                                <Text className="text-[9px] text-zinc-500 mt-0.5">Your data is encrypted and only shared with the healthcare provider.</Text>
+                                <Text className="text-xl font-black text-zinc-900 dark:text-white">{campaign.location?.city}</Text>
+                                <Text className="text-xs font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">{campaign.location?.state}, India</Text>
                             </View>
                         </View>
+                        <Text className="text-sm font-medium text-zinc-500 leading-relaxed bg-zinc-50 dark:bg-zinc-800/50 p-5 rounded-2xl border border-zinc-100 dark:border-zinc-800">
+                            {campaign.location?.address}
+                        </Text>
+                    </View>
+                </View>
+
+                {/* Map & Directions Section (Below Venue) */}
+                <View className="px-6 mb-32">
+                    <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Navigation & Maps</Text>
+                    <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
+                        <View className="flex-row items-center justify-between mb-8">
+                            <View>
+                                <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Coordinates</Text>
+                                <Text className="text-xs font-mono font-bold text-zinc-600 dark:text-zinc-400">
+                                    {campaign.location?.latitude?.toFixed(6) || '0.000000'}, {campaign.location?.longitude?.toFixed(6) || '0.000000'}
+                                </Text>
+                            </View>
+                            <TouchableOpacity onPress={openMaps} className="w-12 h-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 items-center justify-center border border-zinc-100 dark:border-zinc-800">
+                                <Feather name="external-link" size={20} color="#10B981" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <TouchableOpacity
+                            onPress={getDirections}
+                            className="bg-zinc-900 dark:bg-zinc-800 h-16 rounded-[2rem] flex-row items-center justify-center shadow-xl shadow-zinc-900/20"
+                        >
+                            <Feather name="navigation" size={20} color="white" className="mr-3" />
+                            <Text className="text-white font-black text-sm uppercase tracking-widest">Start Navigation</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </ScrollView>
