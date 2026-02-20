@@ -2,6 +2,7 @@ import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from '../screens/HomeScreen';
 import DoctorsScreen from '../screens/DoctorsScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import AboutScreen from '../screens/AboutScreen';
@@ -107,6 +108,16 @@ const AppNavigator = () => {
                     title: 'Home',
                     drawerIcon: ({ color, size }) => (
                         <Feather name="home" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{
+                    title: 'My Profile',
+                    drawerIcon: ({ color, size }) => (
+                        <Feather name="user" color={color} size={size} />
                     ),
                 }}
             />
