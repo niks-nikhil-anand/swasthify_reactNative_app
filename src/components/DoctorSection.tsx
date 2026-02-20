@@ -77,7 +77,7 @@ const DoctorSection = () => {
 
             <FlatList
                 data={campaigns}
-                renderItem={({ item }) => <CampaignCard campaign={item} onPress={() => navigation.navigate('Doctors', { id: item.id || item._id })} />}
+                renderItem={({ item }) => <CampaignCard campaign={item} onPress={() => navigation.navigate('CampaignDetail', { id: item.id || item._id })} />}
                 keyExtractor={(item, index) => (item._id || item.id || index).toString()}
                 horizontal
                 showsHorizontalScrollIndicator={false}
