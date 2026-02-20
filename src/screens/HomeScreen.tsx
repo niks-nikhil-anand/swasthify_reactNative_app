@@ -9,6 +9,8 @@ import LabTestCTA from '../components/LabTestCTA';
 import AbhaIdSection from '../components/AbhaIdSection';
 import HowItWorks from '../components/HowItWorks';
 import Specialities from '../components/Specialities';
+import DoctorSection from '../components/DoctorSection';
+import LabSection from '../components/LabSection';
 
 const HomeScreen = () => {
     return (
@@ -17,9 +19,11 @@ const HomeScreen = () => {
                 <Hero />
                 <IntegratedServices />
                 <BookAppointmentCTA />
+                <DoctorSection />
                 <Specialities />
                 <HealthPackages />
                 <LabTestCTA />
+                <LabSection />
                 <HowItWorks />
                 <AbhaIdSection />
                 <View className="h-4" />
