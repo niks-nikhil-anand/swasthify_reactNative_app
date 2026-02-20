@@ -74,23 +74,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             </DrawerContentScrollView>
 
             <View style={styles.footer}>
-                {/* Contact Card */}
-                <View style={styles.contactCard}>
-                    <View style={styles.contactBadge}>
-                        <Text style={styles.contactBadgeText}>NEED HELP?</Text>
-                    </View>
-                    <Text style={styles.contactTitle}>Support Details</Text>
 
-                    <View style={styles.contactItem}>
-                        <Text style={styles.contactIcon}>✉️</Text>
-                        <Text style={styles.contactText}>support@swasthify.com</Text>
-                    </View>
-
-                    <View style={styles.contactItem}>
-                        <Text style={styles.contactIcon}>📞</Text>
-                        <Text style={styles.contactText}>+91 97592 25515</Text>
-                    </View>
-                </View>
 
                 <TouchableOpacity
                     style={[styles.loginButton, user && { borderColor: '#EF4444' }]}
@@ -214,47 +198,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 16,
     },
-    contactCard: {
-        backgroundColor: '#E7FAF2', // Light brand green
-        borderRadius: 20,
-        padding: 16,
-        marginBottom: 20,
-        borderWidth: 1,
-        borderColor: '#D1F2E2',
-    },
-    contactBadge: {
-        backgroundColor: BRAND_GREEN,
-        alignSelf: 'flex-start',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        borderRadius: 6,
-        marginBottom: 8,
-    },
-    contactBadgeText: {
-        color: '#FFFFFF',
-        fontSize: 10,
-        fontWeight: '700',
-        letterSpacing: 0.5,
-    },
-    contactTitle: {
-        fontSize: 16,
-        fontWeight: '700',
-        marginBottom: 12,
-    },
-    contactItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 8,
-    },
-    contactIcon: {
-        fontSize: 14,
-        marginRight: 8,
-    },
-    contactText: {
-        fontSize: 13,
-        color: '#4B5563',
-        fontWeight: '500',
-    },
+
 });
 
 export default CustomDrawerContent;
