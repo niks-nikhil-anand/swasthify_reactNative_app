@@ -32,25 +32,39 @@ const CampaignDetailScreen = () => {
 
     const getDirections = () => {
         if (!campaign?.location) return;
-        const { latitude, longitude } = campaign.location;
-        const daddr = `${latitude},${longitude}`;
-        const url = Platform.select({
-            ios: `http://maps.apple.com/?daddr=${daddr}`,
-            android: `google.navigation:q=${daddr}`,
-            default: `https://www.google.com/maps/dir/?api=1&destination=${daddr}`
-        });
+        const { latitude, longitude, address, city, state } = campaign.location;
+        let url = '';
+
+        if (latitude && longitude) {
+            if (Platform.OS === 'ios') {
+                url = `http://maps.apple.com/?daddr=${latitude},${longitude}`;
+            } else {
+                url = `google.navigation:q=${latitude},${longitude}`;
+            }
+        } else {
+            const fullAddress = `${address}, ${city}, ${state}`;
+            url = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddress)}`;
+        }
+
         if (url) Linking.openURL(url);
     };
 
     const openMaps = () => {
         if (!campaign?.location) return;
-        const { latitude, longitude } = campaign.location;
-        const label = campaign.name || campaign.title;
-        const url = Platform.select({
-            ios: `maps:0,0?q=${label}@${latitude},${longitude}`,
-            android: `geo:0,0?q=${latitude},${longitude}(${label})`,
-            default: `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
-        });
+        const { latitude, longitude, address, city, state } = campaign.location;
+        let url = '';
+
+        if (latitude && longitude) {
+            if (Platform.OS === 'ios') {
+                url = `http://maps.apple.com/?ll=${latitude},${longitude}`;
+            } else {
+                url = `geo:${latitude},${longitude}`;
+            }
+        } else {
+            const fullAddress = `${address}, ${city}, ${state}`;
+            url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+        }
+
         if (url) Linking.openURL(url);
     };
 
@@ -255,30 +269,45 @@ const CampaignDetailScreen = () => {
                                     <Text className="text-zinc-900 dark:text-white font-black text-xs uppercase tracking-widest">Get Directions</Text>
                                 </TouchableOpacity>
 
-                                {/* Map Visualization Placeholder */}
+                                {/* Map Visualization - Mini Map Preview */}
                                 <TouchableOpacity
                                     activeOpacity={0.9}
                                     onPress={openMaps}
-                                    className="w-full h-48 bg-zinc-100 dark:bg-zinc-800 rounded-[2rem] border border-zinc-100 dark:border-zinc-700 overflow-hidden relative"
+                                    className="w-full h-56 bg-zinc-100 dark:bg-zinc-800 rounded-[2.5rem] border border-zinc-200 dark:border-zinc-700 overflow-hidden relative shadow-inner"
                                 >
-                                    {/* Simulated Map Background */}
-                                    <View className="absolute inset-0 items-center justify-center">
-                                        <View className="w-full h-full bg-emerald-500/5 items-center justify-center">
-                                            <MapPin size={48} color="#10B981" opacity={0.2} />
+                                    {/* Simulated Map Background with Grid/Streets */}
+                                    <View className="absolute inset-0 bg-emerald-500/5 items-center justify-center">
+                                        {/* Decorative "Road" Lines */}
+                                        <View className="absolute top-1/4 left-0 right-0 h-2 bg-zinc-200/50 dark:bg-zinc-700/50 rotate-3" />
+                                        <View className="absolute top-1/2 left-0 right-0 h-4 bg-zinc-200/50 dark:bg-zinc-700/50 -rotate-6" />
+                                        <View className="absolute bottom-1/4 left-0 right-0 h-2 bg-zinc-200/50 dark:bg-zinc-700/50 rotate-12" />
+                                        <View className="absolute left-1/4 top-0 bottom-0 w-3 bg-zinc-200/50 dark:bg-zinc-700/50 rotate-6" />
+                                        <View className="absolute left-1/2 top-0 bottom-0 w-6 bg-zinc-200/50 dark:bg-zinc-700/50 -rotate-3" />
+
+                                        {/* The Center Pin */}
+                                        <View className="items-center justify-center">
+                                            <View className="w-24 h-24 bg-emerald-500/10 rounded-full items-center justify-center">
+                                                <View className="w-12 h-12 bg-emerald-500 rounded-full items-center justify-center shadow-xl shadow-emerald-500/40 border-4 border-white dark:border-zinc-900">
+                                                    <MapPin size={24} color="white" />
+                                                </View>
+                                            </View>
+                                            <View className="mt-2 bg-zinc-900/80 dark:bg-white px-3 py-1 rounded-full backdrop-blur-md">
+                                                <Text className="text-white dark:text-zinc-900 text-[10px] font-black uppercase tracking-widest">You are here</Text>
+                                            </View>
                                         </View>
                                     </View>
 
-                                    {/* Map Overlay Info */}
-                                    <View className="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-4 rounded-2xl border border-zinc-100 dark:border-zinc-800 flex-row items-center justify-between">
-                                        <View>
-                                            <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-0.5">Coordinates</Text>
-                                            <Text className="text-[10px] font-mono font-bold text-zinc-600 dark:text-zinc-400">
-                                                {campaign.location?.latitude?.toFixed(6) || '0.000000'}, {campaign.location?.longitude?.toFixed(6) || '0.000000'}
-                                            </Text>
+                                    {/* Interactive Hover Indicators */}
+                                    <View className="absolute inset-0 bg-black/0 active:bg-black/5 flex items-center justify-center">
+                                        <View className="bg-white/90 dark:bg-zinc-900/90 px-6 py-3 rounded-2xl flex-row items-center border border-zinc-100 dark:border-zinc-800">
+                                            <ExternalLink size={14} color="#10B981" className="mr-2" />
+                                            <Text className="text-[10px] font-black uppercase tracking-widest text-[#10B981]">View in Maps</Text>
                                         </View>
-                                        <View className="w-10 h-10 rounded-full bg-emerald-500 items-center justify-center">
-                                            <ExternalLink size={16} color="white" />
-                                        </View>
+                                    </View>
+
+                                    {/* Map Interactive Indicator */}
+                                    <View className="absolute bottom-4 right-4 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl p-3 rounded-full border border-zinc-100 dark:border-zinc-800">
+                                        <ExternalLink size={16} color="#10B981" />
                                     </View>
                                 </TouchableOpacity>
                             </View>
