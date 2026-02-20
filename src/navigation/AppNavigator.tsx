@@ -1,6 +1,7 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeScreen from '../screens/HomeScreen';
+import DoctorsScreen from '../screens/DoctorsScreen';
 import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import AboutScreen from '../screens/AboutScreen';
@@ -13,8 +14,6 @@ import CampaignDetailScreen from '../screens/CampaignDetailScreen';
 import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { useColorScheme } from 'nativewind';
-
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 const BRAND_GREEN = '#0DA96E';
@@ -22,8 +21,7 @@ const BRAND_GREEN = '#0DA96E';
 import { useAuth } from '../context/AuthContext';
 
 const AppNavigator = () => {
-    const { colorScheme } = useColorScheme();
-    const isDark = colorScheme === 'dark';
+    const isDark = false;
     const { user, isLoading } = useAuth();
 
     if (isLoading) {
@@ -114,7 +112,7 @@ const AppNavigator = () => {
             />
             <Drawer.Screen
                 name="Doctors"
-                component={PlaceholderScreen}
+                component={DoctorsScreen}
                 options={{
                     title: 'Doctors',
                     drawerIcon: ({ color, size }) => (
