@@ -10,9 +10,8 @@ import FAQScreen from '../screens/FAQScreen';
 import PlaceholderScreen from '../screens/PlaceholderScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 import { RootDrawerParamList } from './types';
-import { Image, TouchableOpacity, View, ActivityIndicator } from 'react-native';
+import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useColorScheme } from 'nativewind';
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
@@ -53,6 +52,9 @@ const AppNavigator = () => {
                     fontSize: 18,
                     color: isDark ? '#F9FAFB' : '#111827',
                 },
+                headerLeftContainerStyle: {
+                    paddingLeft: 20,
+                },
                 headerRightContainerStyle: {
                     paddingRight: 20,
                 },
@@ -61,29 +63,40 @@ const AppNavigator = () => {
                 drawerActiveBackgroundColor: isDark ? '#064E3B' : '#D1F2E2',
                 drawerStyle: {
                     backgroundColor: isDark ? '#111827' : '#FFFFFF',
+                    width: 300,
                 },
                 drawerItemStyle: {
-                    borderRadius: 8,
+                    borderRadius: 12,
                     marginHorizontal: 12,
-                    paddingVertical: 2,
-                    marginBottom: 4,
+                    paddingVertical: 4,
+                    marginBottom: 2,
                 },
                 drawerLabelStyle: {
                     fontSize: 16,
-                    fontWeight: '500',
-                    marginLeft: -2,
+                    fontWeight: '600',
+                    marginLeft: -10,
                 },
                 headerRight: () => (
                     <TouchableOpacity
                         onPress={() => {
-                            // Navigate to profile or open menu in future
                             console.log('Profile icon pressed');
                         }}
+                        className="flex-row items-center gap-x-3"
                     >
-                        <Image
-                            source={require('../assets/user_avatar.png')}
-                            className="w-10 h-10 rounded-full border border-gray-200"
-                        />
+                        <View className="items-end">
+                            {user && (
+                                <Text className="text-sm font-bold text-[#111827] dark:text-white leading-tight">
+                                    {user.name.split(' ')[0]}
+                                </Text>
+                            )}
+                        </View>
+                        <View className="relative">
+                            <Image
+                                source={require('../assets/user_avatar.png')}
+                                className="w-10 h-10 rounded-full border-2 border-[#D1F2E2] dark:border-[#064E3B]"
+                            />
+                            <View className="absolute bottom-0.5 right-0.5 w-3 h-3 bg-brand-green border-2 border-white dark:border-slate-900 rounded-full" />
+                        </View>
                     </TouchableOpacity>
                 ),
             }}
