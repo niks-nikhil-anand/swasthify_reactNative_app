@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, Dimensions } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
 import { Campaign } from '../services/publicService';
 
 const { width } = Dimensions.get('window');
@@ -12,14 +13,24 @@ interface CampaignCardProps {
 }
 
 const CampaignCard = ({ campaign, onPress }: CampaignCardProps) => {
+    const navigation = useNavigation<any>();
+
     const discountedPrice = campaign.discountPercentage > 0
         ? Math.round(campaign.price - (campaign.price * campaign.discountPercentage) / 100)
         : campaign.price;
 
+    const handlePress = () => {
+        if (onPress) {
+            onPress();
+        } else {
+            navigation.navigate('CampaignDetail', { id: campaign.id || campaign._id });
+        }
+    };
+
     return (
         <TouchableOpacity
             activeOpacity={0.95}
-            onPress={onPress}
+            onPress={handlePress}
             style={{ width: CARD_WIDTH }}
             className="bg-zinc-50/90 dark:bg-zinc-900/90 rounded-[32px] overflow-hidden border border-emerald-500/10 shadow-2xl shadow-black/5 mr-4 flex-col"
         >
@@ -134,7 +145,7 @@ const CampaignCard = ({ campaign, onPress }: CampaignCardProps) => {
 
                     <TouchableOpacity
                         className="bg-zinc-900 dark:bg-emerald-600 px-4 h-10 rounded-xl flex-row items-center justify-center"
-                        onPress={onPress}
+                        onPress={handlePress}
                         activeOpacity={0.8}
                     >
                         <Text className="text-white font-black text-[10px] uppercase tracking-widest mr-2">Book Now</Text>
