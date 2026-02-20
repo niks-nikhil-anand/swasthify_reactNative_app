@@ -13,19 +13,23 @@ import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { useColorScheme } from 'nativewind';
 
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 const BRAND_GREEN = '#0DA96E';
 
 const AppNavigator = () => {
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
+
     return (
         <Drawer.Navigator
             initialRouteName="Home"
             drawerContent={(props) => <CustomDrawerContent {...props} />}
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: isDark ? '#111827' : '#FFFFFF',
                     elevation: 4,
                     shadowColor: '#000',
                     shadowOffset: { width: 0, height: 2 },
@@ -36,14 +40,17 @@ const AppNavigator = () => {
                 headerTitleStyle: {
                     fontWeight: '700',
                     fontSize: 18,
-                    color: '#111827', // foreground
+                    color: isDark ? '#F9FAFB' : '#111827',
                 },
                 headerRightContainerStyle: {
                     paddingRight: 20,
                 },
-                drawerActiveTintColor: '#0DA96E',
-                drawerInactiveTintColor: '#4B5563', // gray-600
-                drawerActiveBackgroundColor: '#D1F2E2', // light green
+                drawerActiveTintColor: BRAND_GREEN,
+                drawerInactiveTintColor: isDark ? '#9CA3AF' : '#4B5563',
+                drawerActiveBackgroundColor: isDark ? '#064E3B' : '#D1F2E2',
+                drawerStyle: {
+                    backgroundColor: isDark ? '#111827' : '#FFFFFF',
+                },
                 drawerItemStyle: {
                     borderRadius: 8,
                     marginHorizontal: 12,
