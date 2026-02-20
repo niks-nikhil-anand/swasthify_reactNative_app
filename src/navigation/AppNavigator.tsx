@@ -10,7 +10,7 @@ import FAQScreen from '../screens/FAQScreen';
 import PlaceholderScreen from '../screens/PlaceholderScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 import { RootDrawerParamList } from './types';
-import { Image, TouchableOpacity, View } from 'react-native';
+import { Image, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useColorScheme } from 'nativewind';
@@ -19,13 +19,24 @@ const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 const BRAND_GREEN = '#0DA96E';
 
+import { useAuth } from '../context/AuthContext';
+
 const AppNavigator = () => {
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';
+    const { user, isLoading } = useAuth();
+
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={BRAND_GREEN} />
+            </View>
+        );
+    }
 
     return (
         <Drawer.Navigator
-            initialRouteName="SignIn"
+            initialRouteName={user ? "Home" : "SignIn"}
             drawerContent={(props) => <CustomDrawerContent {...props} />}
             screenOptions={{
                 headerStyle: {

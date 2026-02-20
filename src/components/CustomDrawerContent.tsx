@@ -8,10 +8,22 @@ import {
 import { useColorScheme } from 'nativewind';
 import Feather from 'react-native-vector-icons/Feather';
 
+import { useAuth } from '../context/AuthContext';
+
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const { navigation } = props;
     const { colorScheme, toggleColorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';
+    const { user, logout } = useAuth();
+
+    const handleAuthAction = async () => {
+        if (user) {
+            await logout();
+            navigation.navigate('SignIn');
+        } else {
+            navigation.navigate('SignIn');
+        }
+    };
 
     return (
         <SafeAreaView style={{ flex: 1 }} className="bg-card">
@@ -22,7 +34,14 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                         style={styles.logoImage}
                         resizeMode="contain"
                     />
-                    <Text style={styles.logoText}>Swastify</Text>
+                    <View>
+                        <Text style={styles.logoText}>Swastify</Text>
+                        {user && (
+                            <Text className="text-[10px] text-gray-500 font-medium">
+                                Hi, {user.name}
+                            </Text>
+                        )}
+                    </View>
                 </View>
                 <View style={styles.headerIcons}>
                     <TouchableOpacity
@@ -75,12 +94,14 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                 </View>
 
                 <TouchableOpacity
-                    style={styles.loginButton}
-                    onPress={() => navigation.navigate('SignIn')}
+                    style={[styles.loginButton, user && { borderColor: '#EF4444' }]}
+                    onPress={handleAuthAction}
                     activeOpacity={0.8}
                     className="bg-card border-border"
                 >
-                    <Text style={styles.loginButtonText}>Log in</Text>
+                    <Text style={[styles.loginButtonText, user && { color: '#EF4444' }]}>
+                        {user ? 'Log out' : 'Log in'}
+                    </Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
