@@ -5,15 +5,12 @@ import {
     DrawerItemList,
     DrawerContentComponentProps,
 } from '@react-navigation/drawer';
-import { useColorScheme } from 'nativewind';
 import Feather from 'react-native-vector-icons/Feather';
 
 import { useAuth } from '../context/AuthContext';
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const { navigation } = props;
-    const { colorScheme, toggleColorScheme } = useColorScheme();
-    const isDark = colorScheme === 'dark';
     const { user, logout } = useAuth();
 
     const handleAuthAction = async () => {
@@ -55,13 +52,13 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                 <View style={styles.headerIcons}>
                     <TouchableOpacity
                         style={styles.iconButton}
-                        onPress={toggleColorScheme}
+                        onPress={() => navigation.closeDrawer()}
                         className="bg-muted"
                     >
                         <Feather
-                            name={isDark ? "sun" : "moon"}
-                            size={18}
-                            color={isDark ? "#FBBF24" : "#4B5563"}
+                            name="x"
+                            size={20}
+                            color="#4B5563"
                         />
                     </TouchableOpacity>
                 </View>
