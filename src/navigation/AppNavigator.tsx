@@ -25,7 +25,7 @@ const AppNavigator = () => {
 
     return (
         <Drawer.Navigator
-            initialRouteName="Home"
+            initialRouteName="SignIn"
             drawerContent={(props) => <CustomDrawerContent {...props} />}
             screenOptions={{
                 headerStyle: {
