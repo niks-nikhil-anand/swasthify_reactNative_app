@@ -18,7 +18,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             <View style={styles.header}>
                 <View style={styles.logoContainer}>
                     <Image
-                        source={require('../../public/icons/logo.png')}
+                        source={require('../assets/logo.png')}
                         style={styles.logoImage}
                         resizeMode="contain"
                     />
