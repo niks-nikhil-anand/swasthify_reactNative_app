@@ -28,21 +28,30 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     return (
         <SafeAreaView style={{ flex: 1 }} className="bg-card">
             <View style={styles.header}>
-                <View style={styles.logoContainer}>
-                    <Image
-                        source={require('../assets/logo.png')}
-                        style={styles.logoImage}
-                        resizeMode="contain"
-                    />
-                    <View>
-                        <Text style={styles.logoText}>Swastify</Text>
-                        {user && (
-                            <Text className="text-[10px] text-gray-500 font-medium">
-                                Hi, {user.name}
-                            </Text>
-                        )}
+                {user ? (
+                    <View style={styles.profileContainer}>
+                        <View style={styles.avatarWrapper}>
+                            <Image
+                                source={require('../assets/user_avatar.png')}
+                                style={styles.profileImage}
+                            />
+                            <View style={styles.onlineIndicator} />
+                        </View>
+                        <View style={styles.profileInfo}>
+                            <Text numberOfLines={1} style={styles.profileName}>{user.name}</Text>
+                        </View>
                     </View>
-                </View>
+                ) : (
+                    <View style={styles.logoContainer}>
+                        <Image
+                            source={require('../assets/logo.png')}
+                            style={styles.logoImage}
+                            resizeMode="contain"
+                        />
+                        <Text style={styles.logoText}>Swastify</Text>
+                    </View>
+                )}
+
                 <View style={styles.headerIcons}>
                     <TouchableOpacity
                         style={styles.iconButton}
@@ -54,13 +63,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                             size={18}
                             color={isDark ? "#FBBF24" : "#4B5563"}
                         />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.iconButton}
-                        onPress={() => navigation.closeDrawer()}
-                        className="bg-muted"
-                    >
-                        <Feather name="x" size={18} color={isDark ? "#D1D5DB" : "#374151"} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -116,20 +118,62 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         paddingHorizontal: 20,
-        paddingTop: 20,
-        paddingBottom: 20,
+        paddingTop: 24,
+        paddingBottom: 24,
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(0,0,0,0.03)',
+    },
+    profileContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    avatarWrapper: {
+        position: 'relative',
+    },
+    profileImage: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        borderWidth: 2,
+        borderColor: BRAND_GREEN,
+    },
+    onlineIndicator: {
+        position: 'absolute',
+        bottom: 2,
+        right: 2,
+        width: 12,
+        height: 12,
+        backgroundColor: '#10B981',
+        borderRadius: 6,
+        borderWidth: 2,
+        borderColor: '#FFFFFF',
+    },
+    profileInfo: {
+        marginLeft: 12,
+        flex: 1,
+    },
+    profileName: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: '#111827',
+    },
+    profileRole: {
+        fontSize: 12,
+        color: '#6B7280',
+        fontWeight: '500',
     },
     logoContainer: {
         flexDirection: 'row',
         alignItems: 'center',
     },
     logoImage: {
-        width: 36,
-        height: 36,
+        width: 32,
+        height: 32,
         marginRight: 10,
     },
     logoText: {
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: '700',
         color: BRAND_GREEN,
     },
@@ -157,7 +201,7 @@ const styles = StyleSheet.create({
         paddingTop: 10,
     },
     footer: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 16,
         paddingBottom: 30,
         paddingTop: 10,
     },

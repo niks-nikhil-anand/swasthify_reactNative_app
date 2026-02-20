@@ -11,6 +11,8 @@ export type RootDrawerParamList = {
     Doctors: undefined;
     Labs: undefined;
     LabTests: undefined;
+    HealthRecords: undefined;
+    Profile: undefined;
 };
 
 export type HomeScreenNavigationProp = DrawerNavigationProp<
