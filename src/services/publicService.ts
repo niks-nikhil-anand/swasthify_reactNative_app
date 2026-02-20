@@ -58,14 +58,28 @@ export interface Campaign {
 }
 
 export const publicService = {
-    getCampaigns: async (source: 'doctor' | 'lab', limit: number = 3): Promise<Campaign[]> => {
+    getCampaigns: async (params: {
+        source: 'doctor' | 'lab';
+        limit?: number;
+        page?: number;
+        search?: string;
+        specialization?: string;
+        sortBy?: string;
+    }): Promise<Campaign[]> => {
         try {
-            const response = await apiClient.get(`/api/public/campaigns?source=${source}&limit=${limit}`);
+            const { source, limit = 10, page = 1, search, specialization, sortBy } = params;
+            let url = `/api/public/campaigns?source=${source}&limit=${limit}&page=${page}`;
+
+            if (search) url += `&search=${encodeURIComponent(search)}`;
+            if (specialization) url += `&specialization=${encodeURIComponent(specialization)}`;
+            if (sortBy) url += `&sortBy=${sortBy}`;
+
+            const response = await apiClient.get(url);
             const result = response.data;
             return Array.isArray(result) ? result : (result.data || []);
         } catch (error: any) {
-            console.error(`Error fetching ${source} campaigns:`, error);
-            throw error.response?.data?.message || `Failed to fetch ${source} campaigns`;
+            console.error(`Error fetching ${params.source} campaigns:`, error);
+            throw error.response?.data?.message || `Failed to fetch ${params.source} campaigns`;
         }
     },
 

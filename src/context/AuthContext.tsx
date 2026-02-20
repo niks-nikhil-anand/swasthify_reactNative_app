@@ -59,13 +59,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = async () => {
         try {
-            await AsyncStorage.removeItem('auth_token');
-            await AsyncStorage.removeItem('auth_user');
-            setToken(null);
-            setUser(null);
+            // Call backend logout API
+            await apiClient.post('/api/auth/logout');
         } catch (error) {
-            console.error('Failed to clear auth data:', error);
-            throw error;
+            console.error('Backend logout failed:', error);
+        } finally {
+            try {
+                // Always clear local storage and state even if API fails
+                await AsyncStorage.removeItem('auth_token');
+                await AsyncStorage.removeItem('auth_user');
+                setToken(null);
+                setUser(null);
+            } catch (error) {
+                console.error('Failed to clear auth data:', error);
+            }
         }
     };
 
