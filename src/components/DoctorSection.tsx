@@ -14,7 +14,7 @@ const DoctorSection = () => {
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
-                const data = await publicService.getCampaigns('doctor', 3);
+                const data = await publicService.getCampaigns({ source: 'doctor', limit: 3 });
                 setCampaigns(data);
             } catch (error) {
                 console.log('Error in DoctorSection:', error);
