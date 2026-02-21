@@ -10,9 +10,10 @@ const CARD_WIDTH = width * 0.85;
 interface CampaignCardProps {
     campaign: Campaign;
     onPress?: () => void;
+    fullWidth?: boolean;
 }
 
-const CampaignCard = ({ campaign, onPress }: CampaignCardProps) => {
+const CampaignCard = ({ campaign, onPress, fullWidth = false }: CampaignCardProps) => {
     const navigation = useNavigation<any>();
 
     const discountedPrice = campaign.discountPercentage > 0
@@ -31,8 +32,8 @@ const CampaignCard = ({ campaign, onPress }: CampaignCardProps) => {
         <TouchableOpacity
             activeOpacity={0.95}
             onPress={handlePress}
-            style={{ width: CARD_WIDTH }}
-            className="bg-zinc-50/90 dark:bg-zinc-900/90 rounded-[32px] overflow-hidden border border-emerald-500/10 shadow-2xl shadow-black/5 mr-4 flex-col"
+            style={fullWidth ? { width: '100%' } : { width: CARD_WIDTH }}
+            className={`bg-zinc-50/90 dark:bg-zinc-900/90 rounded-[32px] overflow-hidden border border-emerald-500/10 shadow-2xl shadow-black/5 flex-col ${!fullWidth ? 'mr-4' : 'mb-4'}`}
         >
             {/* Header Content */}
             <View className="p-6 pb-2">
