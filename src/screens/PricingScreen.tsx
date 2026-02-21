@@ -223,7 +223,7 @@ const PricingScreen = () => {
                             Ready to find your doctor?
                         </Text>
                         <Text className="text-sm text-gray-500 text-center leading-6 mb-6 px-2">
-                            Join thousands of patients who trust Swastify for quality healthcare at transparent prices. Book your first consultation today.
+                            Join thousands of patients who trust Swasthify for quality healthcare at transparent prices. Book your first consultation today.
                         </Text>
                         <View className="flex-row items-center">
                             <TouchableOpacity
