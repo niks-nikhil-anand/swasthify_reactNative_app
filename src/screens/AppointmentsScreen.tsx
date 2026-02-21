@@ -15,6 +15,7 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import { appointmentService } from '../services/appointmentService';
 import AppointmentCard, { Appointment } from '../components/AppointmentCard';
+import AppointmentCardSkeleton from '../components/AppointmentCardSkeleton';
 
 type StatusTab = 'Upcoming' | 'Completed' | 'Cancelled';
 
@@ -94,14 +95,6 @@ const AppointmentsScreen = () => {
         };
     }, [appointments]);
 
-    if (loading && !refreshing) {
-        return (
-            <View className="flex-1 items-center justify-center bg-zinc-50 dark:bg-zinc-950">
-                <ActivityIndicator size="large" color="#10B981" />
-            </View>
-        );
-    }
-
     return (
         <SafeAreaView className="flex-1 bg-zinc-50 dark:bg-zinc-950">
             {/* Control Bar: Search & Sort */}
@@ -136,8 +129,8 @@ const AppointmentsScreen = () => {
                                 key={tab}
                                 onPress={() => setActiveTab(tab)}
                                 className={`flex-1 py-3 px-2 rounded-2xl flex-row items-center justify-center border ${isActive
-                                        ? 'bg-zinc-900 border-zinc-900 shadow-sm'
-                                        : 'bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800'
+                                    ? 'bg-zinc-900 border-zinc-900 shadow-sm'
+                                    : 'bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800'
                                     }`}
                             >
                                 <Text className={`text-[10px] font-black uppercase tracking-widest ${isActive ? 'text-white' : 'text-zinc-500'}`}>
@@ -161,7 +154,11 @@ const AppointmentsScreen = () => {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#10B981" />
                 }
             >
-                {filteredAndSortedAppointments.length === 0 ? (
+                {loading && !refreshing ? (
+                    <View>
+                        {[1, 2, 3, 4].map(i => <AppointmentCardSkeleton key={i} />)}
+                    </View>
+                ) : filteredAndSortedAppointments.length === 0 ? (
                     <View className="flex-1 items-center justify-center py-20">
                         <View className="w-24 h-24 bg-zinc-100 dark:bg-zinc-900 rounded-full items-center justify-center mb-6">
                             <Feather name="calendar" size={32} color="#D1D5DB" />
