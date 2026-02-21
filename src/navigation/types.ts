@@ -10,7 +10,7 @@ export type RootDrawerParamList = {
     FAQ: undefined;
     Doctors: undefined;
     Labs: undefined;
-    LabTests: undefined;
+    Appointments: undefined;
     HealthRecords: undefined;
     Profile: undefined;
     CampaignDetail: { id: string };
