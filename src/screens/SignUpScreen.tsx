@@ -60,7 +60,7 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
     return (
         <AuthWrapper
             title="Create Account"
-            description="Join Swastify for the best healthcare experience"
+            description="Join Swasthify for the best healthcare experience"
             showSocial={false}
             backButtonLabel="Already have an account? Sign In"
             onBackPress={() => navigation.navigate('SignIn')}
