@@ -5,16 +5,15 @@ interface ServiceCardProps {
     title: string;
     description: string;
     icon: ImageSourcePropType;
-    iconBg: string;
 }
 
-const ServiceCard = ({ title, description, icon, iconBg }: ServiceCardProps) => (
+const ServiceCard = ({ title, description, icon }: ServiceCardProps) => (
     <View
         className="bg-white dark:bg-slate-800 p-4 rounded-[24px] border border-gray-100 dark:border-slate-700 mb-3 w-[48.5%]"
         style={{ elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8 }}
     >
-        <View className={`w-12 h-12 ${iconBg} rounded-2xl items-center justify-center mb-3.5 overflow-hidden`}>
-            <Image source={icon} className="w-8 h-8" resizeMode="contain" />
+        <View className="w-14 h-14 items-center justify-center mb-3.5">
+            <Image source={icon} className="w-14 h-14" resizeMode="contain" />
         </View>
         <Text className="text-[15px] font-bold text-[#111827] dark:text-white mb-1.5 leading-5" numberOfLines={2}>
             {title}
@@ -35,26 +34,22 @@ const IntegratedServices = () => {
         {
             title: "Doctor Near Me",
             description: "Locate and book the best doctors in your neighborhood.",
-            icon: require('../../public/images/icons/doctor_location.png'),
-            iconBg: "bg-green-50",
+            icon: require('../../public/images/icons/doctor_location_3d.png'),
         },
         {
             title: "Lab Tests",
             description: "Book tests online & get sample collection from home.",
-            icon: require('../../public/images/icons/lab_tests_new.png'),
-            iconBg: "bg-purple-50",
+            icon: require('../../public/images/icons/lab_tests_3d.png'),
         },
         {
             title: "Surgeries",
             description: "Expert surgical care with end-to-end assistance.",
-            icon: require('../../public/images/icons/surgeries.png'),
-            iconBg: "bg-orange-50",
+            icon: require('../../public/images/icons/surgeries_3d.png'),
         },
         {
             title: "Video Consultation",
             description: "Connect with top specialists from home via secure video calls.",
-            icon: require('../../public/images/icons/video_consultation_new.png'),
-            iconBg: "bg-blue-50",
+            icon: require('../../public/images/icons/video_consultation_3d.png'),
         }
     ];
 
