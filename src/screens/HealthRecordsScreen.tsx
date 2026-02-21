@@ -14,6 +14,7 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import DocumentPicker from 'react-native-document-picker';
 import { healthRecordService, HealthRecord } from '../services/healthRecordService';
+import { HealthRecordsListSkeleton } from '../components/HealthRecordSkeleton';
 
 const { width } = Dimensions.get('window');
 const BRAND_GREEN = '#0DA96E';
@@ -118,14 +119,6 @@ const HealthRecordsScreen = () => {
     const totalUsedSize = records.reduce((acc, rec) => acc + (rec.sizeMb || 0), 0);
     const storagePercentage = Math.min((totalUsedSize / STORAGE_LIMIT_MB) * 100, 100);
 
-    if (isLoading) {
-        return (
-            <View className="flex-1 justify-center items-center bg-gray-50">
-                <ActivityIndicator size="large" color={BRAND_GREEN} />
-            </View>
-        );
-    }
-
     return (
         <View className="flex-1 bg-gray-50">
             <ScrollView
@@ -159,7 +152,9 @@ const HealthRecordsScreen = () => {
                 {/* Records List */}
                 <Text className="text-xl font-bold text-gray-900 mb-4 px-1">My Records</Text>
 
-                {records.length === 0 ? (
+                {isLoading ? (
+                    <HealthRecordsListSkeleton />
+                ) : records.length === 0 ? (
                     <View className="bg-white p-10 rounded-3xl items-center justify-center border border-dashed border-gray-300">
                         <View className="w-20 h-20 bg-gray-50 rounded-full items-center justify-center mb-4">
                             <Feather name="folder" size={32} color="#9CA3AF" />
