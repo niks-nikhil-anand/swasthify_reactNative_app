@@ -16,6 +16,7 @@ interface AuthContextType {
     isLoading: boolean;
     login: (token: string, userData: User) => Promise<void>;
     logout: () => Promise<void>;
+    updateUser: (updatedData: Partial<User>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -57,6 +58,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const updateUser = async (updatedData: Partial<User>) => {
+        try {
+            if (user) {
+                const newUserData = { ...user, ...updatedData };
+                await AsyncStorage.setItem('auth_user', JSON.stringify(newUserData));
+                setUser(newUserData);
+            }
+        } catch (error) {
+            console.error('Failed to update user data:', error);
+            throw error;
+        }
+    };
+
     const logout = async () => {
         try {
             // Call backend logout API
@@ -77,7 +91,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, isLoading, login, logout }}>
+        <AuthContext.Provider value={{ user, token, isLoading, login, logout, updateUser }}>
             {children}
         </AuthContext.Provider>
     );
