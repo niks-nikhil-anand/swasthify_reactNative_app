@@ -14,6 +14,7 @@ import CustomDrawerContent from '../components/CustomDrawerContent';
 import CampaignDetailScreen from '../screens/CampaignDetailScreen';
 import LabsScreen from '../screens/LabsScreen';
 import AppointmentsScreen from '../screens/AppointmentsScreen';
+import HealthRecordsScreen from '../screens/HealthRecordsScreen';
 import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -150,6 +151,16 @@ const AppNavigator = () => {
                     title: 'Appointments',
                     drawerIcon: ({ color, size }) => (
                         <Feather name="calendar" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="HealthRecords"
+                component={HealthRecordsScreen}
+                options={{
+                    title: 'Health Records',
+                    drawerIcon: ({ color, size }) => (
+                        <Feather name="folder" color={color} size={size} />
                     ),
                 }}
             />
