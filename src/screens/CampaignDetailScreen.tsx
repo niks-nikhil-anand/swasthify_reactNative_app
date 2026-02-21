@@ -4,6 +4,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import { MapPin, Navigation, ExternalLink, Calendar, Clock, Award, Sparkles, ChevronLeft, Share2, Info, Shield, CheckCircle } from 'lucide-react-native';
 import { publicService, Campaign } from '../services/publicService';
+import CampaignDetailSkeleton from '../components/CampaignDetailSkeleton';
 
 const { width } = Dimensions.get('window');
 
@@ -24,7 +25,10 @@ const CampaignDetailScreen = () => {
             } catch (err: any) {
                 setError(err.toString());
             } finally {
-                setLoading(false);
+                // Keep loading for at least 800ms for smooth skeleton transition
+                setTimeout(() => {
+                    setLoading(false);
+                }, 800);
             }
         };
         fetchDetail();
@@ -69,12 +73,7 @@ const CampaignDetailScreen = () => {
     };
 
     if (loading) {
-        return (
-            <View className="flex-1 items-center justify-center bg-white dark:bg-zinc-950">
-                <ActivityIndicator size="large" color="#10B981" />
-                <Text className="mt-4 text-zinc-500 font-bold uppercase tracking-widest text-[10px]">Loading health service...</Text>
-            </View>
-        );
+        return <CampaignDetailSkeleton />;
     }
 
     if (error || !campaign) {
