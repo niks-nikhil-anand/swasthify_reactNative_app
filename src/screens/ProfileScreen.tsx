@@ -13,16 +13,19 @@ import {
     KeyboardAvoidingView,
     Platform,
     Alert,
+    ActivityIndicator,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useAuth } from '../context/AuthContext';
+import { userService } from '../services/userService';
 
 const ProfileScreen = () => {
-    const { user, logout } = useAuth();
+    const { user, logout, updateUser } = useAuth();
     const [phoneModalVisible, setPhoneModalVisible] = useState(false);
     const [emailModalVisible, setEmailModalVisible] = useState(false);
     const [nameModalVisible, setNameModalVisible] = useState(false);
     const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Form states
     const [newPhone, setNewPhone] = useState(user?.phone || '');
@@ -36,33 +39,103 @@ const ProfileScreen = () => {
 
     if (!user) return null;
 
-    const handleUpdatePhone = () => {
-        // Mock update logic
-        Alert.alert("Success", "Phone number updated successfully (Mock)");
-        setPhoneModalVisible(false);
-    };
-
-    const handleUpdateName = () => {
-        // Mock update logic
-        Alert.alert("Success", "Name updated successfully (Mock)");
-        setNameModalVisible(false);
-    };
-
-    const handleUpdateEmail = () => {
-        // Mock update logic
-        Alert.alert("Success", "Email address updated successfully (Mock)");
-        setEmailModalVisible(false);
-    };
-
-    const handleChangePassword = () => {
-        if (passwords.new !== passwords.confirm) {
-            Alert.alert("Error", "Passwords do not match");
+    const handleUpdatePhone = async () => {
+        if (newPhone.length !== 10 || isNaN(Number(newPhone))) {
+            Alert.alert("Error", "Phone number must be exactly 10 digits");
             return;
         }
-        // Mock update logic
-        Alert.alert("Success", "Password changed successfully (Mock)");
-        setPasswordModalVisible(false);
-        setPasswords({ current: '', new: '', confirm: '' });
+
+        setIsSubmitting(true);
+        try {
+            await userService.updatePhone(newPhone);
+            await updateUser({ phone: newPhone });
+            Alert.alert("Success", "Phone number updated successfully");
+            setPhoneModalVisible(false);
+        } catch (err: any) {
+            Alert.alert("Error", err.toString());
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const validateEmail = (email: string) => {
+        const re = /\S+@\S+\.\S+/;
+        return re.test(email);
+    };
+
+    const handleUpdateName = async () => {
+        if (newName.trim().length < 2) {
+            Alert.alert("Error", "Please enter a valid name");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            await userService.updateName(newName);
+            await updateUser({ name: newName });
+            Alert.alert("Success", "Name updated successfully");
+            setNameModalVisible(false);
+        } catch (err: any) {
+            Alert.alert("Error", err.toString());
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleUpdateEmail = async () => {
+        if (!validateEmail(newEmail)) {
+            Alert.alert("Error", "Please enter a valid email address");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            await userService.updateEmail(newEmail);
+            await updateUser({ email: newEmail });
+            Alert.alert("Success", "Email address updated successfully");
+            setEmailModalVisible(false);
+        } catch (err: any) {
+            Alert.alert("Error", err.toString());
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const validatePassword = (password: string) => {
+        const hasNumber = /\d/;
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
+        return (
+            password.length >= 6 &&
+            password.length <= 16 &&
+            hasNumber.test(password) &&
+            hasSpecialChar.test(password)
+        );
+    };
+
+    const handleChangePassword = async () => {
+        if (!validatePassword(passwords.new)) {
+            Alert.alert(
+                "Error",
+                "Password must be 6-16 characters long, contain at least one number and one special character"
+            );
+            return;
+        }
+        if (passwords.new !== passwords.confirm) {
+            Alert.alert("Error", "New passwords do not match");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            await userService.changePassword(passwords.current, passwords.new);
+            Alert.alert("Success", "Password changed successfully");
+            setPasswordModalVisible(false);
+            setPasswords({ current: '', new: '', confirm: '' });
+        } catch (err: any) {
+            Alert.alert("Error", err.toString());
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const ProfileItem = ({ icon, title, value, color = "#4B5563", onPress }: { icon: string, title: string, value: string, color?: string, onPress?: () => void }) => {
@@ -207,8 +280,13 @@ const ProfileScreen = () => {
                         <TouchableOpacity
                             style={styles.modalButton}
                             onPress={handleUpdatePhone}
+                            disabled={isSubmitting}
                         >
-                            <Text style={styles.modalButtonText}>Update Number</Text>
+                            {isSubmitting ? (
+                                <ActivityIndicator color="#FFFFFF" />
+                            ) : (
+                                <Text style={styles.modalButtonText}>Update Number</Text>
+                            )}
                         </TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View>
@@ -269,8 +347,13 @@ const ProfileScreen = () => {
                         <TouchableOpacity
                             style={[styles.modalButton, { backgroundColor: '#6366F1' }]}
                             onPress={handleChangePassword}
+                            disabled={isSubmitting}
                         >
-                            <Text style={styles.modalButtonText}>Change Password</Text>
+                            {isSubmitting ? (
+                                <ActivityIndicator color="#FFFFFF" />
+                            ) : (
+                                <Text style={styles.modalButtonText}>Change Password</Text>
+                            )}
                         </TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View>
@@ -308,8 +391,13 @@ const ProfileScreen = () => {
                         <TouchableOpacity
                             style={[styles.modalButton, { backgroundColor: '#0DA96E' }]}
                             onPress={handleUpdateName}
+                            disabled={isSubmitting}
                         >
-                            <Text style={styles.modalButtonText}>Update Name</Text>
+                            {isSubmitting ? (
+                                <ActivityIndicator color="#FFFFFF" />
+                            ) : (
+                                <Text style={styles.modalButtonText}>Update Name</Text>
+                            )}
                         </TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View>
@@ -349,8 +437,13 @@ const ProfileScreen = () => {
                         <TouchableOpacity
                             style={[styles.modalButton, { backgroundColor: '#3B82F6' }]}
                             onPress={handleUpdateEmail}
+                            disabled={isSubmitting}
                         >
-                            <Text style={styles.modalButtonText}>Update Email</Text>
+                            {isSubmitting ? (
+                                <ActivityIndicator color="#FFFFFF" />
+                            ) : (
+                                <Text style={styles.modalButtonText}>Update Email</Text>
+                            )}
                         </TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View>
