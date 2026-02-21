@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../navigation/types';
 import Footer from '../components/Footer';
+import { publicService } from '../services/publicService';
+import { Alert } from 'react-native';
 
 type NavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 
@@ -63,14 +65,48 @@ const ContactUsScreen = () => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
-    const handleSubmit = () => {
+    const validateForm = () => {
+        const { name, email, phone, subject, message } = formData;
+        if (!name.trim()) {
+            Alert.alert('Error', 'Please enter your full name');
+            return false;
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email.trim() || !emailRegex.test(email)) {
+            Alert.alert('Error', 'Please enter a valid email address');
+            return false;
+        }
+        const phoneRegex = /^\d{10}$/;
+        if (!phone.trim() || !phoneRegex.test(phone)) {
+            Alert.alert('Error', 'Please enter a valid 10-digit phone number');
+            return false;
+        }
+        if (!subject.trim()) {
+            Alert.alert('Error', 'Please enter a subject');
+            return false;
+        }
+        if (!message.trim()) {
+            Alert.alert('Error', 'Please enter your message');
+            return false;
+        }
+        return true;
+    };
+
+    const handleSubmit = async () => {
+        if (!validateForm()) return;
+
         setIsSubmitting(true);
-        setTimeout(() => {
-            setIsSubmitting(false);
+        try {
+            await publicService.createContactTicket(formData);
             setSubmitted(true);
             setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+            Alert.alert('Success', 'Your inquiry has been sent successfully!');
             setTimeout(() => setSubmitted(false), 3000);
-        }, 1500);
+        } catch (error: any) {
+            Alert.alert('Error', error || 'Failed to send inquiry. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
