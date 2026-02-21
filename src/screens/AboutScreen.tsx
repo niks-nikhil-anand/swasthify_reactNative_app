@@ -32,7 +32,7 @@ const HeroSection = () => (
 
             {/* Subtitle */}
             <Text className="text-base text-gray-500 text-center leading-relaxed max-w-lg">
-                At Swastify, we believe quality healthcare should be accessible to everyone, everywhere. We're bridging the gap between patients and providers with technology.
+                At Swasthify, we believe quality healthcare should be accessible to everyone, everywhere. We're bridging the gap between patients and providers with technology.
             </Text>
         </View>
     </View>
@@ -131,12 +131,12 @@ const FounderSection = () => (
                 {/* Quote */}
                 <View className="border-l-4 border-emerald-500/30 bg-emerald-50/50 p-4 rounded-r-xl">
                     <Text className="text-gray-900/80 italic text-base leading-relaxed">
-                        "The future of healthcare lies in secure, connected, and patient-centric digital systems. Swastify is our commitment to making that future a reality."
+                        "The future of healthcare lies in secure, connected, and patient-centric digital systems. Swasthify is our commitment to making that future a reality."
                     </Text>
                 </View>
 
                 <Text className="text-base text-gray-500 leading-relaxed">
-                    Now, as the founder of <Text className="font-bold text-gray-900">Swastify</Text>, Abhinav is on a mission to remove healthcare inefficiencies by combining technology with accessibility. His vision is to simplify how patients and doctors connect, creating a seamless ecosystem for everyone.
+                    Now, as the founder of <Text className="font-bold text-gray-900">Swasthify</Text>, Abhinav is on a mission to remove healthcare inefficiencies by combining technology with accessibility. His vision is to simplify how patients and doctors connect, creating a seamless ecosystem for everyone.
                 </Text>
             </View>
 
@@ -217,7 +217,7 @@ const ValuesSection = () => (
                 </View>
                 <Text className="text-2xl font-bold mb-4 text-center text-gray-900">Our Core Values</Text>
                 <Text className="text-lg text-gray-500 text-center">
-                    The principles that guide every decision we make at Swastify.
+                    The principles that guide every decision we make at Swasthify.
                 </Text>
             </View>
 
@@ -318,7 +318,7 @@ const CTASection = () => (
                 Be Part of Our Mission
             </Text>
             <Text className="text-sm text-gray-500 text-center leading-6 mb-6 px-2">
-                Join us in our journey to make healthcare accessible to everyone. Experience the difference with Swastify.
+                Join us in our journey to make healthcare accessible to everyone. Experience the difference with Swasthify.
             </Text>
             <TouchableOpacity
                 activeOpacity={0.85}
