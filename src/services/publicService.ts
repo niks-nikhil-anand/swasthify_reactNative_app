@@ -57,6 +57,14 @@ export interface Campaign {
     lab?: any;
 }
 
+export interface ContactTicket {
+    name: string;
+    email: string;
+    phone: string;
+    subject: string;
+    message: string;
+}
+
 export const publicService = {
     getCampaigns: async (params: {
         source: 'doctor' | 'lab';
@@ -91,6 +99,16 @@ export const publicService = {
         } catch (error: any) {
             console.error(`Error fetching campaign ${id}:`, error);
             throw error.response?.data?.message || `Failed to fetch campaign details`;
+        }
+    },
+
+    createContactTicket: async (data: ContactTicket): Promise<any> => {
+        try {
+            const response = await apiClient.post('/api/tickets', data);
+            return response.data;
+        } catch (error: any) {
+            console.error('Error creating contact ticket:', error);
+            throw error.response?.data?.message || 'Failed to send inquiry. Please try again later.';
         }
     }
 };
