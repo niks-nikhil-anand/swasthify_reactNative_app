@@ -14,7 +14,7 @@ const LabSection = () => {
     useEffect(() => {
         const fetchLabs = async () => {
             try {
-                const data = await publicService.getCampaigns({ source: 'lab', limit: 3 });
+                const data = await publicService.getCampaigns({ source: 'lab', limit: 4 });
                 setCampaigns(data);
             } catch (error) {
                 console.log('Error in LabSection:', error);
@@ -78,13 +78,16 @@ const LabSection = () => {
 
             <FlatList
                 data={campaigns}
-                renderItem={({ item }) => <CampaignCard campaign={item} onPress={() => navigation.navigate('CampaignDetail', { id: item.id || item._id })} />}
+                renderItem={({ item }) => (
+                    <CampaignCard
+                        campaign={item}
+                        fullWidth
+                        onPress={() => navigation.navigate('CampaignDetail', { id: item.id || item._id })}
+                    />
+                )}
                 keyExtractor={(item, index) => (item._id || item.id || index).toString()}
-                horizontal
-                showsHorizontalScrollIndicator={false}
+                scrollEnabled={false}
                 contentContainerStyle={{ paddingHorizontal: 20 }}
-                snapToInterval={Dimensions.get('window').width * 0.85 + 16}
-                decelerationRate="fast"
             />
 
             <View className="mt-12 items-center">
