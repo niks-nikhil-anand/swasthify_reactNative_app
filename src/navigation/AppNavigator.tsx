@@ -13,6 +13,7 @@ import PlaceholderScreen from '../screens/PlaceholderScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 import CampaignDetailScreen from '../screens/CampaignDetailScreen';
 import LabsScreen from '../screens/LabsScreen';
+import AppointmentsScreen from '../screens/AppointmentsScreen';
 import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -143,12 +144,12 @@ const AppNavigator = () => {
                 }}
             />
             <Drawer.Screen
-                name="LabTests"
-                component={LabsScreen}
+                name="Appointments"
+                component={AppointmentsScreen}
                 options={{
-                    title: 'Lab Tests',
+                    title: 'Appointments',
                     drawerIcon: ({ color, size }) => (
-                        <Feather name="file-text" color={color} size={size} />
+                        <Feather name="calendar" color={color} size={size} />
                     ),
                 }}
             />
