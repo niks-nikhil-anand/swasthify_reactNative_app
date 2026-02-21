@@ -42,7 +42,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
             date.setDate(today.getDate() + i);
             const dayName = daysOfWeek[date.getDay()];
 
-            if (campaign.schedule?.days.includes(dayName)) {
+            const scheduleItem = Array.isArray(campaign.schedule) ? campaign.schedule[0] : null;
+            if (scheduleItem?.days?.includes(dayName)) {
                 dates.push({
                     full: date.toISOString().split('T')[0],
                     day: date.getDate(),
@@ -56,10 +57,11 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
 
     // Simple time slot generator (for demonstration)
     const timeSlots = useMemo(() => {
-        if (!campaign.schedule) return [];
+        const scheduleItem = Array.isArray(campaign.schedule) && campaign.schedule.length > 0 ? campaign.schedule[0] : null;
+        if (!scheduleItem) return [];
         const slots = [];
-        const [startHour] = campaign.schedule.startTime.split(':').map(Number);
-        const [endHour] = campaign.schedule.endTime.split(':').map(Number);
+        const [startHour] = scheduleItem.startTime.split(':').map(Number);
+        const [endHour] = scheduleItem.endTime.split(':').map(Number);
 
         for (let h = startHour; h < endHour; h++) {
             const hour = h > 12 ? h - 12 : h;
@@ -145,7 +147,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                         </View>
                         <Text style={styles.successTitle}>Booking Confirmed!</Text>
                         <Text style={styles.successSubtitle}>
-                            Your appointment with Dr. {campaign.doctor?.user.name} has been successfully booked.
+                            Your appointment with {campaign.source === 'lab' ? campaign.lab?.user?.name : `Dr. ${campaign.doctor?.user?.name}`} has been successfully booked.
                         </Text>
                         <View style={styles.successDetails}>
                             <View style={styles.successDetailRow}>
@@ -182,11 +184,15 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                         {/* Doctor Info Mini */}
                         <View style={styles.doctorInfoShort}>
                             <View style={styles.doctorAvatar}>
-                                <Feather name="user" size={24} color={BRAND_GREEN} />
+                                <Feather name={campaign.source === 'lab' ? "activity" : "user"} size={24} color={BRAND_GREEN} />
                             </View>
                             <View>
-                                <Text style={styles.drName}>Dr. {campaign.doctor?.user.name}</Text>
-                                <Text style={styles.drSpec}>{campaign.doctor?.specializations.map(s => s.name).join(', ')}</Text>
+                                <Text style={styles.drName}>{campaign.source === 'lab' ? campaign.lab?.user?.name : `Dr. ${campaign.doctor?.user?.name}`}</Text>
+                                <Text style={styles.drSpec}>
+                                    {campaign.source === 'lab'
+                                        ? 'Diagnostic Center'
+                                        : campaign.doctor?.specializations?.map(s => s.name).join(', ') || 'Specialist'}
+                                </Text>
                             </View>
                         </View>
 
