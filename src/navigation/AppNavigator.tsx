@@ -12,6 +12,7 @@ import FAQScreen from '../screens/FAQScreen';
 import PlaceholderScreen from '../screens/PlaceholderScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 import CampaignDetailScreen from '../screens/CampaignDetailScreen';
+import LabsScreen from '../screens/LabsScreen';
 import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -133,7 +134,7 @@ const AppNavigator = () => {
             />
             <Drawer.Screen
                 name="Labs"
-                component={PlaceholderScreen}
+                component={LabsScreen}
                 options={{
                     title: 'Labs',
                     drawerIcon: ({ color, size }) => (
@@ -143,7 +144,7 @@ const AppNavigator = () => {
             />
             <Drawer.Screen
                 name="LabTests"
-                component={PlaceholderScreen}
+                component={LabsScreen}
                 options={{
                     title: 'Lab Tests',
                     drawerIcon: ({ color, size }) => (
