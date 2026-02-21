@@ -59,10 +59,10 @@ export function AuthWrapper({
                     <View className="bg-white px-6 py-10 rounded-3xl shadow-lg border border-gray-100">
                         {/* Logo and Header */}
                         <View className="items-center mb-8">
-                            <View className="h-16 w-16 items-center justify-center mb-4 bg-gray-50 rounded-2xl">
+                            <View className="h-24 w-24 items-center justify-center mb-4 bg-gray-50 rounded-2xl">
                                 <Image
                                     source={require('../../assets/logo.png')}
-                                    className="h-12 w-12"
+                                    className="h-20 w-20"
                                     resizeMode="contain"
                                 />
                             </View>
