@@ -142,7 +142,7 @@ const CampaignDetailScreen = () => {
                 </View>
 
                 {/* Doctor Section - Enhanced */}
-                {campaign.doctor && (
+                {campaign.source === 'doctor' && campaign.doctor && (
                     <View className="px-6 mb-8">
                         <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">About the specialist</Text>
                         <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
@@ -164,9 +164,9 @@ const CampaignDetailScreen = () => {
                                     </View>
                                 </View>
                                 <View className="flex-1 ml-6">
-                                    <Text className="text-2xl font-black text-zinc-900 dark:text-white">Dr. {campaign.doctor.user.name}</Text>
+                                    <Text className="text-2xl font-black text-zinc-900 dark:text-white">Dr. {campaign.doctor?.user?.name || 'Specialist'}</Text>
                                     <Text className="text-xs font-black uppercase text-emerald-600 tracking-wider mt-1">
-                                        {campaign.doctor.specializations.map(s => s.name).join(", ")}
+                                        {campaign.doctor?.specializations?.map(s => s.name).join(", ") || 'General Practice'}
                                     </Text>
                                     <View className="flex-row items-center mt-3 bg-emerald-50 dark:bg-emerald-900/20 self-start px-3 py-1.5 rounded-xl border border-emerald-500/10">
                                         <Feather name="award" size={12} color="#10B981" className="mr-2" />
@@ -200,6 +200,72 @@ const CampaignDetailScreen = () => {
                     </View>
                 )}
 
+                {/* Lab Section */}
+                {campaign.source === 'lab' && campaign.lab && (
+                    <View className="px-6 mb-8">
+                        <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Laboratory details</Text>
+                        <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
+                            <View className="flex-row items-center mb-8">
+                                <View className="relative">
+                                    <View className="w-24 h-24 rounded-[2rem] bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border-2 border-white dark:border-zinc-800 shadow-2xl">
+                                        {campaign.image || campaign.lab.profilePhoto ? (
+                                            <Image
+                                                source={{ uri: campaign.image || campaign.lab.profilePhoto }}
+                                                className="w-full h-full"
+                                                resizeMode="cover"
+                                            />
+                                        ) : (
+                                            <Feather name="activity" size={32} color="#10B981" />
+                                        )}
+                                    </View>
+                                    <View className="absolute -bottom-1 -right-1 bg-emerald-500 rounded-full p-2 border-4 border-white dark:border-zinc-900 shadow-sm">
+                                        <Feather name="flask-conical" size={14} color="white" />
+                                    </View>
+                                </View>
+                                <View className="flex-1 ml-6">
+                                    <Text className="text-2xl font-black text-zinc-900 dark:text-white">{campaign.lab?.user?.name || 'Diagnostic Center'}</Text>
+                                    <Text className="text-xs font-black uppercase text-emerald-600 tracking-wider mt-1">Certified Diagnostic Center</Text>
+                                    <View className="flex-row items-center mt-3 bg-emerald-50 dark:bg-emerald-900/20 self-start px-3 py-1.5 rounded-xl border border-emerald-500/10">
+                                        <Feather name="clock" size={12} color="#10B981" className="mr-2" />
+                                        <Text className="text-[10px] font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-widest">
+                                            Report in {campaign.reportTime || "24-48 Hours"}
+                                        </Text>
+                                    </View>
+                                    {campaign.isFreeHomeSampleCollection && (
+                                        <View className="flex-row items-center mt-2 bg-blue-50 dark:bg-blue-900/20 self-start px-3 py-1.5 rounded-xl border border-blue-500/10">
+                                            <Feather name="home" size={12} color="#3B82F6" className="mr-2" />
+                                            <Text className="text-[10px] font-black text-blue-700 dark:text-blue-400 uppercase tracking-widest">
+                                                Free Home Sample Collection
+                                            </Text>
+                                        </View>
+                                    )}
+                                </View>
+                            </View>
+
+                            <View className="space-y-6">
+                                {campaign.testsIncluded && campaign.testsIncluded.length > 0 && (
+                                    <View className="mb-6">
+                                        <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3">Tests Included ({campaign.testsIncluded.length})</Text>
+                                        <View className="flex-row flex-wrap gap-2">
+                                            {campaign.testsIncluded.map((test, index) => (
+                                                <View key={index} className="bg-zinc-50 dark:bg-zinc-800 px-3 py-1.5 rounded-lg border border-zinc-100 dark:border-zinc-700">
+                                                    <Text className="text-xs font-bold text-zinc-700 dark:text-zinc-300">{test}</Text>
+                                                </View>
+                                            ))}
+                                        </View>
+                                    </View>
+                                )}
+                                <View>
+                                    <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-3">About this Lab</Text>
+                                    <Text className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-medium">
+                                        {campaign.lab.description || "A state-of-the-art diagnostic facility committed to accurate results and timely reporting for all your healthcare needs."}
+                                    </Text>
+                                </View>
+                            </View>
+                        </View>
+                    </View>
+                )}
+
                 {/* Schedule & Timing Section (Now Above Venue) */}
                 <View className="px-6 mb-8">
                     <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Service schedule</Text>
@@ -208,7 +274,9 @@ const CampaignDetailScreen = () => {
                             <View>
                                 <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Timing</Text>
                                 <Text className="text-2xl font-black text-zinc-900 dark:text-white">
-                                    {campaign.schedule?.startTime} - {campaign.schedule?.endTime}
+                                    {Array.isArray(campaign.schedule) && campaign.schedule.length > 0
+                                        ? `${campaign.schedule[0].startTime} - ${campaign.schedule[0].endTime}`
+                                        : "Flexible"}
                                 </Text>
                             </View>
                             <View className="bg-emerald-50 dark:bg-emerald-900/30 px-4 py-2 rounded-xl">
@@ -223,7 +291,8 @@ const CampaignDetailScreen = () => {
 
                         <View className="flex-row flex-wrap gap-2">
                             {['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'].map((day) => {
-                                const isActive = campaign.schedule?.days.includes(day);
+                                const scheduleItem = Array.isArray(campaign.schedule) ? campaign.schedule[0] : null;
+                                const isActive = scheduleItem?.days?.includes(day);
                                 return (
                                     <View
                                         key={day}
@@ -253,7 +322,7 @@ const CampaignDetailScreen = () => {
                             <View className="flex-col">
                                 <View className="mb-8">
                                     <Text className="text-xl font-black text-zinc-900 dark:text-white mb-2">
-                                        {campaign.doctor?.clinicName || campaign.doctor?.hospitalName || "Medical Center"}
+                                        {campaign.source === 'lab' ? (campaign.lab?.user?.name || 'Diagnostic Center') : (campaign.doctor?.clinicName || campaign.doctor?.hospitalName || "Medical Center")}
                                     </Text>
                                     <Text className="text-sm font-medium text-zinc-500 leading-relaxed mb-1">
                                         {campaign.location?.address}
