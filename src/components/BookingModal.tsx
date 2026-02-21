@@ -37,13 +37,16 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
         const today = new Date();
         const daysOfWeek = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
 
+        const scheduleItem = Array.isArray(campaign.schedule) ? campaign.schedule[0] : null;
+        const scheduledDays = scheduleItem?.days;
+        const isFlexible = !scheduledDays || scheduledDays.length === 0;
+
         for (let i = 0; i < 14 && dates.length < 7; i++) {
             const date = new Date();
             date.setDate(today.getDate() + i);
             const dayName = daysOfWeek[date.getDay()];
 
-            const scheduleItem = Array.isArray(campaign.schedule) ? campaign.schedule[0] : null;
-            if (scheduleItem?.days?.includes(dayName)) {
+            if (isFlexible || scheduledDays!.includes(dayName)) {
                 dates.push({
                     full: date.toISOString().split('T')[0],
                     day: date.getDate(),
@@ -80,16 +83,26 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
         try {
             // Step 1: Reserve
             setLoadingStep('reserving');
+            const sourceType = (campaign.source ?? (campaign.lab ? 'lab' : 'doctor')).toUpperCase() as 'DOCTOR' | 'LAB';
             const appointment = await appointmentService.reserveAppointment({
-                type: campaign.source.toUpperCase() as 'DOCTOR' | 'LAB',
+                type: sourceType,
                 organizerId: campaign.doctor?.id || campaign.lab?.id || campaign.doctorId || campaign.id!,
+                campaignId: campaign.id!,
                 date: selectedDate,
                 timeSlot: selectedSlot,
             });
 
             // Step 2: Create Order
             setLoadingStep('ordering');
-            const apptId = appointment.id || appointment._id || (appointment.data && (appointment.data.id || appointment.data._id));
+            console.log('[BookingModal] appointment response:', JSON.stringify(appointment));
+            const apptId =
+                appointment?.id ||
+                appointment?._id ||
+                appointment?.appointmentId ||
+                appointment?.data?.id ||
+                appointment?.data?._id ||
+                appointment?.appointment?.id ||
+                appointment?.booking?.id;
 
             if (!apptId) {
                 console.error('No appointment ID found in response:', appointment);
@@ -98,22 +111,28 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
 
             const orderData = await appointmentService.createRazorpayOrder(apptId);
 
+            console.log('[BookingModal] orderData:', JSON.stringify(orderData));
+
             // Step 3: Razorpay Payment
             const options = {
-                description: `Appointment with Dr. ${campaign.doctor?.user.name || 'Specialist'}`,
-                image: 'https://www.swasthify.in/logo.png', // Fallback logo
-                currency: orderData.currency,
+                description: `Appointment with ${campaign.doctor?.user?.name || campaign.lab?.user?.name || 'Specialist'}`,
+                image: 'https://www.swasthify.in/logo.png',
+                currency: orderData.currency || 'INR',
                 key: orderData.key,
-                amount: orderData.amount,
+                // Razorpay RN SDK requires amount as a string
+                amount: String(orderData.amount),
                 name: 'Swasthify',
-                order_id: orderData.orderId,
+                // API returns 'orderId' (camelCase) — handle both
+                order_id: orderData.orderId || orderData.order_id,
                 prefill: {
-                    email: '', // Could be filled from auth context
+                    email: '',
                     contact: '',
                     name: '',
                 },
-                theme: { color: BRAND_GREEN }
+                theme: { color: BRAND_GREEN },
             };
+
+            console.log('[BookingModal] Razorpay options:', JSON.stringify(options));
 
             RazorpayCheckout.open(options).then(async (data: any) => {
                 // Step 4: Verify
@@ -128,7 +147,30 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                 setLoadingStep('idle');
             }).catch((error: any) => {
                 setLoadingStep('idle');
-                Alert.alert('Payment Failed', error.description || 'Action cancelled');
+                console.error('[Razorpay] error:', JSON.stringify(error));
+
+                // User cancelled — silent dismiss
+                if (
+                    error?.code === 'PAYMENT_CANCELLED' ||
+                    error?.description === 'Payment Cancelled by user'
+                ) {
+                    return;
+                }
+
+                // Empty error {} — typically live key on emulator, or Razorpay SDK issue
+                const hasNoDetails = !error?.code && !error?.description && !error?.reason;
+                if (hasNoDetails) {
+                    Alert.alert(
+                        'Payment Unavailable',
+                        'Unable to open payment gateway. If you\'re testing on an emulator, please use a Razorpay test key (rzp_test_...). On a real device with a live key, contact support.'
+                    );
+                    return;
+                }
+
+                Alert.alert(
+                    'Payment Failed',
+                    error?.description || error?.reason || error?.error?.description || 'Something went wrong with payment.'
+                );
             });
 
         } catch (error: any) {
@@ -184,12 +226,19 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                         {/* Doctor Info Mini */}
                         <View style={styles.doctorInfoShort}>
                             <View style={styles.doctorAvatar}>
-                                <Feather name={campaign.source === 'lab' ? "activity" : "user"} size={24} color={BRAND_GREEN} />
+                                <Feather name={(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab' ? "activity" : "user"} size={24} color={BRAND_GREEN} />
                             </View>
                             <View>
-                                <Text style={styles.drName}>{campaign.source === 'lab' ? campaign.lab?.user?.name : `Dr. ${campaign.doctor?.user?.name}`}</Text>
+                                <Text style={styles.drName}>
+                                    {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab'
+                                        ? campaign.lab?.user?.name
+                                        : (() => {
+                                            const n = campaign.doctor?.user?.name || 'Specialist';
+                                            return n.toLowerCase().startsWith('dr') ? n : `Dr. ${n}`;
+                                        })()}
+                                </Text>
                                 <Text style={styles.drSpec}>
-                                    {campaign.source === 'lab'
+                                    {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab'
                                         ? 'Diagnostic Center'
                                         : campaign.doctor?.specializations?.map(s => s.name).join(', ') || 'Specialist'}
                                 </Text>

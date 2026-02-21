@@ -72,6 +72,7 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
                     <Text className="text-sm font-bold text-gray-700 mb-2">Full Name</Text>
                     <TextInput
                         placeholder="John Doe"
+                        placeholderTextColor="#9CA3AF"
                         value={name}
                         onChangeText={setName}
                         className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900"
@@ -84,6 +85,7 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
                     <Text className="text-sm font-bold text-gray-700 mb-2">Email</Text>
                     <TextInput
                         placeholder="name@example.com"
+                        placeholderTextColor="#9CA3AF"
                         value={email}
                         onChangeText={setEmail}
                         className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900"
@@ -99,6 +101,7 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
                     <View className="relative">
                         <TextInput
                             placeholder="••••••••"
+                            placeholderTextColor="#9CA3AF"
                             value={password}
                             onChangeText={setPassword}
                             secureTextEntry={!showPassword}
@@ -120,6 +123,7 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
                     <Text className="text-sm font-bold text-gray-700 mb-2">Confirm Password</Text>
                     <TextInput
                         placeholder="••••••••"
+                        placeholderTextColor="#9CA3AF"
                         value={confirmPassword}
                         onChangeText={setConfirmPassword}
                         secureTextEntry={true}

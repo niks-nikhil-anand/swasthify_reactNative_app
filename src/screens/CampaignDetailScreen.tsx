@@ -107,7 +107,14 @@ const CampaignDetailScreen = () => {
                 <TouchableOpacity onPress={() => navigation.goBack()} className="p-2 -ml-2">
                     <Feather name="chevron-left" size={24} color="#10B981" />
                 </TouchableOpacity>
-                <Text className="text-sm font-black uppercase tracking-[0.2em] text-zinc-900 dark:text-white">Service Details</Text>
+                <Text className="text-sm font-black uppercase tracking-[0.2em] text-zinc-900 dark:text-white" numberOfLines={1}>
+                    {(() => {
+                        const src = campaign.source ?? (campaign.lab ? 'lab' : 'doctor');
+                        if (src === 'lab') return campaign.lab?.user?.name || 'Service Details';
+                        const name = campaign.doctor?.user?.name || '';
+                        return name ? (name.toLowerCase().startsWith('dr') ? name : `Dr. ${name}`) : 'Service Details';
+                    })()}
+                </Text>
                 <TouchableOpacity className="p-2 -mr-2">
                     <Feather name="share-2" size={20} color="#10B981" />
                 </TouchableOpacity>
@@ -142,7 +149,7 @@ const CampaignDetailScreen = () => {
                 </View>
 
                 {/* Doctor Section - Enhanced */}
-                {campaign.source === 'doctor' && campaign.doctor && (
+                {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'doctor' && campaign.doctor && (
                     <View className="px-6 mb-8">
                         <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">About the specialist</Text>
                         <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
@@ -164,7 +171,12 @@ const CampaignDetailScreen = () => {
                                     </View>
                                 </View>
                                 <View className="flex-1 ml-6">
-                                    <Text className="text-2xl font-black text-zinc-900 dark:text-white">Dr. {campaign.doctor?.user?.name || 'Specialist'}</Text>
+                                    <Text className="text-2xl font-black text-zinc-900 dark:text-white">
+                                        {(() => {
+                                            const name = campaign.doctor?.user?.name || 'Specialist';
+                                            return name.toLowerCase().startsWith('dr') ? name : `Dr. ${name}`;
+                                        })()}
+                                    </Text>
                                     <Text className="text-xs font-black uppercase text-emerald-600 tracking-wider mt-1">
                                         {campaign.doctor?.specializations?.map(s => s.name).join(", ") || 'General Practice'}
                                     </Text>
@@ -201,7 +213,7 @@ const CampaignDetailScreen = () => {
                 )}
 
                 {/* Lab Section */}
-                {campaign.source === 'lab' && campaign.lab && (
+                {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab' && campaign.lab && (
                     <View className="px-6 mb-8">
                         <Text className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 mb-6">Laboratory details</Text>
                         <View className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] border border-zinc-100 dark:border-zinc-800 shadow-sm">
