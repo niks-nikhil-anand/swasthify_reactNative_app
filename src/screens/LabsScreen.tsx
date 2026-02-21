@@ -236,6 +236,7 @@ const LabsScreen = () => {
                     <View style={styles.cardWrapper}>
                         <CampaignCard
                             campaign={item}
+                            fullWidth
                             onPress={() => navigation.navigate('CampaignDetail', { id: item.id || item._id })}
                         />
                     </View>
@@ -335,8 +336,7 @@ const styles = StyleSheet.create({
         color: '#111827',
     },
     cardWrapper: {
-        alignItems: 'center',
-        marginBottom: 16,
+        paddingHorizontal: 20,
     },
     footerLoader: {
         paddingVertical: 20,
