@@ -14,7 +14,7 @@ const DoctorSection = () => {
     useEffect(() => {
         const fetchDoctors = async () => {
             try {
-                const data = await publicService.getCampaigns({ source: 'doctor', limit: 3 });
+                const data = await publicService.getCampaigns({ source: 'doctor', limit: 4 });
                 setCampaigns(data);
             } catch (error) {
                 console.log('Error in DoctorSection:', error);
@@ -77,13 +77,16 @@ const DoctorSection = () => {
 
             <FlatList
                 data={campaigns}
-                renderItem={({ item }) => <CampaignCard campaign={item} onPress={() => navigation.navigate('CampaignDetail', { id: item.id || item._id })} />}
+                renderItem={({ item }) => (
+                    <CampaignCard
+                        campaign={item}
+                        fullWidth
+                        onPress={() => navigation.navigate('CampaignDetail', { id: item.id || item._id })}
+                    />
+                )}
                 keyExtractor={(item, index) => (item._id || item.id || index).toString()}
-                horizontal
-                showsHorizontalScrollIndicator={false}
+                scrollEnabled={false}
                 contentContainerStyle={{ paddingHorizontal: 20 }}
-                snapToInterval={Dimensions.get('window').width * 0.85 + 16}
-                decelerationRate="fast"
             />
 
             <View className="mt-12 items-center">
