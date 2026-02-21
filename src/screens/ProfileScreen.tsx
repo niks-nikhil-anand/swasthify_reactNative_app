@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     View,
     Text,
@@ -8,27 +8,87 @@ import {
     Image,
     TouchableOpacity,
     StatusBar,
+    Modal,
+    TextInput,
+    KeyboardAvoidingView,
+    Platform,
+    Alert,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useAuth } from '../context/AuthContext';
 
 const ProfileScreen = () => {
     const { user, logout } = useAuth();
+    const [phoneModalVisible, setPhoneModalVisible] = useState(false);
+    const [emailModalVisible, setEmailModalVisible] = useState(false);
+    const [nameModalVisible, setNameModalVisible] = useState(false);
+    const [passwordModalVisible, setPasswordModalVisible] = useState(false);
+
+    // Form states
+    const [newPhone, setNewPhone] = useState(user?.phone || '');
+    const [newName, setNewName] = useState(user?.name || '');
+    const [newEmail, setNewEmail] = useState(user?.email || '');
+    const [passwords, setPasswords] = useState({
+        current: '',
+        new: '',
+        confirm: ''
+    });
 
     if (!user) return null;
 
-    const ProfileItem = ({ icon, title, value, color = "#4B5563" }: { icon: string, title: string, value: string, color?: string }) => (
-        <View style={styles.itemContainer}>
-            <View style={[styles.iconWrapper, { backgroundColor: color + '10' }]}>
-                <Feather name={icon} size={20} color={color} />
+    const handleUpdatePhone = () => {
+        // Mock update logic
+        Alert.alert("Success", "Phone number updated successfully (Mock)");
+        setPhoneModalVisible(false);
+    };
+
+    const handleUpdateName = () => {
+        // Mock update logic
+        Alert.alert("Success", "Name updated successfully (Mock)");
+        setNameModalVisible(false);
+    };
+
+    const handleUpdateEmail = () => {
+        // Mock update logic
+        Alert.alert("Success", "Email address updated successfully (Mock)");
+        setEmailModalVisible(false);
+    };
+
+    const handleChangePassword = () => {
+        if (passwords.new !== passwords.confirm) {
+            Alert.alert("Error", "Passwords do not match");
+            return;
+        }
+        // Mock update logic
+        Alert.alert("Success", "Password changed successfully (Mock)");
+        setPasswordModalVisible(false);
+        setPasswords({ current: '', new: '', confirm: '' });
+    };
+
+    const ProfileItem = ({ icon, title, value, color = "#4B5563", onPress }: { icon: string, title: string, value: string, color?: string, onPress?: () => void }) => {
+        const Content = (
+            <View style={styles.itemContainer}>
+                <View style={[styles.iconWrapper, { backgroundColor: color + '10' }]}>
+                    <Feather name={icon} size={20} color={color} />
+                </View>
+                <View style={styles.itemContent}>
+                    <Text style={styles.itemTitle}>{title}</Text>
+                    <Text style={styles.itemValue}>{value}</Text>
+                </View>
+                <Feather name="chevron-right" size={20} color="#CBD5E1" />
             </View>
-            <View style={styles.itemContent}>
-                <Text style={styles.itemTitle}>{title}</Text>
-                <Text style={styles.itemValue}>{value}</Text>
-            </View>
-            <Feather name="chevron-right" size={20} color="#CBD5E1" />
-        </View>
-    );
+        );
+
+        if (onPress) {
+            return (
+                <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+                    {Content}
+                </TouchableOpacity>
+            );
+        }
+
+        return Content;
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -46,7 +106,7 @@ const ProfileScreen = () => {
                         </TouchableOpacity>
                     </View>
                     <Text style={styles.userName}>{user.name}</Text>
-                    <Text style={styles.userRole}>Patient Account</Text>
+                    <Text style={styles.userRole}>Account</Text>
                 </View>
 
                 {/* Profile Information */}
@@ -58,6 +118,7 @@ const ProfileScreen = () => {
                             title="Full Name"
                             value={user.name}
                             color="#0DA96E"
+                            onPress={() => setNameModalVisible(true)}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
@@ -65,6 +126,7 @@ const ProfileScreen = () => {
                             title="Email Address"
                             value={user.email}
                             color="#3B82F6"
+                            onPress={() => setEmailModalVisible(true)}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
@@ -72,6 +134,7 @@ const ProfileScreen = () => {
                             title="Phone Number"
                             value={user.phone || "Not provided"}
                             color="#F59E0B"
+                            onPress={() => setPhoneModalVisible(true)}
                         />
                     </View>
                 </View>
@@ -85,6 +148,7 @@ const ProfileScreen = () => {
                             title="Change Password"
                             value="Update your security"
                             color="#6366F1"
+                            onPress={() => setPasswordModalVisible(true)}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
@@ -109,6 +173,188 @@ const ProfileScreen = () => {
                     <Text style={styles.versionText}>Swastify v1.0.0</Text>
                 </View>
             </ScrollView>
+
+            {/* Phone Update Modal */}
+            <Modal
+                visible={phoneModalVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setPhoneModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        style={styles.modalContent}
+                    >
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Update Phone Number</Text>
+                            <TouchableOpacity onPress={() => setPhoneModalVisible(false)}>
+                                <Feather name="x" size={24} color="#64748B" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>Mobile Number</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={newPhone}
+                                onChangeText={setNewPhone}
+                                keyboardType="phone-pad"
+                                placeholder="Enter mobile number"
+                            />
+                        </View>
+
+                        <TouchableOpacity
+                            style={styles.modalButton}
+                            onPress={handleUpdatePhone}
+                        >
+                            <Text style={styles.modalButtonText}>Update Number</Text>
+                        </TouchableOpacity>
+                    </KeyboardAvoidingView>
+                </View>
+            </Modal>
+
+            {/* Password Change Modal */}
+            <Modal
+                visible={passwordModalVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setPasswordModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        style={styles.modalContent}
+                    >
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Change Password</Text>
+                            <TouchableOpacity onPress={() => setPasswordModalVisible(false)}>
+                                <Feather name="x" size={24} color="#64748B" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>Current Password</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={passwords.current}
+                                onChangeText={(text) => setPasswords({ ...passwords, current: text })}
+                                secureTextEntry
+                                placeholder="Enter current password"
+                            />
+                        </View>
+
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>New Password</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={passwords.new}
+                                onChangeText={(text) => setPasswords({ ...passwords, new: text })}
+                                secureTextEntry
+                                placeholder="Enter new password"
+                            />
+                        </View>
+
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>Confirm New Password</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={passwords.confirm}
+                                onChangeText={(text) => setPasswords({ ...passwords, confirm: text })}
+                                secureTextEntry
+                                placeholder="Confirm new password"
+                            />
+                        </View>
+
+                        <TouchableOpacity
+                            style={[styles.modalButton, { backgroundColor: '#6366F1' }]}
+                            onPress={handleChangePassword}
+                        >
+                            <Text style={styles.modalButtonText}>Change Password</Text>
+                        </TouchableOpacity>
+                    </KeyboardAvoidingView>
+                </View>
+            </Modal>
+
+            {/* Name Update Modal */}
+            <Modal
+                visible={nameModalVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setNameModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        style={styles.modalContent}
+                    >
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Update Full Name</Text>
+                            <TouchableOpacity onPress={() => setNameModalVisible(false)}>
+                                <Feather name="x" size={24} color="#64748B" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>Full Name</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={newName}
+                                onChangeText={setNewName}
+                                placeholder="Enter full name"
+                            />
+                        </View>
+
+                        <TouchableOpacity
+                            style={[styles.modalButton, { backgroundColor: '#0DA96E' }]}
+                            onPress={handleUpdateName}
+                        >
+                            <Text style={styles.modalButtonText}>Update Name</Text>
+                        </TouchableOpacity>
+                    </KeyboardAvoidingView>
+                </View>
+            </Modal>
+
+            {/* Email Update Modal */}
+            <Modal
+                visible={emailModalVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setEmailModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        style={styles.modalContent}
+                    >
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Update Email Address</Text>
+                            <TouchableOpacity onPress={() => setEmailModalVisible(false)}>
+                                <Feather name="x" size={24} color="#64748B" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.inputGroup}>
+                            <Text style={styles.inputLabel}>Email Address</Text>
+                            <TextInput
+                                style={styles.input}
+                                value={newEmail}
+                                onChangeText={setNewEmail}
+                                keyboardType="email-address"
+                                placeholder="Enter new email address"
+                                autoCapitalize="none"
+                            />
+                        </View>
+
+                        <TouchableOpacity
+                            style={[styles.modalButton, { backgroundColor: '#3B82F6' }]}
+                            onPress={handleUpdateEmail}
+                        >
+                            <Text style={styles.modalButtonText}>Update Email</Text>
+                        </TouchableOpacity>
+                    </KeyboardAvoidingView>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -248,6 +494,59 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#94A3B8',
         fontWeight: '500',
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'flex-end',
+    },
+    modalContent: {
+        backgroundColor: '#FFFFFF',
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        padding: 24,
+        paddingBottom: Platform.OS === 'ios' ? 40 : 24,
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 24,
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: '800',
+        color: '#1E293B',
+    },
+    inputGroup: {
+        marginBottom: 20,
+    },
+    inputLabel: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#64748B',
+        marginBottom: 8,
+    },
+    input: {
+        backgroundColor: '#F8FAFC',
+        borderWidth: 1,
+        borderColor: '#E2E8F0',
+        borderRadius: 12,
+        padding: 12,
+        fontSize: 16,
+        color: '#1E293B',
+    },
+    modalButton: {
+        backgroundColor: BRAND_GREEN,
+        borderRadius: 12,
+        paddingVertical: 16,
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    modalButtonText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '700',
     },
 });
 
