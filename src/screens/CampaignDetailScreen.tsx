@@ -149,9 +149,9 @@ const CampaignDetailScreen = () => {
                             <View className="flex-row items-center mb-8">
                                 <View className="relative">
                                     <View className="w-24 h-24 rounded-[2rem] bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border-2 border-white dark:border-zinc-800 shadow-2xl">
-                                        {campaign.doctor.profilePhoto ? (
+                                        {campaign.image || campaign.doctor.profilePhoto ? (
                                             <Image
-                                                source={{ uri: campaign.doctor.profilePhoto }}
+                                                source={{ uri: campaign.image || campaign.doctor.profilePhoto }}
                                                 className="w-full h-full"
                                                 resizeMode="cover"
                                             />
