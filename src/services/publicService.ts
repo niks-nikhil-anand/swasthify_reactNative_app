@@ -27,14 +27,18 @@ export interface Campaign {
         days: string[];
         startTime: string;
         endTime: string;
-    }>;
+    }> | {
+        days: string[];
+        startTime: string;
+        endTime: string;
+    };
     dailyLimit?: number;
     hourlyLimit?: number;
     totalCapacity?: number;
     requiredDetails?: string[];
     isVerified: boolean;
     image?: string;
-    source: 'doctor' | 'lab';
+    source?: 'doctor' | 'lab';
     testsIncluded?: string[];
     reportTime?: string;
     healthConcern?: string[];
@@ -108,8 +112,19 @@ export const publicService = {
     getCampaignById: async (id: string): Promise<Campaign> => {
         try {
             const response = await apiClient.get(`/api/public/campaigns/${id}`);
-            const result = response.data;
-            return result.data || result;
+            const raw = response.data.data || response.data;
+
+            // Normalize schedule: API may return a plain object instead of an array
+            if (raw.schedule && !Array.isArray(raw.schedule)) {
+                raw.schedule = [raw.schedule];
+            }
+
+            // Derive source if missing
+            if (!raw.source) {
+                raw.source = raw.lab ? 'lab' : 'doctor';
+            }
+
+            return raw as Campaign;
         } catch (error: any) {
             console.error(`Error fetching campaign ${id}:`, error);
             throw error.response?.data?.message || `Failed to fetch campaign details`;

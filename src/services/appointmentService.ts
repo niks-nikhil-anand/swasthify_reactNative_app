@@ -3,6 +3,7 @@ import apiClient from '../api/apiClient';
 export interface ReserveAppointmentPayload {
     type: 'DOCTOR' | 'LAB';
     organizerId: string;
+    campaignId: string;
     date: string;
     timeSlot: string;
 }
@@ -21,10 +22,13 @@ export const appointmentService = {
     reserveAppointment: async (payload: ReserveAppointmentPayload) => {
         try {
             const response = await apiClient.post('/api/appointments', payload);
-            // Handle both { data: { id: ... } } and { id: ... } structures
-            return response.data.data || response.data;
+            const raw = response.data;
+            console.log('[reserveAppointment] raw response:', JSON.stringify(raw));
+            // Handle various API response shapes:
+            // { data: { id } } | { appointment: { id } } | { result: { id } } | { id } directly
+            return raw.data || raw.appointment || raw.result || raw;
         } catch (error: any) {
-            console.error('Error reserving appointment:', error);
+            console.error('Error reserving appointment:', error?.response?.data || error);
             throw error.response?.data?.message || 'Failed to reserve appointment';
         }
     },
