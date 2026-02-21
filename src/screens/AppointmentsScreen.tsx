@@ -27,6 +27,9 @@ const AppointmentsScreen = () => {
     const [activeTab, setActiveTab] = useState<StatusTab>('Upcoming');
     const [sortBy, setSortBy] = useState<'newest' | 'oldest'>('newest');
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+    const [cancelTarget, setCancelTarget] = useState<Appointment | null>(null);
+    const [cancelReason, setCancelReason] = useState('');
+    const [cancelling, setCancelling] = useState(false);
 
     const fetchAppointments = async () => {
         try {
@@ -49,13 +52,27 @@ const AppointmentsScreen = () => {
         fetchAppointments();
     }, []);
 
-    const handleCancel = async (id: string) => {
+    const openCancelModal = (appointment: Appointment) => {
+        setCancelTarget(appointment);
+        setCancelReason('');
+    };
+
+    const closeCancelModal = () => {
+        setCancelTarget(null);
+        setCancelReason('');
+    };
+
+    const confirmCancel = async () => {
+        if (!cancelTarget) return;
+        setCancelling(true);
         try {
-            await appointmentService.cancelAppointment(id);
-            // Re-fetch to update state
+            await appointmentService.cancelAppointment(cancelTarget.id, cancelReason.trim() || undefined);
+            closeCancelModal();
             fetchAppointments();
         } catch (error) {
             console.error(error);
+        } finally {
+            setCancelling(false);
         }
     };
 
@@ -171,7 +188,7 @@ const AppointmentsScreen = () => {
                         <AppointmentCard
                             key={item.id}
                             appointment={item}
-                            onCancel={handleCancel}
+                            onCancel={() => openCancelModal(item)}
                             onViewDetails={setSelectedAppointment}
                         />
                     ))
@@ -246,6 +263,69 @@ const AppointmentsScreen = () => {
                                 </View>
                             </ScrollView>
                         )}
+                    </View>
+                </View>
+            </Modal>
+
+            {/* Cancel Confirmation Modal */}
+            <Modal
+                visible={!!cancelTarget}
+                animationType="fade"
+                transparent={true}
+                onRequestClose={closeCancelModal}
+            >
+                <View className="flex-1 justify-center items-center bg-black/60 px-6">
+                    <View className="bg-white dark:bg-zinc-900 rounded-3xl p-7 w-full shadow-2xl">
+                        {/* Icon */}
+                        <View className="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-full items-center justify-center self-center mb-5">
+                            <Feather name="x-circle" size={32} color="#EF4444" />
+                        </View>
+
+                        <Text className="text-xl font-black text-zinc-900 dark:text-white text-center mb-1">
+                            Cancel Appointment
+                        </Text>
+                        <Text className="text-sm text-zinc-500 text-center mb-6">
+                            {cancelTarget?.doctor}
+                        </Text>
+
+                        {/* Reason Input */}
+                        <View className="mb-6">
+                            <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-2">
+                                Reason (Optional)
+                            </Text>
+                            <TextInput
+                                className="bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl px-4 py-3 text-sm text-zinc-900 dark:text-white"
+                                placeholder="Tell us why you're cancelling..."
+                                placeholderTextColor="#9CA3AF"
+                                multiline
+                                numberOfLines={3}
+                                textAlignVertical="top"
+                                value={cancelReason}
+                                onChangeText={setCancelReason}
+                            />
+                        </View>
+
+                        {/* Action Buttons */}
+                        <View className="flex-row gap-x-3">
+                            <TouchableOpacity
+                                onPress={closeCancelModal}
+                                className="flex-1 h-14 bg-zinc-100 dark:bg-zinc-800 rounded-2xl items-center justify-center"
+                                disabled={cancelling}
+                            >
+                                <Text className="font-black text-zinc-700 dark:text-zinc-300">Keep It</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={confirmCancel}
+                                className="flex-1 h-14 bg-red-500 rounded-2xl items-center justify-center"
+                                disabled={cancelling}
+                            >
+                                {cancelling ? (
+                                    <ActivityIndicator color="white" size="small" />
+                                ) : (
+                                    <Text className="font-black text-white">Yes, Cancel</Text>
+                                )}
+                            </TouchableOpacity>
+                        </View>
                     </View>
                 </View>
             </Modal>

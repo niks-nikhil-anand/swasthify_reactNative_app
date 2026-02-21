@@ -73,10 +73,11 @@ export const appointmentService = {
     /**
      * Cancel an appointment
      */
-    cancelAppointment: async (appointmentId: string) => {
+    cancelAppointment: async (appointmentId: string, reason?: string) => {
         try {
             const response = await apiClient.post('/api/appointments/cancel', {
                 appointmentId,
+                ...(reason ? { reason } : {}),
             });
             return response.data;
         } catch (error: any) {
