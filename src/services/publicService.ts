@@ -23,11 +23,11 @@ export interface Campaign {
     };
     startDate?: string;
     endDate?: string;
-    schedule?: {
+    schedule?: Array<{
         days: string[];
         startTime: string;
         endTime: string;
-    };
+    }>;
     dailyLimit?: number;
     hourlyLimit?: number;
     totalCapacity?: number;
@@ -35,6 +35,11 @@ export interface Campaign {
     isVerified: boolean;
     image?: string;
     source: 'doctor' | 'lab';
+    testsIncluded?: string[];
+    reportTime?: string;
+    healthConcern?: string[];
+    testCategory?: string[];
+    isFreeHomeSampleCollection?: boolean;
     doctor?: {
         id: string;
         userId: string;
@@ -54,7 +59,16 @@ export interface Campaign {
             name: string;
         }>;
     };
-    lab?: any;
+    lab?: {
+        id: string;
+        description?: string;
+        profilePhoto?: string;
+        user: {
+            name: string;
+            email?: string;
+            phone?: string;
+        };
+    };
 }
 
 export interface ContactTicket {
