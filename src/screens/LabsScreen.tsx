@@ -104,60 +104,68 @@ const LabsScreen = () => {
     };
 
     const renderHeader = () => (
-        <View style={styles.headerContainer}>
-            <View style={styles.searchContainer}>
-                <View style={styles.searchInputWrapper}>
-                    <Feather name="search" size={20} color="#6B7280" />
-                    <TextInput
-                        style={styles.searchInput}
-                        placeholder="Search tests, labs..."
-                        placeholderTextColor="#9CA3AF"
-                        value={searchQuery}
-                        onChangeText={setSearchQuery}
-                        onSubmitEditing={handleSearchSubmit}
-                        returnKeyType="search"
-                    />
-                    {searchQuery.length > 0 && (
-                        <TouchableOpacity onPress={() => { setSearchQuery(''); fetchLabs(1, true); }}>
-                            <Feather name="x" size={18} color="#6B7280" />
-                        </TouchableOpacity>
-                    )}
-                </View>
-                <TouchableOpacity
-                    style={[styles.sortButton, sortBy !== 'featured' && styles.sortButtonActive]}
-                    onPress={() => setShowSortOptions(!showSortOptions)}
-                >
-                    <Feather name="sliders" size={20} color={sortBy !== 'featured' ? '#0DA96E' : '#374151'} />
-                </TouchableOpacity>
-            </View>
-
-            {showSortOptions && (
-                <View style={styles.sortOptionsCard}>
-                    <Text style={styles.sortTitle}>Sort By</Text>
-                    <View style={styles.sortOptionsGrid}>
-                        {SORT_OPTIONS.map((option) => (
-                            <TouchableOpacity
-                                key={option.value}
-                                style={[
-                                    styles.sortOption,
-                                    sortBy === option.value && styles.sortOptionSelected
-                                ]}
-                                onPress={() => {
-                                    setSortBy(option.value);
-                                    setShowSortOptions(false);
-                                }}
-                            >
-                                <Text style={[
-                                    styles.sortOptionText,
-                                    sortBy === option.value && styles.sortOptionTextSelected
-                                ]}>
-                                    {option.label}
-                                </Text>
+        <>
+            <View style={styles.headerContainer}>
+                <View style={styles.searchContainer}>
+                    <View style={styles.searchInputWrapper}>
+                        <Feather name="search" size={20} color="#6B7280" />
+                        <TextInput
+                            style={styles.searchInput}
+                            placeholder="Search tests, labs..."
+                            placeholderTextColor="#9CA3AF"
+                            value={searchQuery}
+                            onChangeText={setSearchQuery}
+                            onSubmitEditing={handleSearchSubmit}
+                            returnKeyType="search"
+                        />
+                        {searchQuery.length > 0 && (
+                            <TouchableOpacity onPress={() => { setSearchQuery(''); fetchLabs(1, true); }}>
+                                <Feather name="x" size={18} color="#6B7280" />
                             </TouchableOpacity>
-                        ))}
+                        )}
                     </View>
+                    <TouchableOpacity
+                        style={[styles.sortButton, sortBy !== 'featured' && styles.sortButtonActive]}
+                        onPress={() => setShowSortOptions(!showSortOptions)}
+                    >
+                        <Feather name="sliders" size={20} color={sortBy !== 'featured' ? '#0DA96E' : '#374151'} />
+                    </TouchableOpacity>
                 </View>
-            )}
+
+                {showSortOptions && (
+                    <View style={styles.sortOptionsCard}>
+                        <Text style={styles.sortTitle}>Sort By</Text>
+                        <View style={styles.sortOptionsGrid}>
+                            {SORT_OPTIONS.map((option) => (
+                                <TouchableOpacity
+                                    key={option.value}
+                                    style={[
+                                        styles.sortOption,
+                                        sortBy === option.value && styles.sortOptionSelected
+                                    ]}
+                                    onPress={() => {
+                                        setSortBy(option.value);
+                                        setShowSortOptions(false);
+                                    }}
+                                >
+                                    <Text style={[
+                                        styles.sortOptionText,
+                                        sortBy === option.value && styles.sortOptionTextSelected
+                                    ]}>
+                                        {option.label}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+                )}
+
+                <View style={styles.resultsHeader}>
+                    <Text style={styles.resultsCount}>
+                        {campaigns.length} {campaigns.length === 1 ? 'Lab Test' : 'Lab Tests'} found
+                    </Text>
+                </View>
+            </View>
 
             <ScrollView
                 horizontal
@@ -182,13 +190,7 @@ const LabsScreen = () => {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
-
-            <View style={styles.resultsHeader}>
-                <Text style={styles.resultsCount}>
-                    {campaigns.length} {campaigns.length === 1 ? 'Lab Test' : 'Lab Tests'} found
-                </Text>
-            </View>
-        </View>
+        </>
     );
 
     const renderFooter = () => {
@@ -303,7 +305,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#D1F2E2',
     },
     categoryList: {
-        paddingBottom: 16,
+        paddingHorizontal: 20,
+        paddingBottom: 24,
     },
     catChip: {
         paddingHorizontal: 20,
