@@ -5,6 +5,8 @@ import Feather from 'react-native-vector-icons/Feather';
 import { MapPin, Navigation, ExternalLink, Calendar, Clock, Award, Sparkles, ChevronLeft, Share2, Info, Shield, CheckCircle } from 'lucide-react-native';
 import { publicService, Campaign } from '../services/publicService';
 import CampaignDetailSkeleton from '../components/CampaignDetailSkeleton';
+import BookingModal from '../components/BookingModal';
+
 
 const { width } = Dimensions.get('window');
 
@@ -16,6 +18,8 @@ const CampaignDetailScreen = () => {
     const [campaign, setCampaign] = useState<Campaign | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [bookingVisible, setBookingVisible] = useState(false);
+
 
     useEffect(() => {
         const fetchDetail = async () => {
@@ -330,12 +334,23 @@ const CampaignDetailScreen = () => {
                         </View>
                         <Text className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Incl. of all taxes</Text>
                     </View>
-                    <TouchableOpacity className="bg-zinc-900 dark:bg-emerald-600 h-16 px-10 rounded-[2rem] flex-row items-center justify-center shadow-xl shadow-zinc-900/20 dark:shadow-emerald-900/40">
+                    <TouchableOpacity
+                        className="bg-zinc-900 dark:bg-emerald-600 h-16 px-10 rounded-[2rem] flex-row items-center justify-center shadow-xl shadow-zinc-900/20 dark:shadow-emerald-900/40"
+                        onPress={() => setBookingVisible(true)}
+                    >
                         <Text className="text-white font-black uppercase tracking-widest text-sm mr-2">Book Now</Text>
                         <Feather name="arrow-right" size={18} color="white" />
                     </TouchableOpacity>
                 </View>
             </View>
+
+            {campaign && (
+                <BookingModal
+                    visible={bookingVisible}
+                    onClose={() => setBookingVisible(false)}
+                    campaign={campaign}
+                />
+            )}
         </SafeAreaView>
     );
 };
