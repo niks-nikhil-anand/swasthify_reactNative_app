@@ -110,9 +110,9 @@ const CampaignCard = ({ campaign, onPress }: CampaignCardProps) => {
                                         <Feather name="user" size={18} color="#10B981" />
                                     )
                                 ) : (
-                                    campaign.image ? (
+                                    campaign.image || campaign.lab?.profilePhoto ? (
                                         <Image
-                                            source={{ uri: campaign.image }}
+                                            source={{ uri: campaign.image || campaign.lab?.profilePhoto }}
                                             className="w-full h-full"
                                             resizeMode="cover"
                                         />
