@@ -34,22 +34,22 @@ const IntegratedServices = () => {
         {
             title: "Doctor Near Me",
             description: "Locate and book the best doctors in your neighborhood.",
-            icon: require('../../public/images/icons/doctor_location_3d.png'),
+            icon: require('../../public/images/icons/doctor_location.png'),
         },
         {
             title: "Lab Tests",
             description: "Book tests online & get sample collection from home.",
-            icon: require('../../public/images/icons/lab_tests_3d.png'),
+            icon: require('../../public/images/icons/lab_tests_new.png'),
         },
         {
             title: "Surgeries",
             description: "Expert surgical care with end-to-end assistance.",
-            icon: require('../../public/images/icons/surgeries_3d.png'),
+            icon: require('../../public/images/icons/surgeries.png'),
         },
         {
             title: "Video Consultation",
             description: "Connect with top specialists from home via secure video calls.",
-            icon: require('../../public/images/icons/video_consultation_3d.png'),
+            icon: require('../../public/images/icons/video_consultation_new.png'),
         }
     ];
 
