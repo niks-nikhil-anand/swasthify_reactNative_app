@@ -39,7 +39,7 @@ const AppNavigator = () => {
         <Drawer.Navigator
             initialRouteName={user ? "Home" : "SignIn"}
             drawerContent={(props) => <CustomDrawerContent {...props} />}
-            screenOptions={{
+            screenOptions={({ navigation }) => ({
                 headerStyle: {
                     backgroundColor: isDark ? '#111827' : '#FFFFFF',
                     elevation: 4,
@@ -81,7 +81,7 @@ const AppNavigator = () => {
                 headerRight: () => (
                     <TouchableOpacity
                         onPress={() => {
-                            console.log('Profile icon pressed');
+                            navigation.navigate('Profile');
                         }}
                         className="flex-row items-center gap-x-3"
                     >
@@ -101,7 +101,7 @@ const AppNavigator = () => {
                         </View>
                     </TouchableOpacity>
                 ),
-            }}
+            })}
         >
             <Drawer.Screen
                 name="Home"
