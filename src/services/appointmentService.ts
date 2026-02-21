@@ -56,4 +56,32 @@ export const appointmentService = {
             throw error.response?.data?.message || 'Payment verification failed';
         }
     },
+
+    /**
+     * Get appointments for the logged-in patient
+     */
+    getMyAppointments: async () => {
+        try {
+            const response = await apiClient.get('/api/me/appointments');
+            return response.data;
+        } catch (error: any) {
+            console.error('Error fetching patient appointments:', error);
+            throw error.response?.data?.message || 'Failed to fetch appointments';
+        }
+    },
+
+    /**
+     * Cancel an appointment
+     */
+    cancelAppointment: async (appointmentId: string) => {
+        try {
+            const response = await apiClient.post('/api/appointments/cancel', {
+                appointmentId,
+            });
+            return response.data;
+        } catch (error: any) {
+            console.error('Error cancelling appointment:', error);
+            throw error.response?.data?.message || 'Failed to cancel appointment';
+        }
+    },
 };
