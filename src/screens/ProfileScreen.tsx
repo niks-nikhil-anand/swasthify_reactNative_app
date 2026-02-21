@@ -243,7 +243,7 @@ const ProfileScreen = () => {
                 </TouchableOpacity>
 
                 <View style={styles.versionContainer}>
-                    <Text style={styles.versionText}>Swastify v1.0.0</Text>
+                    <Text style={styles.versionText}>Swasthify v1.0.0</Text>
                 </View>
             </ScrollView>
 

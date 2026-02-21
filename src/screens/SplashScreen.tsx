@@ -49,7 +49,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
                     style={styles.logo}
                     resizeMode="contain"
                 />
-                <Animated.Text style={styles.brandText}>Swastify</Animated.Text>
+                <Animated.Text style={styles.brandText}>Swasthify</Animated.Text>
             </Animated.View>
         </View>
     );
