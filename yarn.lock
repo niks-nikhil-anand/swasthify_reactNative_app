@@ -3883,6 +3883,13 @@ react-native-css-interop@0.2.1:
     lightningcss "~1.27.0"
     semver "^7.6.3"
 
+react-native-document-picker@^9.3.1:
+  version "9.3.1"
+  resolved "https://registry.npmjs.org/react-native-document-picker/-/react-native-document-picker-9.3.1.tgz"
+  integrity sha512-Vcofv9wfB0j67zawFjfq9WQPMMzXxOZL9kBmvWDpjVuEcVK73ndRmlXHlkeFl5ZHVsv4Zb6oZYhqm9u5omJOPA==
+  dependencies:
+    invariant "^2.2.4"
+
 react-native-drawer-layout@^4.2.2:
   version "4.2.2"
   resolved "https://registry.npmjs.org/react-native-drawer-layout/-/react-native-drawer-layout-4.2.2.tgz"
