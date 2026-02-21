@@ -1,0 +1,59 @@
+import apiClient from '../api/apiClient';
+
+export interface ReserveAppointmentPayload {
+    type: 'DOCTOR' | 'LAB';
+    organizerId: string;
+    date: string;
+    timeSlot: string;
+}
+
+export interface VerifyPaymentPayload {
+    appointmentId: string;
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+}
+
+export const appointmentService = {
+    /**
+     * Step 1: Create Appointment (Reserved State)
+     */
+    reserveAppointment: async (payload: ReserveAppointmentPayload) => {
+        try {
+            const response = await apiClient.post('/api/appointments', payload);
+            // Handle both { data: { id: ... } } and { id: ... } structures
+            return response.data.data || response.data;
+        } catch (error: any) {
+            console.error('Error reserving appointment:', error);
+            throw error.response?.data?.message || 'Failed to reserve appointment';
+        }
+    },
+
+    /**
+     * Step 2: Create Razorpay Order
+     */
+    createRazorpayOrder: async (appointmentId: string) => {
+        try {
+            const response = await apiClient.post('/api/payments/create-order', {
+                appointmentId,
+            });
+            return response.data.data || response.data;
+        } catch (error: any) {
+            console.error('Error creating Razorpay order:', error);
+            throw error.response?.data?.message || 'Failed to create payment order';
+        }
+    },
+
+    /**
+     * Step 3: Verify Payment (Post-Payment)
+     */
+    verifyPayment: async (payload: VerifyPaymentPayload) => {
+        try {
+            const response = await apiClient.post('/api/payments/verify', payload);
+            return response.data;
+        } catch (error: any) {
+            console.error('Error verifying payment:', error);
+            throw error.response?.data?.message || 'Payment verification failed';
+        }
+    },
+};
