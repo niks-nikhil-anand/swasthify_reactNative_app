@@ -145,26 +145,6 @@ const AppNavigator = () => {
                 }}
             />
             <Drawer.Screen
-                name="Appointments"
-                component={AppointmentsScreen}
-                options={{
-                    title: 'Appointments',
-                    drawerIcon: ({ color, size }) => (
-                        <Feather name="calendar" color={color} size={size} />
-                    ),
-                }}
-            />
-            <Drawer.Screen
-                name="HealthRecords"
-                component={HealthRecordsScreen}
-                options={{
-                    title: 'Health Records',
-                    drawerIcon: ({ color, size }) => (
-                        <Feather name="folder" color={color} size={size} />
-                    ),
-                }}
-            />
-            <Drawer.Screen
                 name="Pricing"
                 component={PricingScreen}
                 options={{
@@ -191,6 +171,26 @@ const AppNavigator = () => {
                     title: 'Contact',
                     drawerIcon: ({ color, size }) => (
                         <Feather name="mail" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="Appointments"
+                component={AppointmentsScreen}
+                options={{
+                    title: 'Appointments',
+                    drawerIcon: ({ color, size }) => (
+                        <Feather name="calendar" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Drawer.Screen
+                name="HealthRecords"
+                component={HealthRecordsScreen}
+                options={{
+                    title: 'Health Records',
+                    drawerIcon: ({ color, size }) => (
+                        <Feather name="folder" color={color} size={size} />
                     ),
                 }}
             />
