@@ -45,7 +45,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                             style={styles.logoImage}
                             resizeMode="contain"
                         />
-                        <Text style={styles.logoText}>Swastify</Text>
+                        <Text style={styles.logoText}>Swasthify</Text>
                     </View>
                 )}
 

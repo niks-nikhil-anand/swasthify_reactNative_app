@@ -776,8 +776,8 @@
     "android": {
       "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/android",
       "appName": "app",
-      "packageName": "com.swastifyapp",
-      "applicationId": "com.swastifyapp",
+      "packageName": "com.Swasthifyapp",
+      "applicationId": "com.Swasthifyapp",
       "mainActivity": ".MainActivity",
       "assets": []
     }

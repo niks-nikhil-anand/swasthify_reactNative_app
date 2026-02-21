@@ -37,7 +37,7 @@ const HowItWorks = () => {
                 <View className="flex-row items-center mb-2">
                     <Text className="text-2xl font-bold text-[#111827]">How </Text>
                     <View className="bg-[#D1F2E2] px-2 py-0.5 rounded-md">
-                        <Text className="text-[#0DA96E] text-2xl font-bold">Swastify Works</Text>
+                        <Text className="text-[#0DA96E] text-2xl font-bold">Swasthify Works</Text>
                     </View>
                 </View>
                 <Text className="text-[#6B7280] text-sm text-center px-6">
