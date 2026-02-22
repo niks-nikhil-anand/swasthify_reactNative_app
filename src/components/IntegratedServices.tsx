@@ -68,19 +68,19 @@ const IntegratedServices = () => {
                 </Text>
             </View>
 
-            {/* Full-width Video Consultation card */}
+            {/* Full-width Doctor Near Me card */}
             <WideServiceCard
-                title="Video Consultation"
-                description="Connect with top specialists from the comfort of your home via secure video calls."
-                icon={require('../../public/images/icons/video_consult.png')}
+                title="Doctor Near Me"
+                description="Locate and book the best doctors in your neighborhood for in-clinic consultations."
+                icon={require('../../public/images/icons/doctor_location_3d.png')}
             />
 
             {/* Bottom row — two half-width cards */}
             <View className="flex-row flex-wrap justify-between">
                 <ServiceCard
-                    title="Doctor Near Me"
-                    description="Locate and book the best doctors in your neighborhood."
-                    icon={require('../../public/images/icons/doctor_location_3d.png')}
+                    title="Video Consultation"
+                    description="Connect with top specialists from the comfort of your home via secure video calls."
+                    icon={require('../../public/images/icons/video_consult.png')}
                 />
                 <ServiceCard
                     title="Lab Tests"
