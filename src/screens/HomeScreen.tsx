@@ -24,7 +24,6 @@ const HomeScreen = () => {
                 <HealthPackages />
                  <LabTestCTA />
                  <LabSection />
-               
                 {/* <HowItWorks /> */}
                 <AbhaIdSection />
                 <View className="h-4" />
