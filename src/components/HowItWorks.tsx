@@ -21,10 +21,10 @@ const Step = ({ title, description, icon, isLast }: { title: string, description
                 />
             )}
         </View>
-        <Text className="text-xs font-bold text-[#111827] mb-1.5 text-center px-1" numberOfLines={1}>
+        <Text className="section-heading dark:text-white mb-1.5 text-center px-1" numberOfLines={1}>
             {title}
         </Text>
-        <Text className="text-[#6B7280] text-[9px] leading-3 text-center px-1" numberOfLines={3}>
+        <Text className="section-description text-center px-1" numberOfLines={3}>
             {description}
         </Text>
     </View>
@@ -33,14 +33,14 @@ const Step = ({ title, description, icon, isLast }: { title: string, description
 const HowItWorks = () => {
     return (
         <View className="py-12 bg-[#F9FAFB]">
-            <View className="px-4 mb-10 items-center">
+            <View className="px-4 mb-10">
                 <View className="flex-row items-center mb-2">
-                    <Text className="text-2xl font-bold text-[#111827]">How </Text>
+                    <Text className="section-heading dark:text-white">How </Text>
                     <View className="bg-[#D1F2E2] px-2 py-0.5 rounded-md">
-                        <Text className="text-[#0DA96E] text-2xl font-bold">Swasthify Works</Text>
+                        <Text className="section-heading-highlight">Swasthify Works</Text>
                     </View>
                 </View>
-                <Text className="text-[#6B7280] text-sm text-center px-6">
+                <Text className="section-description">
                     Three simple steps to access top-tier healthcare from anywhere.
                 </Text>
             </View>
