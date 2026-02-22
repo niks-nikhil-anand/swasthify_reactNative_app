@@ -15,7 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import { publicService, Campaign } from '../services/publicService';
 import CampaignCard from '../components/CampaignCard';
-import { CampaignSectionSkeleton } from '../components/CampaignSkeleton';
+import { CampaignListSkeleton } from '../components/CampaignSkeleton';
 
 const LAB_CATEGORIES = [
     "All",
@@ -246,7 +246,7 @@ const LabsScreen = () => {
                 keyExtractor={(item, index) => (item._id || item.id || index.toString())}
                 ListHeaderComponent={renderHeader}
                 ListFooterComponent={renderFooter}
-                ListEmptyComponent={loading ? <CampaignSectionSkeleton /> : renderEmpty()}
+                ListEmptyComponent={loading ? <CampaignListSkeleton /> : renderEmpty()}
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.5}
                 showsVerticalScrollIndicator={false}
