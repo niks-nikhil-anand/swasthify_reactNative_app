@@ -42,17 +42,16 @@ const HealthPackages = () => {
                             Health Packages
                         </Text>
                     </View>
-                    <Text className="text-2xl font-bold text-[#111827]">
-                        Popular <Text className="text-[#0DA96E]">Checkups</Text>
+                    <Text className="section-heading">
+                        Popular <Text className="section-heading-highlight">Checkups</Text>
                     </Text>
-                    <Text className="text-[#6B7280] text-xs mt-1">
+                    <Text className="section-description mt-1">
                         Comprehensive health screening for you and your family
                     </Text>
+                    <TouchableOpacity className="self-end border mt-3 border-gray-100 dark:border-slate-700 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800">
+                                        <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold text-[10px]">See All {'>'}</Text>
+                                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity className="flex-row items-center">
-                    <Text className="text-[#0DA96E] font-bold text-sm mr-1">See All</Text>
-                    <Text className="text-[#0DA96E] font-bold">{'>'}</Text>
-                </TouchableOpacity>
             </View>
 
             <ScrollView
