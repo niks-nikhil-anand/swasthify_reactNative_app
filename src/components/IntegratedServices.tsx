@@ -66,11 +66,11 @@ const IntegratedServices = () => {
             <View className="mb-8">
                 <View className="flex-row flex-wrap items-center mb-3">
                     <View className="bg-[#D1F2E2] dark:bg-[#064E3B] px-2.5 py-1 rounded-lg mr-2">
-                        <Text className="text-[#0DA96E] dark:text-[#48C496] text-2xl font-bold">Integrated Healthcare</Text>
+                        <Text className="section-heading-highlight dark:text-[#48C496]">Integrated Healthcare</Text>
                     </View>
-                    <Text className="text-2xl font-bold text-[#111827] dark:text-white">Services</Text>
+                    <Text className="section-heading dark:text-white">Services</Text>
                 </View>
-                <Text className="text-[#6B7280] dark:text-gray-400 text-sm leading-[22px] max-w-[95%]">
+                <Text className="section-description dark:text-gray-400 max-w-[95%]">
                     Access world-class medical expertise and surgical care through one unified platform.
                 </Text>
             </View>
