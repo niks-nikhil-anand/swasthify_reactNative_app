@@ -48,3 +48,28 @@
         --ring: #CBD5E1;
     }
 }
+
+@layer components {
+
+    /* ── Section-level typography tokens ── */
+    .section-heading {
+        @apply text-2xl font-bold text-[#111827];
+    }
+
+    .section-heading-highlight {
+        @apply text-2xl font-bold text-[#0DA96E];
+    }
+
+    .section-description {
+        @apply text-base text-[#6B7280] leading-6;
+    }
+
+    /* Dark mode variants */
+    .dark .section-heading {
+        @apply text-white;
+    }
+
+    .dark .section-description {
+        @apply text-gray-400;
+    }
+}
