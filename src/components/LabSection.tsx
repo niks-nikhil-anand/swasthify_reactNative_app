@@ -54,14 +54,14 @@ const LabSection = () => {
             <View className="px-4 mb-12">
                 <View className="flex-col md:flex-row justify-between items-center md:items-end gap-6">
                     <View className="space-y-3 items-center md:items-start">
-                        <Text className="text-3xl md:text-5xl font-black tracking-tighter text-[#111827] dark:text-white text-center md:text-left leading-[1.1]">
+                        <Text className="section-heading dark:text-white text-center md:text-left leading-[1.1]">
                             Book a{' '}
-                            <Text className="text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 px-3 rounded-xl overflow-hidden">
+                            <Text className="section-heading-highlight bg-emerald-100 dark:bg-emerald-900/30 px-3 rounded-xl overflow-hidden">
                                 Lab Test
                             </Text>{' '}
                             from Home
                         </Text>
-                        <Text className="text-[#6B7280] dark:text-gray-400 text-lg md:text-xl font-medium max-w-2xl text-center md:text-left mt-4">
+                        <Text className="section-description dark:text-gray-400 max-w-2xl text-center md:text-left mt-4">
                             Get certified diagnostic services and health checkups
                         </Text>
                     </View>
