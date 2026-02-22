@@ -6,10 +6,16 @@ import CampaignCard from './CampaignCard';
 import CampaignSkeleton, { CampaignSectionSkeleton } from './CampaignSkeleton';
 import Feather from 'react-native-vector-icons/Feather';
 
+const PAGE_SIZE = 4;
+
 const LabSection = () => {
     const navigation = useNavigation<any>();
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
+    const [page, setPage] = useState(1);
+
+    const totalPages = Math.ceil(campaigns.length / PAGE_SIZE);
+    const visibleCampaigns = campaigns.slice(0, page * PAGE_SIZE);
 
     useEffect(() => {
         const fetchLabs = async () => {
@@ -52,32 +58,23 @@ const LabSection = () => {
     return (
         <View className="py-16 bg-muted/30">
             <View className="px-4 mb-12">
-                <View className="flex-col md:flex-row justify-between items-center md:items-end gap-6">
-                    <View className="space-y-3 items-center md:items-start">
-                        <Text className="section-heading dark:text-white text-center md:text-left leading-[1.1]">
-                            Book a{' '}
-                            <Text className="section-heading-highlight bg-emerald-100 dark:bg-emerald-900/30 px-3 rounded-xl overflow-hidden">
-                                Lab Test
-                            </Text>{' '}
-                            from Home
-                        </Text>
-                        <Text className="section-description dark:text-gray-400 max-w-2xl text-center md:text-left mt-4">
-                            Get certified diagnostic services and health checkups
-                        </Text>
-                    </View>
-
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('Labs')}
-                        className="flex-row items-center py-2 px-4 rounded-full bg-emerald-500/5"
-                    >
-                        <Text className="text-emerald-600 dark:text-emerald-400 font-black uppercase text-xs tracking-widest mr-2">See All Lab Tests</Text>
-                        <Feather name="chevron-right" size={16} color="#10B981" />
-                    </TouchableOpacity>
-                </View>
+                <Text className="section-heading dark:text-white leading-[1.1] mb-2">
+                    Book a{' '}
+                    <Text className="section-heading-highlight bg-emerald-100 dark:bg-emerald-900/30 px-3 rounded-xl overflow-hidden">
+                        Lab Test
+                    </Text>{' '}
+                    from Home
+                </Text>
+                <Text className="section-description dark:text-gray-400 mt-2">
+                    Get certified diagnostic services and health checkups
+                </Text>
+                <TouchableOpacity className="self-end border mt-3 border-gray-100 dark:border-slate-700 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800">
+                                    <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold text-[10px]">See All {'>'}</Text>
+                                </TouchableOpacity>
             </View>
 
             <FlatList
-                data={campaigns}
+                data={visibleCampaigns}
                 renderItem={({ item }) => (
                     <CampaignCard
                         campaign={item}
@@ -90,15 +87,37 @@ const LabSection = () => {
                 contentContainerStyle={{ paddingHorizontal: 20 }}
             />
 
-            <View className="mt-12 items-center">
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Labs')}
-                    className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-full px-12 py-4 flex-row items-center shadow-2xl shadow-emerald-500/10"
-                >
-                    <Text className="text-[#111827] dark:text-white font-black text-xs uppercase tracking-widest mr-3">Show more lab tests</Text>
-                    <Feather name="arrow-right" size={16} color="#10B981" />
-                </TouchableOpacity>
-            </View>
+            {/* Pagination dots */}
+            {totalPages > 1 && (
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16, gap: 6 }}>
+                    {Array.from({ length: totalPages }).map((_, i) => (
+                        <TouchableOpacity key={i} onPress={() => setPage(i + 1)}>
+                            <View style={{
+                                width: i + 1 === page ? 22 : 7,
+                                height: 7,
+                                borderRadius: 10,
+                                backgroundColor: i + 1 === page ? '#0DA96E' : '#D1D5DB',
+                            }} />
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            )}
+
+            {/* Show More button */}
+            {page * PAGE_SIZE < campaigns.length && (
+                <View className="mt-6 items-center">
+                    <TouchableOpacity
+                        onPress={() => setPage(p => p + 1)}
+                        className="border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-full px-10 py-3.5 flex-row items-center"
+                        style={{ elevation: 2 }}
+                    >
+                        <Text className="text-[#111827] dark:text-white font-bold text-xs uppercase tracking-widest mr-2">Show More Lab Tests</Text>
+                        <Feather name="chevron-down" size={14} color="#0DA96E" />
+                    </TouchableOpacity>
+                </View>
+            )}
+
+
         </View>
     );
 };
