@@ -155,6 +155,13 @@ const PricingScreen = () => {
                                 <View className="px-6 pb-8 pt-6">
                                     <TouchableOpacity
                                         activeOpacity={0.85}
+                                        onPress={() => {
+                                            if (item.name.includes('Lab')) {
+                                                navigation.navigate('Labs');
+                                            } else {
+                                                navigation.navigate('Doctors');
+                                            }
+                                        }}
                                         className={`w-full h-12 rounded-lg items-center justify-center flex-row shadow-lg ${item.mostPopular
                                             ? 'bg-[#0DA96E]'
                                             : 'bg-white border-2 border-[#0DA96E]/20'
@@ -228,6 +235,7 @@ const PricingScreen = () => {
                         <View className="flex-row items-center">
                             <TouchableOpacity
                                 activeOpacity={0.85}
+                                onPress={() => navigation.navigate('Doctors')}
                                 className="bg-[#0DA96E] px-6 py-3 rounded-lg mr-3 shadow-md"
                             >
                                 <Text className="text-white font-semibold text-sm">Find a Doctor</Text>
