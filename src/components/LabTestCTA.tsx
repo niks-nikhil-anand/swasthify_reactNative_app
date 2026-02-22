@@ -5,10 +5,11 @@ const LabTestCTA = () => {
     return (
         <View className="px-4 my-2">
             <View
-                className="bg-[#E7FAF2] rounded-[32px] overflow-hidden shadow-sm border border-[#D1F2E2] flex-row items-center p-6"
-                style={{ elevation: 2 }}
+                className="bg-[#E7FAF2] rounded-[32px] overflow-hidden shadow-sm border border-[#D1F2E2] flex-row"
+                style={{ elevation: 2, minHeight: 170 }}
             >
-                <View className="flex-1 pr-4">
+                {/* Left — text content */}
+                <View className="flex-1 p-6 justify-center">
                     <View className="bg-[#0DA96E]/10 self-start px-2 py-1 rounded-md mb-2">
                         <Text className="text-[#0DA96E] text-[10px] font-bold tracking-wider uppercase">
                             Safe & Hygienic
@@ -29,13 +30,13 @@ const LabTestCTA = () => {
                     </TouchableOpacity>
                 </View>
 
-                <View className="w-24 h-24 bg-white rounded-2xl items-center justify-center border border-gray-100 shadow-sm overflow-hidden">
-                    <Image
-                        source={require('../../public/images/cta/lab-test.png')}
-                        className="w-20 h-20"
-                        resizeMode="contain"
-                    />
-                </View>
+                {/* Right — full-height image */}
+                <Image
+                    source={require('../../public/images/cta/lab-test.png')}
+                    style={{ width: 140 }}
+                    className="h-full"
+                    resizeMode="cover"
+                />
             </View>
         </View>
     );
