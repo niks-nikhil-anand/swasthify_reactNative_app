@@ -73,12 +73,12 @@ const Specialities = () => {
         <View className="py-10 bg-white dark:bg-background">
             <View className="px-4 mb-8">
                 <View className="flex-row flex-wrap items-center mb-2">
-                    <Text className="text-xl font-bold text-[#111827] dark:text-white">Wide Range of </Text>
+                    <Text className="section-heading dark:text-white">Wide Range of </Text>
                     <View className="bg-[#D1F2E2] dark:bg-[#064E3B] px-2 py-0.5 rounded-md">
-                        <Text className="text-[#0DA96E] dark:text-[#48C496] text-xl font-bold">Medical Specialities</Text>
+                        <Text className="section-heading-highlight dark:text-[#48C496]">Medical Specialities</Text>
                     </View>
                 </View>
-                <Text className="text-[#6B7280] dark:text-gray-400 text-sm leading-5 mb-3">
+                <Text className="section-description dark:text-gray-400 mb-3">
                     Access top-tier healthcare across 25+ specialities. Expert doctors, seamless digital consultations.
                 </Text>
                 <TouchableOpacity className="self-end border border-gray-100 dark:border-slate-700 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800">
