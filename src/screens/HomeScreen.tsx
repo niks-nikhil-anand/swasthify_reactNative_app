@@ -17,10 +17,10 @@ const HomeScreen = () => {
         <SafeAreaView className="flex-1 bg-background">
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <Hero />
+                <Specialities />
                 <IntegratedServices />
                 <BookAppointmentCTA />
                 <DoctorSection />
-                <Specialities />
                 <HealthPackages />
                 <LabTestCTA />
                 <LabSection />
