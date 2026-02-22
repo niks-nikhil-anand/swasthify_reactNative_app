@@ -4,7 +4,11 @@ import { View, Animated, Dimensions } from 'react-native';
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = width * 0.85;
 
-const CampaignSkeleton = () => {
+interface CampaignSkeletonProps {
+    fullWidth?: boolean;
+}
+
+const CampaignSkeleton = ({ fullWidth = false }: CampaignSkeletonProps) => {
     const pulseAnim = useRef(new Animated.Value(0.3)).current;
 
     useEffect(() => {
@@ -26,8 +30,8 @@ const CampaignSkeleton = () => {
 
     return (
         <View
-            style={{ width: CARD_WIDTH }}
-            className="bg-zinc-50 dark:bg-zinc-900 rounded-[32px] overflow-hidden border border-zinc-100 dark:border-zinc-800 mr-4 flex-col p-6"
+            style={fullWidth ? { width: '100%' } : { width: CARD_WIDTH }}
+            className={`bg-zinc-50 dark:bg-zinc-900 rounded-[32px] overflow-hidden border border-zinc-100 dark:border-zinc-800 ${!fullWidth ? 'mr-4' : 'mb-4'} flex-col p-6`}
         >
             {/* Header Skeleton */}
             <View className="flex-row items-center justify-between mb-4">
@@ -79,13 +83,15 @@ const CampaignSkeleton = () => {
                 />
                 <Animated.View
                     style={{ opacity: pulseAnim }}
-                    className="w-full h-3 rounded bg-zinc-200 dark:bg-zinc-800 mb-2"
-                />
-                <Animated.View
-                    style={{ opacity: pulseAnim }}
                     className="w-1/2 h-3 rounded bg-zinc-100 dark:bg-zinc-800"
                 />
             </View>
+
+            {/* Specialization Skeleton */}
+            <Animated.View
+                style={{ opacity: pulseAnim }}
+                className="w-32 h-3 rounded bg-zinc-200 dark:bg-zinc-800 mb-4"
+            />
 
             {/* Footer Skeleton */}
             <View className="bg-white dark:bg-zinc-900 p-4 rounded-3xl flex-row items-center justify-between border border-zinc-100 dark:border-zinc-800">
@@ -128,6 +134,16 @@ export const CampaignSectionSkeleton = () => {
                 <CampaignSkeleton />
                 <CampaignSkeleton />
             </View>
+        </View>
+    );
+}
+
+export const CampaignListSkeleton = () => {
+    return (
+        <View className="px-5 py-4">
+            <CampaignSkeleton fullWidth />
+            <CampaignSkeleton fullWidth />
+            <CampaignSkeleton fullWidth />
         </View>
     );
 }

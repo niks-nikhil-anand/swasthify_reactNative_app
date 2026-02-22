@@ -8,6 +8,8 @@ import {
     Linking,
 } from 'react-native';
 import Footer from '../components/Footer';
+import BookAppointmentCTA from '../components/BookAppointmentCTA';
+import LabTestCTA from '../components/LabTestCTA';
 
 /* ═══════════════════════════════════════════════════
  *  HERO SECTION
@@ -291,10 +293,10 @@ const LocationSection = () => (
                     <View className="items-center">
                         <Text className="text-sm font-semibold text-emerald-600 uppercase tracking-wider mb-4">Contact Details</Text>
                         <TouchableOpacity
-                            onPress={() => Linking.openURL('mailto:support@swasthify.com')}
+                            onPress={() => Linking.openURL('mailto:support@swasthify.in')}
                             className="mb-3"
                         >
-                            <Text className="text-lg font-medium text-gray-900">support@swasthify.com</Text>
+                            <Text className="text-lg font-medium text-gray-900">support@swasthify.in</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => Linking.openURL('tel:+919759225515')}
@@ -342,7 +344,10 @@ const AboutScreen = () => {
                 <FounderSection />
                 <ValuesSection />
                 <LocationSection />
-                <CTASection />
+                <BookAppointmentCTA />
+                <View className="mt-4" />
+                <LabTestCTA />
+                <View className="mb-8" />
                 <Footer />
             </ScrollView>
         </SafeAreaView>

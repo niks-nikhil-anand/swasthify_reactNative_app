@@ -30,9 +30,9 @@ const contactItems = [
     {
         emoji: '✉️',
         title: 'Email Address',
-        lines: ['support@swasthify.com'],
+        lines: ['support@swasthify.in'],
         iconBg: 'bg-green-500/10',
-        action: () => Linking.openURL('mailto:support@swasthify.com'),
+        action: () => Linking.openURL('mailto:support@swasthify.in'),
     },
     {
         emoji: '📍',
@@ -319,10 +319,11 @@ const ContactUsScreen = () => {
                         <View className="flex-row items-center">
                             <TouchableOpacity
                                 activeOpacity={0.85}
+                                onPress={() => navigation.navigate('About')}
                                 className="bg-[#0DA96E] px-6 py-3 rounded-lg mr-3 shadow-md"
                             >
                                 <Text className="text-white font-semibold text-sm">
-                                    Register Now
+                                    About Us
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity

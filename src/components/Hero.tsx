@@ -30,12 +30,12 @@ const slides: Slide[] = [
     },
     {
         id: '2',
-        image: require('../../public/images/hero_banner_2.png'),
+        image: require('../../public/images/hero_banner_2.jpg'),
         accentColor: '#7C3AED',
     },
     {
         id: '3',
-        image: require('../../public/images/hero_banner_3.png'),
+        image: require('../../public/images/hero_banner_3.jpg'),
         accentColor: '#2563EB',
     },
 ];

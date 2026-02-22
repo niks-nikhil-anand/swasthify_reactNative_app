@@ -14,6 +14,7 @@ export type RootDrawerParamList = {
     HealthRecords: undefined;
     Profile: undefined;
     CampaignDetail: { id: string };
+    Specialities: undefined;
 };
 
 export type HomeScreenNavigationProp = DrawerNavigationProp<

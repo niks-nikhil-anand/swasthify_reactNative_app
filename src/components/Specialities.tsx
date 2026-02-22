@@ -1,5 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView, ImageSourcePropType } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootDrawerParamList } from '../navigation/types';
 
 interface Speciality {
     title: string;
@@ -8,10 +11,12 @@ interface Speciality {
     color: string;
 }
 
-const SpecialityCard = ({ speciality }: { speciality: Speciality }) => (
-    <View
+const SpecialityCard = ({ speciality, onPress }: { speciality: Speciality, onPress?: () => void }) => (
+    <TouchableOpacity
         className="bg-white dark:bg-slate-800 p-2.5 rounded-[20px] border border-gray-100 dark:border-slate-700 shadow-sm w-[31.5%] items-center mb-4"
         style={{ elevation: 2 }}
+        onPress={onPress}
+        activeOpacity={0.7}
     >
         <View className={`w-16 h-16 rounded-full mb-2 overflow-hidden items-center justify-center ${speciality.color} dark:bg-opacity-20`}>
             <Image
@@ -26,10 +31,11 @@ const SpecialityCard = ({ speciality }: { speciality: Speciality }) => (
         <Text className="text-[#6B7280] dark:text-gray-400 text-[8px] text-center">
             starts from <Text className="font-bold text-[#111827] dark:text-[#48C496]">{speciality.price}</Text>
         </Text>
-    </View>
+    </TouchableOpacity>
 );
 
 const Specialities = () => {
+    const navigation = useNavigation<NativeStackNavigationProp<RootDrawerParamList>>();
     const specialities: Speciality[] = [
         {
             title: "Gynaecology",
@@ -81,14 +87,21 @@ const Specialities = () => {
                 <Text className="section-description dark:text-gray-400 mb-3">
                     Access top-tier healthcare across 25+ specialities. Expert doctors, seamless digital consultations.
                 </Text>
-                <TouchableOpacity className="self-end border border-gray-100 dark:border-slate-700 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800">
+                <TouchableOpacity
+                    className="self-end border border-gray-100 dark:border-slate-700 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800"
+                    onPress={() => navigation.navigate('Specialities')}
+                >
                     <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold text-[10px]">See All {'>'}</Text>
                 </TouchableOpacity>
             </View>
 
             <View className="flex-row flex-wrap justify-between px-4">
                 {specialities.map((item, index) => (
-                    <SpecialityCard key={index} speciality={item} />
+                    <SpecialityCard
+                        key={index}
+                        speciality={item}
+                        onPress={() => navigation.navigate('Doctors')}
+                    />
                 ))}
             </View>
         </View>

@@ -99,9 +99,16 @@ const FAQScreen = () => {
                             <TouchableOpacity
                                 activeOpacity={0.85}
                                 onPress={() => navigation.navigate('Contact')}
-                                className="bg-[#0DA96E] px-6 py-3 rounded-lg shadow-md"
+                                className="bg-[#0DA96E] px-6 py-3 rounded-lg mr-3 shadow-md"
                             >
                                 <Text className="text-white font-semibold text-sm">Contact Us</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={() => navigation.navigate('About')}
+                                className="border border-gray-300 px-6 py-3 rounded-lg"
+                            >
+                                <Text className="text-gray-900 font-semibold text-sm">About Us</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
