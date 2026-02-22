@@ -22,9 +22,9 @@ const HomeScreen = () => {
                 <BookAppointmentCTA />
                 <DoctorSection />
                 <HealthPackages />
+                 <LabSection />
                 <LabTestCTA />
-                <LabSection />
-                <HowItWorks />
+                {/* <HowItWorks /> */}
                 <AbhaIdSection />
                 <View className="h-4" />
                 <Footer />
