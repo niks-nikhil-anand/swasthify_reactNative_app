@@ -1,15 +1,19 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image, ImageSourcePropType } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootDrawerParamList } from '../navigation/types';
 
 interface ServiceCardProps {
     title: string;
     description: string;
     icon: ImageSourcePropType;
+    onPress?: () => void;
 }
 
 interface WideServiceCardProps extends ServiceCardProps { }
 
-const ServiceCard = ({ title, description, icon }: ServiceCardProps) => (
+const ServiceCard = ({ title, description, icon, onPress }: ServiceCardProps) => (
     <View
         className="bg-white dark:bg-slate-800 p-4 rounded-[24px] border border-gray-100 dark:border-slate-700 mb-3 w-[48.5%]"
         style={{ elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8 }}
@@ -23,14 +27,17 @@ const ServiceCard = ({ title, description, icon }: ServiceCardProps) => (
         <Text className="text-[#6B7280] dark:text-gray-400 text-[12px] leading-[18px] mb-4" numberOfLines={3}>
             {description}
         </Text>
-        <TouchableOpacity className="flex-row items-center bg-[#0DA96E] py-2 px-3 rounded-xl self-start">
+        <TouchableOpacity
+            className="flex-row items-center bg-[#0DA96E] py-2 px-3 rounded-xl self-start"
+            onPress={onPress}
+        >
             <Text className="text-white font-semibold text-[11px]">Book Now</Text>
             <Text className="ml-1 text-white text-[11px]">→</Text>
         </TouchableOpacity>
     </View>
 );
 
-const WideServiceCard = ({ title, description, icon }: WideServiceCardProps) => (
+const WideServiceCard = ({ title, description, icon, onPress }: WideServiceCardProps) => (
     <View
         className="bg-white dark:bg-slate-800 rounded-[24px] border border-gray-100 dark:border-slate-700 mb-3 w-full flex-row overflow-hidden"
         style={{ elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, minHeight: 160 }}
@@ -43,7 +50,10 @@ const WideServiceCard = ({ title, description, icon }: WideServiceCardProps) => 
             <Text className="text-[#6B7280] dark:text-gray-400 text-[12px] leading-[18px] mb-4">
                 {description}
             </Text>
-            <TouchableOpacity className="flex-row items-center bg-[#0DA96E] py-2 px-4 rounded-xl self-start">
+            <TouchableOpacity
+                className="flex-row items-center bg-[#0DA96E] py-2 px-4 rounded-xl self-start"
+                onPress={onPress}
+            >
                 <Text className="text-white font-semibold text-[11px]">Book Now</Text>
                 <Text className="ml-1 text-white text-[11px]">→</Text>
             </TouchableOpacity>
@@ -61,6 +71,8 @@ const WideServiceCard = ({ title, description, icon }: WideServiceCardProps) => 
 
 
 const IntegratedServices = () => {
+    const navigation = useNavigation<NativeStackNavigationProp<RootDrawerParamList>>();
+
     return (
         <View className="px-4 py-10 bg-white dark:bg-card">
             <View className="mb-8">
@@ -80,6 +92,7 @@ const IntegratedServices = () => {
                 title="Doctor Near Me"
                 description="Locate and book the best doctors in your neighborhood for in-clinic consultations."
                 icon={require('../../public/images/nearBy_doctor.png')}
+                onPress={() => navigation.navigate('Doctors')}
             />
 
             {/* Bottom row — two half-width cards */}
@@ -93,6 +106,7 @@ const IntegratedServices = () => {
                     title="Lab Tests"
                     description="Book tests online & get sample collection from home."
                     icon={require('../../public/images/icons/lab_tests_new.png')}
+                    onPress={() => navigation.navigate('Labs')}
                 />
             </View>
         </View>
