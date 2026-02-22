@@ -28,7 +28,7 @@ const BookAppointmentCTA = () => {
                     </Text>
 
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('Contact')}
+                        onPress={() => navigation.navigate('Doctors')}
                         className="bg-[#0DA96E] self-start px-6 py-2.5 rounded-xl shadow-sm"
                         style={{ elevation: 1 }}
                     >
