@@ -32,13 +32,11 @@ const ServiceCard = ({ title, description, icon }: ServiceCardProps) => (
 
 const WideServiceCard = ({ title, description, icon }: WideServiceCardProps) => (
     <View
-        className="bg-white dark:bg-slate-800 p-5 rounded-[24px] border border-gray-100 dark:border-slate-700 mb-3 w-full flex-row items-center"
-        style={{ elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8 }}
+        className="bg-white dark:bg-slate-800 rounded-[24px] border border-gray-100 dark:border-slate-700 mb-3 w-full flex-row overflow-hidden"
+        style={{ elevation: 3, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.06, shadowRadius: 8, minHeight: 160 }}
     >
-        <View className="w-20 h-20 items-center justify-center mr-4 flex-shrink-0">
-            <Image source={icon} className="w-20 h-20" resizeMode="contain" />
-        </View>
-        <View className="flex-1">
+        {/* Left — text content */}
+        <View className="flex-1 p-5 justify-center">
             <Text className="text-[16px] font-bold text-[#111827] dark:text-white mb-1.5 leading-5">
                 {title}
             </Text>
@@ -50,8 +48,17 @@ const WideServiceCard = ({ title, description, icon }: WideServiceCardProps) => 
                 <Text className="ml-1 text-white text-[11px]">→</Text>
             </TouchableOpacity>
         </View>
+
+        {/* Right — full-height image */}
+        <Image
+            source={icon}
+            style={{ width: 140 }}
+            className="h-full"
+            resizeMode="cover"
+        />
     </View>
 );
+
 
 const IntegratedServices = () => {
     return (
@@ -72,7 +79,7 @@ const IntegratedServices = () => {
             <WideServiceCard
                 title="Doctor Near Me"
                 description="Locate and book the best doctors in your neighborhood for in-clinic consultations."
-                icon={require('../../public/images/icons/doctor_location_3d.png')}
+                icon={require('../../public/images/nearBy_doctor.png')}
             />
 
             {/* Bottom row — two half-width cards */}
