@@ -39,5 +39,14 @@ export const userService = {
         } catch (error: any) {
             throw error.response?.data?.message || 'Failed to update name';
         }
+    },
+
+    updateProfile: async (data: Partial<any>) => {
+        try {
+            const response = await apiClient.patch('/api/me/update-profile', data);
+            return response.data;
+        } catch (error: any) {
+            throw error.response?.data?.message || 'Failed to update profile';
+        }
     }
 };
