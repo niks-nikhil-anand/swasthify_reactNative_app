@@ -14,9 +14,11 @@ interface AuthContextType {
     user: User | null;
     token: string | null;
     isLoading: boolean;
+    hasSeenOnboarding: boolean;
     login: (token: string, userData: User) => Promise<void>;
     logout: () => Promise<void>;
     updateUser: (updatedData: Partial<User>) => Promise<void>;
+    completeOnboarding: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,16 +27,21 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
 
     useEffect(() => {
         const loadStoredAuth = async () => {
             try {
                 const storedToken = await AsyncStorage.getItem('auth_token');
                 const storedUser = await AsyncStorage.getItem('auth_user');
+                const onboardingSeen = await AsyncStorage.getItem('onboarding_seen');
 
                 if (storedToken && storedUser) {
                     setToken(storedToken);
                     setUser(JSON.parse(storedUser));
+                }
+                if (onboardingSeen === 'true') {
+                    setHasSeenOnboarding(true);
                 }
             } catch (error) {
                 console.error('Failed to load auth data:', error);
@@ -45,6 +52,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         loadStoredAuth();
     }, []);
+
+    const completeOnboarding = async () => {
+        try {
+            await AsyncStorage.setItem('onboarding_seen', 'true');
+            setHasSeenOnboarding(true);
+        } catch (error) {
+            console.error('Failed to save onboarding status:', error);
+        }
+    };
 
     const login = async (newToken: string, userData: User) => {
         try {
@@ -91,7 +107,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, isLoading, login, logout, updateUser }}>
+        <AuthContext.Provider value={{ user, token, isLoading, hasSeenOnboarding, login, logout, updateUser, completeOnboarding }}>
             {children}
         </AuthContext.Provider>
     );
