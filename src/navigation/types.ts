@@ -1,6 +1,7 @@
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 
 export type RootDrawerParamList = {
+    Onboarding: undefined;
     Home: undefined;
     SignIn: undefined;
     SignUp: undefined;
