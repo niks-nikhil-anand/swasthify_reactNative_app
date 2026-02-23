@@ -17,5 +17,14 @@ export const authService = {
         } catch (error: any) {
             throw error.response?.data?.message || 'Login failed';
         }
+    },
+
+    getCurrentUser: async () => {
+        try {
+            const response = await apiClient.get('/api/auth/me');
+            return response.data;
+        } catch (error: any) {
+            throw error.response?.data?.message || 'Failed to fetch user data';
+        }
     }
 };
