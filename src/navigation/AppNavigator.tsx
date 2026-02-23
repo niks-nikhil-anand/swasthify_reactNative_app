@@ -16,6 +16,7 @@ import LabsScreen from '../screens/LabsScreen';
 import AppointmentsScreen from '../screens/AppointmentsScreen';
 import HealthRecordsScreen from '../screens/HealthRecordsScreen';
 import SpecialitiesScreen from '../screens/SpecialitiesScreen';
+import OnboardingScreen from '../screens/OnboardingScreen';
 import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -27,7 +28,7 @@ import { useAuth } from '../context/AuthContext';
 
 const AppNavigator = () => {
     const isDark = false;
-    const { user, isLoading } = useAuth();
+    const { user, isLoading, hasSeenOnboarding } = useAuth();
 
     if (isLoading) {
         return (
@@ -37,9 +38,15 @@ const AppNavigator = () => {
         );
     }
 
+    const getInitialRoute = (): keyof RootDrawerParamList => {
+        if (user) return 'Home';
+        if (!hasSeenOnboarding) return 'Onboarding';
+        return 'SignIn';
+    };
+
     return (
         <Drawer.Navigator
-            initialRouteName={user ? "Home" : "SignIn"}
+            initialRouteName={getInitialRoute()}
             drawerContent={(props) => <CustomDrawerContent {...props} />}
             screenOptions={({ navigation }) => ({
                 headerStyle: {
@@ -105,6 +112,14 @@ const AppNavigator = () => {
                 ),
             })}
         >
+            <Drawer.Screen
+                name="Onboarding"
+                component={OnboardingScreen}
+                options={{
+                    headerShown: false,
+                    drawerItemStyle: { display: 'none' },
+                }}
+            />
             <Drawer.Screen
                 name="Home"
                 component={HomeScreen}
