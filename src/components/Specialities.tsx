@@ -40,37 +40,37 @@ const Specialities = () => {
         {
             title: "Gynaecology",
             price: "₹599",
-            image: require('../../public/images/specialities/gynaecology_real.png'),
+            image: require('../assets/specialities/gynaecology_real.png'),
             color: "bg-pink-50",
         },
         {
             title: "Sexology",
             price: "₹599",
-            image: require('../../public/images/specialities/sexology_real.png'),
+            image: require('../assets/specialities/sexology_real.png'),
             color: "bg-indigo-50",
         },
         {
             title: "General physician",
             price: "₹499",
-            image: require('../../public/images/specialities/general_physician_real.png'),
+            image: require('../assets/specialities/general_physician_real.png'),
             color: "bg-blue-50",
         },
         {
             title: "Dermatology",
             price: "₹549",
-            image: require('../../public/images/specialities/dermatology_real_v2.png'),
+            image: require('../assets/specialities/dermatology_real_v2.png'),
             color: "bg-teal-50",
         },
         {
             title: "Psychiatry",
             price: "₹599",
-            image: require('../../public/images/specialities/psychiatry_real.png'),
+            image: require('../assets/specialities/psychiatry_real.png'),
             color: "bg-green-50",
         },
         {
             title: "Stomach and digestion",
             price: "₹499",
-            image: require('../../public/images/specialities/stomach_digestion_real.png'),
+            image: require('../assets/specialities/stomach_digestion_real.png'),
             color: "bg-orange-50",
         },
     ];
