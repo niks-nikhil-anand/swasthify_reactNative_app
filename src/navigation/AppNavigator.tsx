@@ -29,6 +29,11 @@ import { useAuth } from '../context/AuthContext';
 const AppNavigator = () => {
     const isDark = false;
     const { user, isLoading, hasSeenOnboarding } = useAuth();
+    const [imgError, setImgError] = React.useState(false);
+
+    React.useEffect(() => {
+        setImgError(false);
+    }, [user?.profilePic]);
 
     if (isLoading) {
         return (
@@ -103,8 +108,9 @@ const AppNavigator = () => {
                         </View>
                         <View className="relative">
                             <Image
-                                source={require('../assets/user_avatar.png')}
+                                source={user && user.profilePic && !imgError ? { uri: user.profilePic } : require('../assets/user_avatar.png')}
                                 className="w-10 h-10 rounded-full border-2 border-[#D1F2E2] dark:border-[#064E3B]"
+                                onError={() => setImgError(true)}
                             />
                             <View className="absolute bottom-0.5 right-0.5 w-3 h-3 bg-brand-green border-2 border-white dark:border-slate-900 rounded-full" />
                         </View>
