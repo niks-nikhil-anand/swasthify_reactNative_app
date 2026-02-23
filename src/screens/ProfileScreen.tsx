@@ -182,7 +182,7 @@ const ProfileScreen = () => {
                     <Text style={styles.userRole}>Account</Text>
                 </View>
 
-                {/* Profile Information */}
+                {/* Account Information */}
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Account Information</Text>
                     <View style={styles.card}>
@@ -208,6 +208,67 @@ const ProfileScreen = () => {
                             value={user.phone || "Not provided"}
                             color="#F59E0B"
                             onPress={() => setPhoneModalVisible(true)}
+                        />
+                    </View>
+                </View>
+
+                {/* Personal Information */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Personal Information</Text>
+                    <View style={styles.card}>
+                        <ProfileItem
+                            icon="calendar"
+                            title="Date of Birth"
+                            value={user.dob || "Not set"}
+                            color="#8B5CF6"
+                        />
+                        <View style={styles.divider} />
+                        <ProfileItem
+                            icon="users"
+                            title="Gender"
+                            value={user.gender || "Not set"}
+                            color="#EC4899"
+                        />
+                        <View style={styles.divider} />
+                        <ProfileItem
+                            icon="droplet"
+                            title="Blood Group"
+                            value={user.bloodGroup || "Not set"}
+                            color="#EF4444"
+                        />
+                    </View>
+                </View>
+
+                {/* Health Metrics */}
+                <View style={styles.section}>
+                    <Text style={styles.sectionTitle}>Health Metrics</Text>
+                    <View style={styles.card}>
+                        <ProfileItem
+                            icon="maximize-2"
+                            title="Height"
+                            value={user.height || "Not set"}
+                            color="#10B981"
+                        />
+                        <View style={styles.divider} />
+                        <ProfileItem
+                            icon="activity"
+                            title="Weight"
+                            value={user.weight || "Not set"}
+                            color="#3B82F6"
+                        />
+                        <View style={styles.divider} />
+                        <ProfileItem
+                            icon="alert-circle"
+                            title="Allergies"
+                            value={user.allergies || "None"}
+                            color="#F59E0B"
+                        />
+                        <View style={styles.divider} />
+                        <ProfileItem
+                            icon="frown"
+                            title="Diseases"
+                            value={user.diseases || "None"}
+                            color="#6366F1"
                         />
                     </View>
                 </View>
