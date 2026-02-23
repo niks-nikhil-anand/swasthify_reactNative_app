@@ -81,6 +81,31 @@
         }
       }
     },
+    "react-native-image-picker": {
+      "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-image-picker",
+      "name": "react-native-image-picker",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-image-picker/react-native-image-picker.podspec",
+          "version": "8.2.1",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-image-picker/android",
+          "packageImportPath": "import com.imagepicker.ImagePickerPackage;",
+          "packageInstance": "new ImagePickerPackage()",
+          "buildTypes": [],
+          "libraryName": "RNImagePickerSpec",
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-image-picker/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-razorpay": {
       "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-razorpay",
       "name": "react-native-razorpay",
