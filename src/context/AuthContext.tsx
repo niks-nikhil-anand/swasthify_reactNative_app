@@ -15,6 +15,8 @@ export interface User {
     weight?: string;
     allergies?: string;
     diseases?: string;
+    notificationsEnabled?: string;
+    profilePic?: string;
 }
 
 interface AuthContextType {
@@ -25,6 +27,7 @@ interface AuthContextType {
     login: (token: string, userData: User) => Promise<void>;
     logout: () => Promise<void>;
     updateUser: (updatedData: Partial<User>) => Promise<void>;
+    refreshUser: () => Promise<void>;
     completeOnboarding: () => Promise<void>;
 }
 
@@ -36,6 +39,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
 
+    const flattenUserData = (userData: any): User => {
+        if (!userData) return userData;
+        const flattened = { ...userData };
+        if (userData.patient) {
+            Object.assign(flattened, userData.patient);
+            delete flattened.patient;
+        }
+        return flattened as User;
+    };
+
     useEffect(() => {
         const loadStoredAuth = async () => {
             try {
@@ -46,6 +59,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 if (storedToken && storedUser) {
                     setToken(storedToken);
                     setUser(JSON.parse(storedUser));
+
+                    // Refresh user data from server to get latest profilePic etc.
+                    apiClient.get('/api/auth/me').then(response => {
+                        if (response.data && response.data.user) {
+                            const newUserData = flattenUserData(response.data.user);
+                            setUser(newUserData);
+                            AsyncStorage.setItem('auth_user', JSON.stringify(newUserData));
+                        }
+                    }).catch(err => console.error('Initial user refresh failed:', err));
                 }
                 if (onboardingSeen === 'true') {
                     setHasSeenOnboarding(true);
@@ -69,12 +91,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const login = async (newToken: string, userData: User) => {
+    const login = async (newToken: string, userData: any) => {
         try {
+            const flattenedUser = flattenUserData(userData);
             await AsyncStorage.setItem('auth_token', newToken);
-            await AsyncStorage.setItem('auth_user', JSON.stringify(userData));
+            await AsyncStorage.setItem('auth_user', JSON.stringify(flattenedUser));
             setToken(newToken);
-            setUser(userData);
+            setUser(flattenedUser);
         } catch (error) {
             console.error('Failed to save auth data:', error);
             throw error;
@@ -91,6 +114,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
             console.error('Failed to update user data:', error);
             throw error;
+        }
+    };
+
+    const refreshUser = async () => {
+        try {
+            const response = await apiClient.get('/api/auth/me');
+            if (response.data && response.data.user) {
+                const flattenedUser = flattenUserData(response.data.user);
+                await updateUser(flattenedUser);
+            }
+        } catch (error) {
+            console.error('Failed to refresh user data:', error);
         }
     };
 
@@ -114,7 +149,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, isLoading, hasSeenOnboarding, login, logout, updateUser, completeOnboarding }}>
+        <AuthContext.Provider value={{ user, token, isLoading, hasSeenOnboarding, login, logout, updateUser, refreshUser, completeOnboarding }}>
             {children}
         </AuthContext.Provider>
     );
