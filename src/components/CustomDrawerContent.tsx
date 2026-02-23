@@ -12,6 +12,11 @@ import { useAuth } from '../context/AuthContext';
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const { navigation } = props;
     const { user, logout } = useAuth();
+    const [imgError, setImgError] = React.useState(false);
+
+    React.useEffect(() => {
+        setImgError(false);
+    }, [user?.profilePic]);
 
     const handleAuthAction = async () => {
         if (user) {
@@ -29,8 +34,9 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                     <View style={styles.profileContainer}>
                         <View style={styles.avatarWrapper}>
                             <Image
-                                source={require('../assets/user_avatar.png')}
+                                source={user && user.profilePic && !imgError ? { uri: user.profilePic } : require('../assets/user_avatar.png')}
                                 style={styles.profileImage}
+                                onError={() => setImgError(true)}
                             />
                             <View style={styles.onlineIndicator} />
                         </View>
