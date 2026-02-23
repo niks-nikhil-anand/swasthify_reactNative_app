@@ -11,7 +11,8 @@ import {
     StyleSheet,
     StatusBar,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { RootDrawerParamList } from '../navigation/types';
 import Feather from 'react-native-vector-icons/Feather';
 import { publicService, Campaign } from '../services/publicService';
 import CampaignCard from '../components/CampaignCard';
@@ -40,6 +41,9 @@ const SORT_OPTIONS = [
 
 const DoctorsScreen = () => {
     const navigation = useNavigation<any>();
+    const route = useRoute<RouteProp<RootDrawerParamList, 'Doctors'>>();
+    const initialQuery = route.params?.query || '';
+
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadingMore, setLoadingMore] = useState(false);
@@ -47,7 +51,7 @@ const DoctorsScreen = () => {
     const [hasMore, setHasMore] = useState(true);
 
     // Filters
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(initialQuery);
     const [selectedSpecialization, setSelectedSpecialization] = useState('All');
     const [sortBy, setSortBy] = useState('featured');
     const [showSortOptions, setShowSortOptions] = useState(false);
@@ -94,6 +98,13 @@ const DoctorsScreen = () => {
     useEffect(() => {
         fetchDoctors(1, true);
     }, [selectedSpecialization, sortBy]);
+
+    useEffect(() => {
+        if (route.params?.query !== undefined) {
+            setSearchQuery(route.params.query);
+            fetchDoctors(1, true);
+        }
+    }, [route.params?.query]);
 
     const handleSearchSubmit = () => {
         fetchDoctors(1, true);
