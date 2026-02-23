@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -16,16 +16,23 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
+import { launchImageLibrary } from 'react-native-image-picker';
 import { useAuth, User } from '../context/AuthContext';
 import { userService } from '../services/userService';
 
 const ProfileScreen = () => {
-    const { user, logout, updateUser } = useAuth();
+    const { user, logout, updateUser, refreshUser } = useAuth();
     const [phoneModalVisible, setPhoneModalVisible] = useState(false);
     const [emailModalVisible, setEmailModalVisible] = useState(false);
     const [nameModalVisible, setNameModalVisible] = useState(false);
     const [passwordModalVisible, setPasswordModalVisible] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [imgError, setImgError] = useState(false);
+
+    useEffect(() => {
+        setImgError(false);
+    }, [user?.profilePic]);
 
     // Form states
     const [newPhone, setNewPhone] = useState(user?.phone || '');
@@ -49,8 +56,55 @@ const ProfileScreen = () => {
 
     const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
     const genders = ['Male', 'Female', 'Other'];
+    const notificationOptions = ['Enabled', 'Disabled'];
 
     if (!user) return null;
+
+    const handleImagePick = async () => {
+        const options = {
+            mediaType: 'photo' as const,
+            quality: 0.8 as const,
+        };
+
+        try {
+            const result = await launchImageLibrary(options);
+
+            if (result.didCancel) return;
+
+            if (result.assets && result.assets.length > 0) {
+                const asset = result.assets[0];
+                if (!asset.uri) return;
+
+                setIsUploading(true);
+
+                // 1. Upload to S3
+                const formData = new FormData();
+                formData.append('file', {
+                    uri: Platform.OS === 'android' ? asset.uri : asset.uri.replace('file://', ''),
+                    type: asset.type || 'image/jpeg',
+                    name: asset.fileName || 'profile.jpg',
+                } as any);
+                formData.append('type', 'profile');
+
+                const uploadRes = await userService.uploadImage(formData);
+                const s3Url = uploadRes.url;
+
+                // 2. Update profile in database
+                await userService.updateProfilePic(s3Url);
+
+                // 3. Refresh user data from /api/auth/me (as suggested by user)
+                await refreshUser();
+                setImgError(false);
+
+                Alert.alert("Success", "Profile picture updated successfully");
+            }
+        } catch (err: any) {
+            console.error('Image pick/upload error:', err);
+            Alert.alert("Error", err.toString() || "Failed to update profile picture");
+        } finally {
+            setIsUploading(false);
+        }
+    };
 
     const handleUpdatePhone = async () => {
         if (newPhone.length !== 10 || isNaN(Number(newPhone))) {
@@ -235,11 +289,22 @@ const ProfileScreen = () => {
                 {/* Header Profile Section */}
                 <View style={styles.header}>
                     <View style={styles.avatarContainer}>
-                        <Image
-                            source={require('../assets/user_avatar.png')}
-                            style={styles.avatar}
-                        />
-                        <TouchableOpacity style={styles.editAvatarButton}>
+                        {isUploading ? (
+                            <View style={[styles.avatar, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#F1F5F9' }]}>
+                                <ActivityIndicator color="#0DA96E" />
+                            </View>
+                        ) : (
+                            <Image
+                                source={user.profilePic && !imgError ? { uri: user.profilePic } : require('../assets/user_avatar.png')}
+                                style={styles.avatar}
+                                onError={() => setImgError(true)}
+                            />
+                        )}
+                        <TouchableOpacity
+                            style={styles.editAvatarButton}
+                            onPress={handleImagePick}
+                            disabled={isUploading}
+                        >
                             <Feather name="camera" size={16} color="#FFFFFF" />
                         </TouchableOpacity>
                     </View>
@@ -359,9 +424,10 @@ const ProfileScreen = () => {
                         <View style={styles.divider} />
                         <ProfileItem
                             icon="bell"
-                            title="Notifications"
-                            value="Manage alerts"
+                            title="Notification Manager"
+                            value={user.notificationsEnabled || "Enabled"}
                             color="#EC4899"
+                            onPress={() => openEditModal('notificationsEnabled', 'Notification Manager', user.notificationsEnabled || 'Enabled', 'SELECT')}
                         />
                     </View>
                 </View>
@@ -637,21 +703,23 @@ const ProfileScreen = () => {
                             <View style={styles.inputGroup}>
                                 <Text style={styles.inputLabel}>Select {editingTitle}</Text>
                                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.selectionScroll}>
-                                    {(editingField === 'bloodGroup' ? bloodGroups : genders).map((option) => (
-                                        <TouchableOpacity
-                                            key={option}
-                                            style={[
-                                                styles.optionButton,
-                                                editingValue === option && styles.activeOptionButton
-                                            ]}
-                                            onPress={() => setEditingValue(option)}
-                                        >
-                                            <Text style={[
-                                                styles.optionText,
-                                                editingValue === option && styles.activeOptionText
-                                            ]}>{option}</Text>
-                                        </TouchableOpacity>
-                                    ))}
+                                    {(editingField === 'bloodGroup' ? bloodGroups :
+                                        editingField === 'notificationsEnabled' ? notificationOptions :
+                                            genders).map((option) => (
+                                                <TouchableOpacity
+                                                    key={option}
+                                                    style={[
+                                                        styles.optionButton,
+                                                        editingValue === option && styles.activeOptionButton
+                                                    ]}
+                                                    onPress={() => setEditingValue(option)}
+                                                >
+                                                    <Text style={[
+                                                        styles.optionText,
+                                                        editingValue === option && styles.activeOptionText
+                                                    ]}>{option}</Text>
+                                                </TouchableOpacity>
+                                            ))}
                                 </ScrollView>
                             </View>
                         )}

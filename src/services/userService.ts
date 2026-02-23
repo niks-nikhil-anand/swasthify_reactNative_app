@@ -48,5 +48,27 @@ export const userService = {
         } catch (error: any) {
             throw error.response?.data?.message || 'Failed to update profile';
         }
+    },
+
+    uploadImage: async (formData: FormData) => {
+        try {
+            const response = await apiClient.post('/api/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            return response.data;
+        } catch (error: any) {
+            throw error.response?.data?.message || 'Failed to upload image';
+        }
+    },
+
+    updateProfilePic: async (profilePic: string) => {
+        try {
+            const response = await apiClient.patch('/api/me/profile', { profilePic });
+            return response.data;
+        } catch (error: any) {
+            throw error.response?.data?.message || 'Failed to update profile picture';
+        }
     }
 };
