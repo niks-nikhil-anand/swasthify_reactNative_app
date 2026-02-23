@@ -2,13 +2,14 @@ import React, { useRef, useState } from 'react';
 import {
     View,
     Text,
-    SafeAreaView,
     FlatList,
     Image,
     Dimensions,
     TouchableOpacity,
     StyleSheet,
     Animated,
+    StatusBar,
+    SafeAreaView,
 } from 'react-native';
 import { useAuth } from '../context/AuthContext';
 import { RootDrawerParamList } from '../navigation/types';
@@ -21,20 +22,20 @@ const BRAND_GREEN = '#0DA96E';
 const SLIDES = [
     {
         id: '1',
-        title: 'Book OPD with Nearby Doctors',
+        title: 'Book OPD with \nNearby Doctors',
         description: 'Find and book appointments with top-rated doctors in your vicinity for quick and personalized consultations.',
         image: require('../assets/onboarding_doctor.png'),
     },
     {
         id: '2',
-        title: 'Lab Tests at Home',
-        description: 'Book diagnostic tests and full body checkups easily. Our professionals will collect samples from your doorstep.',
+        title: 'Lab Tests & \nDiagnostics',
+        description: 'Professional sample collection from your doorstep. Track results and get expert insights digitally.',
         image: require('../assets/onboarding_lab_test.png'),
     },
     {
         id: '3',
-        title: 'Digital Health Records',
-        description: 'Keep all your medical reports and ABHA records secure and accessible anytime, anywhere.',
+        title: 'Secure Digital \nHealth Records',
+        description: 'Keep your ABHA ID, reports, and prescriptions synchronized and secure in one place.',
         image: require('../assets/onboarding_health_records.png'),
     },
 ];
@@ -84,7 +85,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
                     const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
                     const dotWidth = scrollX.interpolate({
                         inputRange,
-                        outputRange: [10, 20, 10],
+                        outputRange: [10, 30, 10],
                         extrapolate: 'clamp',
                     });
                     const opacity = scrollX.interpolate({
@@ -108,16 +109,35 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={{ flex: 3 }}>
+        <View style={styles.container}>
+            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+
+            <SafeAreaView style={styles.safeArea}>
+                <TouchableOpacity
+                    style={styles.skipTop}
+                    onPress={handleSkip}
+                    activeOpacity={0.7}
+                >
+                    <Text style={styles.skipText}>Skip</Text>
+                </TouchableOpacity>
+
                 <FlatList
                     data={SLIDES}
                     renderItem={({ item }) => (
                         <View style={styles.slide}>
-                            <Image source={item.image} style={styles.image} resizeMode="contain" />
-                            <View style={styles.textContainer}>
-                                <Text style={styles.title}>{item.title}</Text>
-                                <Text style={styles.description}>{item.description}</Text>
+                            <View style={styles.imageContainer}>
+                                <Image
+                                    source={item.image}
+                                    style={styles.image}
+                                    resizeMode="contain"
+                                />
+                            </View>
+
+                            <View style={styles.contentContainer}>
+                                <View style={styles.card}>
+                                    <Text style={styles.title}>{item.title}</Text>
+                                    <Text style={styles.description}>{item.description}</Text>
+                                </View>
                             </View>
                         </View>
                     )}
@@ -134,24 +154,22 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
                     viewabilityConfig={viewConfig}
                     ref={slidesRef}
                 />
-            </View>
 
-            <View style={styles.footer}>
-                <Paginator />
+                <View style={styles.footer}>
+                    <Paginator />
 
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-                        <Text style={styles.skipText}>Skip</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                    <TouchableOpacity
+                        style={styles.nextButton}
+                        onPress={handleNext}
+                        activeOpacity={0.8}
+                    >
                         <Text style={styles.nextText}>
                             {currentIndex === SLIDES.length - 1 ? 'Get Started' : 'Next'}
                         </Text>
                     </TouchableOpacity>
                 </View>
-            </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </View>
     );
 };
 
@@ -159,79 +177,103 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#FFFFFF',
-        alignItems: 'center',
-        justifyContent: 'center',
+    },
+    safeArea: {
+        flex: 1,
+    },
+    skipTop: {
+        position: 'absolute',
+        top: 20,
+        right: 30,
+        zIndex: 10,
+        padding: 10,
     },
     slide: {
         width,
-        alignItems: 'center',
+        height: height * 0.85,
+    },
+    imageContainer: {
+        flex: 0.6,
         justifyContent: 'center',
-        paddingHorizontal: 40,
+        alignItems: 'center',
+        backgroundColor: '#FFFFFF',
+        paddingTop: 40,
     },
     image: {
-        width: width * 0.8,
-        height: height * 0.4,
-        marginBottom: 40,
+        width: width * 0.9,
+        height: '100%',
     },
-    textContainer: {
+    contentContainer: {
+        flex: 0.4,
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        paddingHorizontal: 20,
+    },
+    card: {
+        width: '100%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 40,
+        padding: 24,
         alignItems: 'center',
     },
     title: {
-        fontSize: 28,
+        fontSize: 32,
         fontWeight: '800',
         color: '#111827',
         textAlign: 'center',
         marginBottom: 16,
+        lineHeight: 40,
     },
     description: {
         fontSize: 16,
         color: '#6B7280',
         textAlign: 'center',
         lineHeight: 24,
+        paddingHorizontal: 10,
     },
     footer: {
-        flex: 1,
+        position: 'absolute',
+        bottom: 50,
+        left: 0,
+        right: 0,
+        paddingHorizontal: 32,
+        flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        width: '100%',
-        paddingBottom: 40,
+        alignItems: 'center',
     },
     paginatorContainer: {
         flexDirection: 'row',
-        height: 64,
+        height: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },
     dot: {
-        height: 10,
-        borderRadius: 5,
-        marginHorizontal: 8,
+        height: 8,
+        borderRadius: 4,
+        marginHorizontal: 4,
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+    nextButton: {
+        backgroundColor: BRAND_GREEN,
+        paddingHorizontal: 32,
+        height: 56,
+        borderRadius: 20,
+        justifyContent: 'center',
         alignItems: 'center',
+        shadowColor: BRAND_GREEN,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.3,
+        shadowRadius: 12,
+        elevation: 8,
     },
-    skipButton: {
-        padding: 20,
+    nextText: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        fontWeight: '700',
     },
     skipText: {
         color: '#6B7280',
         fontSize: 16,
         fontWeight: '600',
-    },
-    nextButton: {
-        backgroundColor: BRAND_GREEN,
-        paddingVertical: 15,
-        paddingHorizontal: 30,
-        borderRadius: 12,
-        minWidth: 120,
-        alignItems: 'center',
-    },
-    nextText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: '700',
     },
 });
 
