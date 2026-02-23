@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Dimensions } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootDrawerParamList } from '../navigation/types';
 import { Search } from 'lucide-react-native';
 import Animated, {
     useSharedValue,
@@ -12,6 +15,8 @@ import Animated, {
 const { width } = Dimensions.get('window');
 
 const DoctorSearchBar = () => {
+    const navigation = useNavigation<NativeStackNavigationProp<RootDrawerParamList>>();
+    const [searchQuery, setSearchQuery] = React.useState('');
     const opacity = useSharedValue(0);
     const translateY = useSharedValue(20);
 
@@ -24,6 +29,14 @@ const DoctorSearchBar = () => {
         opacity: opacity.value,
         transform: [{ translateY: translateY.value }],
     }));
+
+    const handleSearch = () => {
+        if (searchQuery.trim()) {
+            navigation.navigate('Doctors', { query: searchQuery.trim() });
+        } else {
+            navigation.navigate('Doctors');
+        }
+    };
 
     return (
         <View style={styles.outerContainer}>
@@ -42,9 +55,17 @@ const DoctorSearchBar = () => {
                         placeholder="Search doctors, specialities, symptoms..."
                         placeholderTextColor="#94a3b8"
                         style={styles.input}
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        onSubmitEditing={handleSearch}
+                        returnKeyType="search"
                     />
 
-                    <TouchableOpacity style={styles.searchButton} activeOpacity={0.8}>
+                    <TouchableOpacity
+                        style={styles.searchButton}
+                        activeOpacity={0.8}
+                        onPress={handleSearch}
+                    >
                         <Text style={styles.searchButtonText}>Search</Text>
                     </TouchableOpacity>
                 </View>
