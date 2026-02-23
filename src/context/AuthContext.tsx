@@ -8,6 +8,13 @@ interface User {
     email: string;
     role: string;
     phone?: string;
+    dob?: string;
+    gender?: string;
+    bloodGroup?: string;
+    height?: string;
+    weight?: string;
+    allergies?: string;
+    diseases?: string;
 }
 
 interface AuthContextType {
