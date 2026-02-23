@@ -24,19 +24,19 @@ const SLIDES = [
         id: '1',
         title: 'Book OPD with \nNearby Doctors',
         description: 'Find and book appointments with top-rated doctors in your vicinity for quick and personalized consultations.',
-        image: require('../assets/onboarding_doctor.png'),
+        image: require('../../public/onboarding/screen01.png'),
     },
     {
         id: '2',
         title: 'Lab Tests & \nDiagnostics',
         description: 'Professional sample collection from your doorstep. Track results and get expert insights digitally.',
-        image: require('../assets/onboarding_lab_test.png'),
+        image: require('../../public/onboarding/screen03.png'),
     },
     {
         id: '3',
         title: 'Secure Digital \nHealth Records',
         description: 'Keep your ABHA ID, reports, and prescriptions synchronized and secure in one place.',
-        image: require('../assets/onboarding_health_records.png'),
+        image: require('../../public/onboarding/screen02.png'),
     },
 ];
 
