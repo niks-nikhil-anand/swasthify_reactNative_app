@@ -16,7 +16,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, User } from '../context/AuthContext';
 import { userService } from '../services/userService';
 
 const ProfileScreen = () => {
@@ -36,6 +36,19 @@ const ProfileScreen = () => {
         new: '',
         confirm: ''
     });
+
+    // Generic Edit Modal states
+    const [editModalVisible, setEditModalVisible] = useState(false);
+    const [editingField, setEditingField] = useState<keyof User | null>(null);
+    const [editingTitle, setEditingTitle] = useState('');
+    const [editingValue, setEditingValue] = useState('');
+    const [modalType, setModalType] = useState<'TEXT' | 'SELECT' | 'DATE' | 'PHONE'>('TEXT');
+
+    // For DATE type
+    const [dobParts, setDobParts] = useState({ day: '', month: '', year: '' });
+
+    const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
+    const genders = ['Male', 'Female', 'Other'];
 
     if (!user) return null;
 
@@ -138,6 +151,58 @@ const ProfileScreen = () => {
         }
     };
 
+    const handleUpdateProfile = async (field: keyof User, value: string) => {
+        let finalValue = value;
+
+        if (field === 'phone') {
+            if (!value.startsWith('+91')) {
+                finalValue = '+91' + value;
+            }
+            if (finalValue.length !== 13) {
+                Alert.alert("Error", "Please enter a valid 10-digit mobile number");
+                return;
+            }
+        }
+
+        if (!finalValue.trim()) {
+            Alert.alert("Error", "Please enter a valid value");
+            return;
+        }
+
+        setIsSubmitting(true);
+        try {
+            await userService.updateProfile({ [field]: finalValue });
+            await updateUser({ [field]: finalValue });
+            Alert.alert("Success", "Profile updated successfully");
+            setEditModalVisible(false);
+        } catch (err: any) {
+            Alert.alert("Error", err.toString());
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const openEditModal = (field: keyof User, title: string, currentValue: string, type: 'TEXT' | 'SELECT' | 'DATE' | 'PHONE' = 'TEXT') => {
+        setEditingField(field);
+        setEditingTitle(title);
+        setModalType(type);
+
+        if (type === 'DATE') {
+            const parts = (currentValue || '').split('-');
+            setDobParts({
+                day: parts[0] || '',
+                month: parts[1] || '',
+                year: parts[2] || ''
+            });
+        } else if (type === 'PHONE') {
+            setEditingValue(currentValue.replace('+91', '') || '');
+        } else {
+            setEditingValue(currentValue || '');
+        }
+
+        setEditModalVisible(true);
+    };
+
     const ProfileItem = ({ icon, title, value, color = "#4B5563", onPress }: { icon: string, title: string, value: string, color?: string, onPress?: () => void }) => {
         const Content = (
             <View style={styles.itemContainer}>
@@ -207,7 +272,7 @@ const ProfileScreen = () => {
                             title="Phone Number"
                             value={user.phone || "Not provided"}
                             color="#F59E0B"
-                            onPress={() => setPhoneModalVisible(true)}
+                            onPress={() => openEditModal('phone', 'Phone Number', user.phone || '', 'PHONE')}
                         />
                     </View>
                 </View>
@@ -221,6 +286,7 @@ const ProfileScreen = () => {
                             title="Date of Birth"
                             value={user.dob || "Not set"}
                             color="#8B5CF6"
+                            onPress={() => openEditModal('dob', 'Date of Birth', user.dob || '', 'DATE')}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
@@ -228,6 +294,7 @@ const ProfileScreen = () => {
                             title="Gender"
                             value={user.gender || "Not set"}
                             color="#EC4899"
+                            onPress={() => openEditModal('gender', 'Gender', user.gender || '', 'SELECT')}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
@@ -235,6 +302,7 @@ const ProfileScreen = () => {
                             title="Blood Group"
                             value={user.bloodGroup || "Not set"}
                             color="#EF4444"
+                            onPress={() => openEditModal('bloodGroup', 'Blood Group', user.bloodGroup || '', 'SELECT')}
                         />
                     </View>
                 </View>
@@ -246,15 +314,17 @@ const ProfileScreen = () => {
                         <ProfileItem
                             icon="maximize-2"
                             title="Height"
-                            value={user.height || "Not set"}
+                            value={user.height ? `${user.height} ft.` : "Not set"}
                             color="#10B981"
+                            onPress={() => openEditModal('height', 'Height', user.height || '')}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
                             icon="activity"
                             title="Weight"
-                            value={user.weight || "Not set"}
+                            value={user.weight ? `${user.weight} kg` : "Not set"}
                             color="#3B82F6"
+                            onPress={() => openEditModal('weight', 'Weight', user.weight || '')}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
@@ -262,6 +332,7 @@ const ProfileScreen = () => {
                             title="Allergies"
                             value={user.allergies || "None"}
                             color="#F59E0B"
+                            onPress={() => openEditModal('allergies', 'Allergies', user.allergies || '')}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
@@ -269,6 +340,7 @@ const ProfileScreen = () => {
                             title="Diseases"
                             value={user.diseases || "None"}
                             color="#6366F1"
+                            onPress={() => openEditModal('diseases', 'Diseases', user.diseases || '')}
                         />
                     </View>
                 </View>
@@ -509,6 +581,137 @@ const ProfileScreen = () => {
                     </KeyboardAvoidingView>
                 </View>
             </Modal>
+            {/* Generic/Specialized Update Modal */}
+            <Modal
+                visible={editModalVisible}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setEditModalVisible(false)}
+            >
+                <View style={styles.modalOverlay}>
+                    <KeyboardAvoidingView
+                        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                        style={styles.modalContent}
+                    >
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Update {editingTitle}</Text>
+                            <TouchableOpacity onPress={() => setEditModalVisible(false)}>
+                                <Feather name="x" size={24} color="#64748B" />
+                            </TouchableOpacity>
+                        </View>
+
+                        {modalType === 'TEXT' && (
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputLabel}>{editingTitle} {editingField === 'height' ? '(ft.)' : editingField === 'weight' ? '(kg)' : ''}</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    value={editingValue}
+                                    onChangeText={setEditingValue}
+                                    placeholder={`Enter ${editingTitle.toLowerCase()}`}
+                                    keyboardType={editingField === 'height' || editingField === 'weight' ? 'decimal-pad' : 'default'}
+                                    multiline={editingField === 'allergies' || editingField === 'diseases'}
+                                />
+                            </View>
+                        )}
+
+                        {modalType === 'PHONE' && (
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputLabel}>Phone Number</Text>
+                                <View style={styles.phoneInputContainer}>
+                                    <View style={styles.prefixContainer}>
+                                        <Text style={styles.prefixText}>+91</Text>
+                                    </View>
+                                    <TextInput
+                                        style={[styles.input, { flex: 1, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }]}
+                                        value={editingValue}
+                                        onChangeText={setEditingValue}
+                                        placeholder="10 digit number"
+                                        keyboardType="phone-pad"
+                                        maxLength={10}
+                                    />
+                                </View>
+                            </View>
+                        )}
+
+                        {modalType === 'SELECT' && (
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputLabel}>Select {editingTitle}</Text>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.selectionScroll}>
+                                    {(editingField === 'bloodGroup' ? bloodGroups : genders).map((option) => (
+                                        <TouchableOpacity
+                                            key={option}
+                                            style={[
+                                                styles.optionButton,
+                                                editingValue === option && styles.activeOptionButton
+                                            ]}
+                                            onPress={() => setEditingValue(option)}
+                                        >
+                                            <Text style={[
+                                                styles.optionText,
+                                                editingValue === option && styles.activeOptionText
+                                            ]}>{option}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        )}
+
+                        {modalType === 'DATE' && (
+                            <View style={styles.inputGroup}>
+                                <Text style={styles.inputLabel}>Date of Birth (DD-MM-YYYY)</Text>
+                                <View style={styles.dateInputContainer}>
+                                    <TextInput
+                                        style={[styles.input, styles.dateInput]}
+                                        value={dobParts.day}
+                                        onChangeText={(v) => setDobParts({ ...dobParts, day: v })}
+                                        placeholder="DD"
+                                        keyboardType="number-pad"
+                                        maxLength={2}
+                                    />
+                                    <Text style={styles.dateSeparator}>-</Text>
+                                    <TextInput
+                                        style={[styles.input, styles.dateInput]}
+                                        value={dobParts.month}
+                                        onChangeText={(v) => setDobParts({ ...dobParts, month: v })}
+                                        placeholder="MM"
+                                        keyboardType="number-pad"
+                                        maxLength={2}
+                                    />
+                                    <Text style={styles.dateSeparator}>-</Text>
+                                    <TextInput
+                                        style={[styles.input, { flex: 1.5 }]}
+                                        value={dobParts.year}
+                                        onChangeText={(v) => setDobParts({ ...dobParts, year: v })}
+                                        placeholder="YYYY"
+                                        keyboardType="number-pad"
+                                        maxLength={4}
+                                    />
+                                </View>
+                            </View>
+                        )}
+
+                        <TouchableOpacity
+                            style={styles.modalButton}
+                            onPress={() => {
+                                if (modalType === 'DATE') {
+                                    handleUpdateProfile('dob', `${dobParts.day}-${dobParts.month}-${dobParts.year}`);
+                                } else if (modalType === 'PHONE') {
+                                    handleUpdateProfile('phone', editingValue);
+                                } else {
+                                    editingField && handleUpdateProfile(editingField, editingValue);
+                                }
+                            }}
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <ActivityIndicator color="#FFFFFF" />
+                            ) : (
+                                <Text style={styles.modalButtonText}>Update {editingTitle}</Text>
+                            )}
+                        </TouchableOpacity>
+                    </KeyboardAvoidingView>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -701,6 +904,64 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '700',
+    },
+    phoneInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    prefixContainer: {
+        backgroundColor: '#F1F5F9',
+        borderWidth: 1,
+        borderRightWidth: 0,
+        borderColor: '#E2E8F0',
+        borderTopLeftRadius: 12,
+        borderBottomLeftRadius: 12,
+        paddingHorizontal: 16,
+        height: 50,
+        justifyContent: 'center',
+    },
+    prefixText: {
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#1E293B',
+    },
+    selectionScroll: {
+        flexDirection: 'row',
+        marginTop: 8,
+    },
+    optionButton: {
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 20,
+        backgroundColor: '#F1F5F9',
+        marginRight: 10,
+        borderWidth: 1,
+        borderColor: '#E2E8F0',
+    },
+    activeOptionButton: {
+        backgroundColor: BRAND_GREEN,
+        borderColor: BRAND_GREEN,
+    },
+    optionText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#64748B',
+    },
+    activeOptionText: {
+        color: '#FFFFFF',
+    },
+    dateInputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    dateInput: {
+        flex: 1,
+    },
+    dateSeparator: {
+        fontSize: 18,
+        fontWeight: '700',
+        color: '#CBD5E1',
+        marginHorizontal: 8,
     },
 });
 
