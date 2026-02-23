@@ -19,6 +19,7 @@ import { HealthRecordsListSkeleton } from '../components/HealthRecordSkeleton';
 const { width } = Dimensions.get('window');
 const BRAND_GREEN = '#0DA96E';
 const STORAGE_LIMIT_MB = 1024; // 1 GB
+const MAX_FILE_SIZE_MB = 10;
 
 const HealthRecordsScreen = () => {
     const [records, setRecords] = useState<HealthRecord[]>([]);
@@ -71,8 +72,16 @@ const HealthRecordsScreen = () => {
             const res = await DocumentPicker.pick({
                 type: [DocumentPicker.types.pdf, DocumentPicker.types.images],
             });
-            setSelectedFile(res[0]);
-            if (!title) setTitle(res[0].name || '');
+            const file = res[0];
+
+            // File size validation (10MB limit)
+            if (file.size && file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+                Alert.alert('Error', `File size exceeds the ${MAX_FILE_SIZE_MB}MB limit`);
+                return;
+            }
+
+            setSelectedFile(file);
+            if (!title) setTitle(file.name || '');
         } catch (err) {
             if (!DocumentPicker.isCancel(err)) {
                 console.error(err);
@@ -173,7 +182,7 @@ const HealthRecordsScreen = () => {
                     </View>
                 ) : (
                     records.map((record) => {
-                        const styles = getCategoryStyles(record.category);
+                        const styles = getCategoryStyles(record.category || 'Other');
                         return (
                             <TouchableOpacity
                                 key={record.id}
@@ -195,7 +204,7 @@ const HealthRecordsScreen = () => {
                                             style={{ backgroundColor: styles.bg }}
                                         >
                                             <Text className="text-[10px] font-bold" style={{ color: styles.color }}>
-                                                {record.category.toUpperCase()}
+                                                {(record.category || 'Other').toUpperCase()}
                                             </Text>
                                         </View>
                                     </View>
@@ -207,10 +216,14 @@ const HealthRecordsScreen = () => {
                                         <Text className="text-gray-400 text-[10px] ml-1 mr-3">
                                             {new Date(record.createdAt).toLocaleDateString()}
                                         </Text>
-                                        <Feather name="hard-drive" size={12} color="#9CA3AF" />
-                                        <Text className="text-gray-400 text-[10px] ml-1">
-                                            {record.sizeMb.toFixed(2)} MB
-                                        </Text>
+                                        {record.sizeMb !== undefined && (
+                                            <>
+                                                <Feather name="hard-drive" size={12} color="#9CA3AF" />
+                                                <Text className="text-gray-400 text-[10px] ml-1">
+                                                    {record.sizeMb.toFixed(2)} MB
+                                                </Text>
+                                            </>
+                                        )}
                                     </View>
                                 </View>
                                 <Feather name="chevron-right" size={20} color="#D1D5DB" className="ml-2" />
