@@ -3,10 +3,10 @@ import apiClient from '../api/apiClient';
 export interface HealthRecord {
     id: string;
     title: string;
-    description: string | null;
-    category: 'Prescription' | 'Lab Report' | 'Vaccination' | 'Imaging (X-Ray/MRI)' | 'Other';
+    description?: string | null;
+    category?: 'Prescription' | 'Lab Report' | 'Vaccination' | 'Imaging (X-Ray/MRI)' | 'Other';
     fileUrl: string;
-    sizeMb: number;
+    sizeMb?: number;
     uploadedBy: string;
     createdAt: string;
 }
