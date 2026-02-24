@@ -15,6 +15,7 @@ import {
     Alert,
     ActivityIndicator,
 } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import Feather from 'react-native-vector-icons/Feather';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useAuth, User } from '../context/AuthContext';
@@ -22,6 +23,8 @@ import { userService } from '../services/userService';
 
 const ProfileScreen = () => {
     const { user, logout, updateUser, refreshUser } = useAuth();
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
     const [phoneModalVisible, setPhoneModalVisible] = useState(false);
     const [emailModalVisible, setEmailModalVisible] = useState(false);
     const [nameModalVisible, setNameModalVisible] = useState(false);
@@ -264,10 +267,10 @@ const ProfileScreen = () => {
                     <Feather name={icon} size={20} color={color} />
                 </View>
                 <View style={styles.itemContent}>
-                    <Text style={styles.itemTitle}>{title}</Text>
-                    <Text style={styles.itemValue}>{value}</Text>
+                    <Text style={[styles.itemTitle, isDark && styles.textGray400]}>{title}</Text>
+                    <Text style={[styles.itemValue, isDark && styles.textWhite]}>{value}</Text>
                 </View>
-                <Feather name="chevron-right" size={20} color="#CBD5E1" />
+                <Feather name="chevron-right" size={20} color={isDark ? "#4B5563" : "#CBD5E1"} />
             </View>
         );
 
@@ -283,11 +286,11 @@ const ProfileScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <SafeAreaView style={[styles.container, isDark && styles.bgBackground]}>
+            <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={isDark ? "#020817" : "#FFFFFF"} />
             <ScrollView showsVerticalScrollIndicator={false}>
                 {/* Header Profile Section */}
-                <View style={styles.header}>
+                <View style={[styles.header, isDark && styles.headerDark]}>
                     <View style={styles.avatarContainer}>
                         {isUploading ? (
                             <View style={[styles.avatar, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#F1F5F9' }]}>
@@ -301,21 +304,21 @@ const ProfileScreen = () => {
                             />
                         )}
                         <TouchableOpacity
-                            style={styles.editAvatarButton}
+                            style={[styles.editAvatarButton, isDark && { borderColor: '#1E293B' }]}
                             onPress={handleImagePick}
                             disabled={isUploading}
                         >
                             <Feather name="camera" size={16} color="#FFFFFF" />
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.userName}>{user.name}</Text>
-                    <Text style={styles.userRole}>Account</Text>
+                    <Text style={[styles.userName, isDark && styles.textWhite]}>{user.name}</Text>
+                    <Text style={[styles.userRole, isDark && styles.textGray400]}>Account</Text>
                 </View>
 
                 {/* Account Information */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Account Information</Text>
-                    <View style={styles.card}>
+                    <Text style={[styles.sectionTitle, isDark && styles.textGray400]}>Account Information</Text>
+                    <View style={[styles.card, isDark && styles.cardDark]}>
                         <ProfileItem
                             icon="user"
                             title="Full Name"
@@ -323,7 +326,7 @@ const ProfileScreen = () => {
                             color="#0DA96E"
                             onPress={() => setNameModalVisible(true)}
                         />
-                        <View style={styles.divider} />
+                        <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
                             icon="mail"
                             title="Email Address"
@@ -331,7 +334,7 @@ const ProfileScreen = () => {
                             color="#3B82F6"
                             onPress={() => setEmailModalVisible(true)}
                         />
-                        <View style={styles.divider} />
+                        <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
                             icon="phone"
                             title="Phone Number"
@@ -344,8 +347,8 @@ const ProfileScreen = () => {
 
                 {/* Personal Information */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Personal Information</Text>
-                    <View style={styles.card}>
+                    <Text style={[styles.sectionTitle, isDark && styles.textGray400]}>Personal Information</Text>
+                    <View style={[styles.card, isDark && styles.cardDark]}>
                         <ProfileItem
                             icon="calendar"
                             title="Date of Birth"
@@ -374,8 +377,8 @@ const ProfileScreen = () => {
 
                 {/* Health Metrics */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Health Metrics</Text>
-                    <View style={styles.card}>
+                    <Text style={[styles.sectionTitle, isDark && styles.textGray400]}>Health Metrics</Text>
+                    <View style={[styles.card, isDark && styles.cardDark]}>
                         <ProfileItem
                             icon="maximize-2"
                             title="Height"
@@ -383,7 +386,7 @@ const ProfileScreen = () => {
                             color="#10B981"
                             onPress={() => openEditModal('height', 'Height', user.height || '')}
                         />
-                        <View style={styles.divider} />
+                        <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
                             icon="activity"
                             title="Weight"
@@ -391,7 +394,7 @@ const ProfileScreen = () => {
                             color="#3B82F6"
                             onPress={() => openEditModal('weight', 'Weight', user.weight || '')}
                         />
-                        <View style={styles.divider} />
+                        <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
                             icon="alert-circle"
                             title="Allergies"
@@ -399,7 +402,7 @@ const ProfileScreen = () => {
                             color="#F59E0B"
                             onPress={() => openEditModal('allergies', 'Allergies', user.allergies || '')}
                         />
-                        <View style={styles.divider} />
+                        <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
                             icon="frown"
                             title="Diseases"
@@ -412,8 +415,8 @@ const ProfileScreen = () => {
 
                 {/* Settings Section */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Settings & Privacy</Text>
-                    <View style={styles.card}>
+                    <Text style={[styles.sectionTitle, isDark && styles.textGray400]}>Settings & Privacy</Text>
+                    <View style={[styles.card, isDark && styles.cardDark]}>
                         <ProfileItem
                             icon="lock"
                             title="Change Password"
@@ -421,7 +424,7 @@ const ProfileScreen = () => {
                             color="#6366F1"
                             onPress={() => setPasswordModalVisible(true)}
                         />
-                        <View style={styles.divider} />
+                        <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
                             icon="bell"
                             title="Notification Manager"
@@ -434,15 +437,15 @@ const ProfileScreen = () => {
 
                 {/* Logout Button */}
                 <TouchableOpacity
-                    style={styles.logoutButton}
+                    style={[styles.logoutButton, isDark && styles.logoutButtonDark]}
                     onPress={logout}
                 >
                     <Feather name="log-out" size={20} color="#EF4444" />
-                    <Text style={styles.logoutText}>Log Out</Text>
+                    <Text style={[styles.logoutText, isDark && { color: '#EF4444' }]}>Log Out</Text>
                 </TouchableOpacity>
 
                 <View style={styles.versionContainer}>
-                    <Text style={styles.versionText}>Swasthify v1.0.0</Text>
+                    <Text style={[styles.versionText, isDark && styles.textGray400]}>Swasthify v1.0.0</Text>
                 </View>
             </ScrollView>
 
@@ -459,20 +462,21 @@ const ProfileScreen = () => {
                         style={styles.modalContent}
                     >
                         <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Update Phone Number</Text>
+                            <Text style={[styles.modalTitle, isDark && styles.textWhite]}>Update Phone Number</Text>
                             <TouchableOpacity onPress={() => setPhoneModalVisible(false)}>
-                                <Feather name="x" size={24} color="#64748B" />
+                                <Feather name="x" size={24} color={isDark ? "#94A3B8" : "#64748B"} />
                             </TouchableOpacity>
                         </View>
 
                         <View style={styles.inputGroup}>
-                            <Text style={styles.inputLabel}>Mobile Number</Text>
+                            <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Mobile Number</Text>
                             <TextInput
-                                style={styles.input}
+                                style={[styles.input, isDark && styles.inputDark]}
                                 value={newPhone}
                                 onChangeText={setNewPhone}
                                 keyboardType="phone-pad"
                                 placeholder="Enter mobile number"
+                                placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
                             />
                         </View>
 
@@ -501,59 +505,63 @@ const ProfileScreen = () => {
                 <View style={styles.modalOverlay}>
                     <KeyboardAvoidingView
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={styles.modalContent}
                     >
-                        <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Change Password</Text>
-                            <TouchableOpacity onPress={() => setPasswordModalVisible(false)}>
-                                <Feather name="x" size={24} color="#64748B" />
+                        <View style={[styles.modalContent, isDark && styles.modalContentDark]}>
+                            <View style={styles.modalHeader}>
+                                <Text style={[styles.modalTitle, isDark && styles.textWhite]}>Change Password</Text>
+                                <TouchableOpacity onPress={() => setPasswordModalVisible(false)}>
+                                    <Feather name="x" size={24} color={isDark ? "#94A3B8" : "#64748B"} />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Current Password</Text>
+                                <TextInput
+                                    style={[styles.input, isDark && styles.inputDark]}
+                                    value={passwords.current}
+                                    onChangeText={(text) => setPasswords({ ...passwords, current: text })}
+                                    secureTextEntry
+                                    placeholder="Enter current password"
+                                    placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                />
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={[styles.inputLabel, isDark && styles.textGray400]}>New Password</Text>
+                                <TextInput
+                                    style={[styles.input, isDark && styles.inputDark]}
+                                    value={passwords.new}
+                                    onChangeText={(text) => setPasswords({ ...passwords, new: text })}
+                                    secureTextEntry
+                                    placeholder="Enter new password"
+                                    placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                />
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Confirm New Password</Text>
+                                <TextInput
+                                    style={[styles.input, isDark && styles.inputDark]}
+                                    value={passwords.confirm}
+                                    onChangeText={(text) => setPasswords({ ...passwords, confirm: text })}
+                                    secureTextEntry
+                                    placeholder="Confirm new password"
+                                    placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                />
+                            </View>
+
+                            <TouchableOpacity
+                                style={[styles.modalButton, { backgroundColor: '#6366F1' }]}
+                                onPress={handleChangePassword}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <ActivityIndicator color="#FFFFFF" />
+                                ) : (
+                                    <Text style={styles.modalButtonText}>Change Password</Text>
+                                )}
                             </TouchableOpacity>
                         </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputLabel}>Current Password</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={passwords.current}
-                                onChangeText={(text) => setPasswords({ ...passwords, current: text })}
-                                secureTextEntry
-                                placeholder="Enter current password"
-                            />
-                        </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputLabel}>New Password</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={passwords.new}
-                                onChangeText={(text) => setPasswords({ ...passwords, new: text })}
-                                secureTextEntry
-                                placeholder="Enter new password"
-                            />
-                        </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputLabel}>Confirm New Password</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={passwords.confirm}
-                                onChangeText={(text) => setPasswords({ ...passwords, confirm: text })}
-                                secureTextEntry
-                                placeholder="Confirm new password"
-                            />
-                        </View>
-
-                        <TouchableOpacity
-                            style={[styles.modalButton, { backgroundColor: '#6366F1' }]}
-                            onPress={handleChangePassword}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <ActivityIndicator color="#FFFFFF" />
-                            ) : (
-                                <Text style={styles.modalButtonText}>Change Password</Text>
-                            )}
-                        </TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View>
             </Modal>
@@ -568,36 +576,38 @@ const ProfileScreen = () => {
                 <View style={styles.modalOverlay}>
                     <KeyboardAvoidingView
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={styles.modalContent}
                     >
-                        <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Update Full Name</Text>
-                            <TouchableOpacity onPress={() => setNameModalVisible(false)}>
-                                <Feather name="x" size={24} color="#64748B" />
+                        <View style={[styles.modalContent, isDark && styles.modalContentDark]}>
+                            <View style={styles.modalHeader}>
+                                <Text style={[styles.modalTitle, isDark && styles.textWhite]}>Update Full Name</Text>
+                                <TouchableOpacity onPress={() => setNameModalVisible(false)}>
+                                    <Feather name="x" size={24} color={isDark ? "#94A3B8" : "#64748B"} />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Full Name</Text>
+                                <TextInput
+                                    style={[styles.input, isDark && styles.inputDark]}
+                                    value={newName}
+                                    onChangeText={setNewName}
+                                    placeholder="Enter full name"
+                                    placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                />
+                            </View>
+
+                            <TouchableOpacity
+                                style={[styles.modalButton, { backgroundColor: '#0DA96E' }]}
+                                onPress={handleUpdateName}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <ActivityIndicator color="#FFFFFF" />
+                                ) : (
+                                    <Text style={styles.modalButtonText}>Update Name</Text>
+                                )}
                             </TouchableOpacity>
                         </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputLabel}>Full Name</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={newName}
-                                onChangeText={setNewName}
-                                placeholder="Enter full name"
-                            />
-                        </View>
-
-                        <TouchableOpacity
-                            style={[styles.modalButton, { backgroundColor: '#0DA96E' }]}
-                            onPress={handleUpdateName}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <ActivityIndicator color="#FFFFFF" />
-                            ) : (
-                                <Text style={styles.modalButtonText}>Update Name</Text>
-                            )}
-                        </TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View>
             </Modal>
@@ -612,38 +622,40 @@ const ProfileScreen = () => {
                 <View style={styles.modalOverlay}>
                     <KeyboardAvoidingView
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={styles.modalContent}
                     >
-                        <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Update Email Address</Text>
-                            <TouchableOpacity onPress={() => setEmailModalVisible(false)}>
-                                <Feather name="x" size={24} color="#64748B" />
+                        <View style={[styles.modalContent, isDark && styles.modalContentDark]}>
+                            <View style={styles.modalHeader}>
+                                <Text style={[styles.modalTitle, isDark && styles.textWhite]}>Update Email Address</Text>
+                                <TouchableOpacity onPress={() => setEmailModalVisible(false)}>
+                                    <Feather name="x" size={24} color={isDark ? "#94A3B8" : "#64748B"} />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Email Address</Text>
+                                <TextInput
+                                    style={[styles.input, isDark && styles.inputDark]}
+                                    value={newEmail}
+                                    onChangeText={setNewEmail}
+                                    keyboardType="email-address"
+                                    placeholder="Enter new email address"
+                                    placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                    autoCapitalize="none"
+                                />
+                            </View>
+
+                            <TouchableOpacity
+                                style={[styles.modalButton, { backgroundColor: '#3B82F6' }]}
+                                onPress={handleUpdateEmail}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <ActivityIndicator color="#FFFFFF" />
+                                ) : (
+                                    <Text style={styles.modalButtonText}>Update Email</Text>
+                                )}
                             </TouchableOpacity>
                         </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={styles.inputLabel}>Email Address</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={newEmail}
-                                onChangeText={setNewEmail}
-                                keyboardType="email-address"
-                                placeholder="Enter new email address"
-                                autoCapitalize="none"
-                            />
-                        </View>
-
-                        <TouchableOpacity
-                            style={[styles.modalButton, { backgroundColor: '#3B82F6' }]}
-                            onPress={handleUpdateEmail}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <ActivityIndicator color="#FFFFFF" />
-                            ) : (
-                                <Text style={styles.modalButtonText}>Update Email</Text>
-                            )}
-                        </TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View>
             </Modal>
@@ -657,126 +669,133 @@ const ProfileScreen = () => {
                 <View style={styles.modalOverlay}>
                     <KeyboardAvoidingView
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={styles.modalContent}
                     >
-                        <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Update {editingTitle}</Text>
-                            <TouchableOpacity onPress={() => setEditModalVisible(false)}>
-                                <Feather name="x" size={24} color="#64748B" />
-                            </TouchableOpacity>
-                        </View>
-
-                        {modalType === 'TEXT' && (
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputLabel}>{editingTitle} {editingField === 'height' ? '(ft.)' : editingField === 'weight' ? '(kg)' : ''}</Text>
-                                <TextInput
-                                    style={styles.input}
-                                    value={editingValue}
-                                    onChangeText={setEditingValue}
-                                    placeholder={`Enter ${editingTitle.toLowerCase()}`}
-                                    keyboardType={editingField === 'height' || editingField === 'weight' ? 'decimal-pad' : 'default'}
-                                    multiline={editingField === 'allergies' || editingField === 'diseases'}
-                                />
+                        <View style={[styles.modalContent, isDark && styles.modalContentDark]}>
+                            <View style={styles.modalHeader}>
+                                <Text style={[styles.modalTitle, isDark && styles.textWhite]}>Update {editingTitle}</Text>
+                                <TouchableOpacity onPress={() => setEditModalVisible(false)}>
+                                    <Feather name="x" size={24} color={isDark ? "#94A3B8" : "#64748B"} />
+                                </TouchableOpacity>
                             </View>
-                        )}
 
-                        {modalType === 'PHONE' && (
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputLabel}>Phone Number</Text>
-                                <View style={styles.phoneInputContainer}>
-                                    <View style={styles.prefixContainer}>
-                                        <Text style={styles.prefixText}>+91</Text>
-                                    </View>
+                            {modalType === 'TEXT' && (
+                                <View style={styles.inputGroup}>
+                                    <Text style={[styles.inputLabel, isDark && styles.textGray400]}>{editingTitle} {editingField === 'height' ? '(ft.)' : editingField === 'weight' ? '(kg)' : ''}</Text>
                                     <TextInput
-                                        style={[styles.input, { flex: 1, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }]}
+                                        style={[styles.input, isDark && styles.inputDark]}
                                         value={editingValue}
                                         onChangeText={setEditingValue}
-                                        placeholder="10 digit number"
-                                        keyboardType="phone-pad"
-                                        maxLength={10}
+                                        placeholder={`Enter ${editingTitle.toLowerCase()}`}
+                                        placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                        keyboardType={editingField === 'height' || editingField === 'weight' ? 'decimal-pad' : 'default'}
+                                        multiline={editingField === 'allergies' || editingField === 'diseases'}
                                     />
                                 </View>
-                            </View>
-                        )}
-
-                        {modalType === 'SELECT' && (
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputLabel}>Select {editingTitle}</Text>
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.selectionScroll}>
-                                    {(editingField === 'bloodGroup' ? bloodGroups :
-                                        editingField === 'notificationsEnabled' ? notificationOptions :
-                                            genders).map((option) => (
-                                                <TouchableOpacity
-                                                    key={option}
-                                                    style={[
-                                                        styles.optionButton,
-                                                        editingValue === option && styles.activeOptionButton
-                                                    ]}
-                                                    onPress={() => setEditingValue(option)}
-                                                >
-                                                    <Text style={[
-                                                        styles.optionText,
-                                                        editingValue === option && styles.activeOptionText
-                                                    ]}>{option}</Text>
-                                                </TouchableOpacity>
-                                            ))}
-                                </ScrollView>
-                            </View>
-                        )}
-
-                        {modalType === 'DATE' && (
-                            <View style={styles.inputGroup}>
-                                <Text style={styles.inputLabel}>Date of Birth (DD-MM-YYYY)</Text>
-                                <View style={styles.dateInputContainer}>
-                                    <TextInput
-                                        style={[styles.input, styles.dateInput]}
-                                        value={dobParts.day}
-                                        onChangeText={(v) => setDobParts({ ...dobParts, day: v })}
-                                        placeholder="DD"
-                                        keyboardType="number-pad"
-                                        maxLength={2}
-                                    />
-                                    <Text style={styles.dateSeparator}>-</Text>
-                                    <TextInput
-                                        style={[styles.input, styles.dateInput]}
-                                        value={dobParts.month}
-                                        onChangeText={(v) => setDobParts({ ...dobParts, month: v })}
-                                        placeholder="MM"
-                                        keyboardType="number-pad"
-                                        maxLength={2}
-                                    />
-                                    <Text style={styles.dateSeparator}>-</Text>
-                                    <TextInput
-                                        style={[styles.input, { flex: 1.5 }]}
-                                        value={dobParts.year}
-                                        onChangeText={(v) => setDobParts({ ...dobParts, year: v })}
-                                        placeholder="YYYY"
-                                        keyboardType="number-pad"
-                                        maxLength={4}
-                                    />
-                                </View>
-                            </View>
-                        )}
-
-                        <TouchableOpacity
-                            style={styles.modalButton}
-                            onPress={() => {
-                                if (modalType === 'DATE') {
-                                    handleUpdateProfile('dob', `${dobParts.day}-${dobParts.month}-${dobParts.year}`);
-                                } else if (modalType === 'PHONE') {
-                                    handleUpdateProfile('phone', editingValue);
-                                } else {
-                                    editingField && handleUpdateProfile(editingField, editingValue);
-                                }
-                            }}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <ActivityIndicator color="#FFFFFF" />
-                            ) : (
-                                <Text style={styles.modalButtonText}>Update {editingTitle}</Text>
                             )}
-                        </TouchableOpacity>
+
+                            {modalType === 'PHONE' && (
+                                <View style={styles.inputGroup}>
+                                    <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Phone Number</Text>
+                                    <View style={styles.phoneInputContainer}>
+                                        <View style={[styles.prefixContainer, isDark && styles.prefixContainerDark]}>
+                                            <Text style={[styles.prefixText, isDark && styles.textWhite]}>+91</Text>
+                                        </View>
+                                        <TextInput
+                                            style={[styles.input, isDark && styles.inputDark, { flex: 1, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }]}
+                                            value={editingValue}
+                                            onChangeText={setEditingValue}
+                                            placeholder="10 digit number"
+                                            placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                            keyboardType="phone-pad"
+                                            maxLength={10}
+                                        />
+                                    </View>
+                                </View>
+                            )}
+
+                            {modalType === 'SELECT' && (
+                                <View style={styles.inputGroup}>
+                                    <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Select {editingTitle}</Text>
+                                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.selectionScroll}>
+                                        {(editingField === 'bloodGroup' ? bloodGroups :
+                                            editingField === 'notificationsEnabled' ? notificationOptions :
+                                                genders).map((option) => (
+                                                    <TouchableOpacity
+                                                        key={option}
+                                                        style={[
+                                                            styles.optionButton,
+                                                            isDark && styles.optionButtonDark,
+                                                            editingValue === option && styles.activeOptionButton
+                                                        ]}
+                                                        onPress={() => setEditingValue(option)}
+                                                    >
+                                                        <Text style={[
+                                                            styles.optionText,
+                                                            editingValue === option && styles.activeOptionText
+                                                        ]}>{option}</Text>
+                                                    </TouchableOpacity>
+                                                ))}
+                                    </ScrollView>
+                                </View>
+                            )}
+
+                            {modalType === 'DATE' && (
+                                <View style={styles.inputGroup}>
+                                    <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Date of Birth (DD-MM-YYYY)</Text>
+                                    <View style={styles.dateInputContainer}>
+                                        <TextInput
+                                            style={[styles.input, isDark && styles.inputDark, styles.dateInput]}
+                                            value={dobParts.day}
+                                            onChangeText={(v) => setDobParts({ ...dobParts, day: v })}
+                                            placeholder="DD"
+                                            placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                            keyboardType="number-pad"
+                                            maxLength={2}
+                                        />
+                                        <Text style={styles.dateSeparator}>-</Text>
+                                        <TextInput
+                                            style={[styles.input, isDark && styles.inputDark, styles.dateInput]}
+                                            value={dobParts.month}
+                                            onChangeText={(v) => setDobParts({ ...dobParts, month: v })}
+                                            placeholder="MM"
+                                            placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                            keyboardType="number-pad"
+                                            maxLength={2}
+                                        />
+                                        <Text style={styles.dateSeparator}>-</Text>
+                                        <TextInput
+                                            style={[styles.input, isDark && styles.inputDark, { flex: 1.5 }]}
+                                            value={dobParts.year}
+                                            onChangeText={(v) => setDobParts({ ...dobParts, year: v })}
+                                            placeholder="YYYY"
+                                            placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                            keyboardType="number-pad"
+                                            maxLength={4}
+                                        />
+                                    </View>
+                                </View>
+                            )}
+
+                            <TouchableOpacity
+                                style={styles.modalButton}
+                                onPress={() => {
+                                    if (modalType === 'DATE') {
+                                        handleUpdateProfile('dob', `${dobParts.day}-${dobParts.month}-${dobParts.year}`);
+                                    } else if (modalType === 'PHONE') {
+                                        handleUpdateProfile('phone', editingValue);
+                                    } else {
+                                        editingField && handleUpdateProfile(editingField, editingValue);
+                                    }
+                                }}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <ActivityIndicator color="#FFFFFF" />
+                                ) : (
+                                    <Text style={styles.modalButtonText}>Update {editingTitle}</Text>
+                                )}
+                            </TouchableOpacity>
+                        </View>
                     </KeyboardAvoidingView>
                 </View>
             </Modal>
@@ -1030,6 +1049,46 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#CBD5E1',
         marginHorizontal: 8,
+    },
+    bgBackground: {
+        backgroundColor: '#020817',
+    },
+    headerDark: {
+        backgroundColor: '#111827',
+    },
+    textWhite: {
+        color: '#F9FAFB',
+    },
+    textGray400: {
+        color: '#94A3B8',
+    },
+    cardDark: {
+        backgroundColor: '#111827',
+        borderColor: '#1F2937',
+        borderWidth: 1,
+    },
+    dividerDark: {
+        backgroundColor: '#1F2937',
+    },
+    logoutButtonDark: {
+        backgroundColor: '#111827',
+        borderColor: '#7F1D1D',
+    },
+    modalContentDark: {
+        backgroundColor: '#111827',
+    },
+    inputDark: {
+        backgroundColor: '#1F2937',
+        borderColor: '#374151',
+        color: '#F9FAFB',
+    },
+    prefixContainerDark: {
+        backgroundColor: '#1F2937',
+        borderColor: '#374151',
+    },
+    optionButtonDark: {
+        backgroundColor: '#1F2937',
+        borderColor: '#374151',
     },
 });
 

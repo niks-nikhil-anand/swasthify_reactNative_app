@@ -10,9 +10,11 @@ import {
     ActivityIndicator,
     StyleSheet,
     StatusBar,
+    Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
+import { useColorScheme } from 'nativewind';
 import { publicService, Campaign } from '../services/publicService';
 import CampaignCard from '../components/CampaignCard';
 import { CampaignListSkeleton } from '../components/CampaignSkeleton';
@@ -35,6 +37,8 @@ const SORT_OPTIONS = [
 ];
 
 const LabsScreen = () => {
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
     const navigation = useNavigation<any>();
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
@@ -107,12 +111,12 @@ const LabsScreen = () => {
         <>
             <View style={styles.headerContainer}>
                 <View style={styles.searchContainer}>
-                    <View style={styles.searchInputWrapper}>
-                        <Feather name="search" size={20} color="#6B7280" />
+                    <View style={[styles.searchInputWrapper, isDark && styles.searchInputWrapperDark]}>
+                        <Feather name="search" size={20} color={isDark ? "#94A3B8" : "#6B7280"} />
                         <TextInput
-                            style={styles.searchInput}
+                            style={[styles.searchInput, isDark && styles.textWhite]}
                             placeholder="Search tests, labs..."
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={isDark ? "#64748B" : "#9CA3AF"}
                             value={searchQuery}
                             onChangeText={setSearchQuery}
                             onSubmitEditing={handleSearchSubmit}
@@ -120,28 +124,29 @@ const LabsScreen = () => {
                         />
                         {searchQuery.length > 0 && (
                             <TouchableOpacity onPress={() => { setSearchQuery(''); fetchLabs(1, true); }}>
-                                <Feather name="x" size={18} color="#6B7280" />
+                                <Feather name="x" size={18} color={isDark ? "#94A3B8" : "#6B7280"} />
                             </TouchableOpacity>
                         )}
                     </View>
                     <TouchableOpacity
-                        style={[styles.sortButton, sortBy !== 'featured' && styles.sortButtonActive]}
+                        style={[styles.sortButton, isDark && styles.sortButtonDark, sortBy !== 'featured' && (isDark ? styles.sortButtonActiveDark : styles.sortButtonActive)]}
                         onPress={() => setShowSortOptions(!showSortOptions)}
                     >
-                        <Feather name="sliders" size={20} color={sortBy !== 'featured' ? '#0DA96E' : '#374151'} />
+                        <Feather name="sliders" size={20} color={sortBy !== 'featured' ? BRAND_GREEN : (isDark ? '#94A3B8' : '#374151')} />
                     </TouchableOpacity>
                 </View>
 
                 {showSortOptions && (
-                    <View style={styles.sortOptionsCard}>
-                        <Text style={styles.sortTitle}>Sort By</Text>
+                    <View style={[styles.sortOptionsCard, isDark && styles.sortOptionsCardDark]}>
+                        <Text style={[styles.sortTitle, isDark && styles.textWhite]}>Sort By</Text>
                         <View style={styles.sortOptionsGrid}>
                             {SORT_OPTIONS.map((option) => (
                                 <TouchableOpacity
                                     key={option.value}
                                     style={[
                                         styles.sortOption,
-                                        sortBy === option.value && styles.sortOptionSelected
+                                        isDark && styles.sortOptionDark,
+                                        sortBy === option.value && (isDark ? styles.sortOptionSelectedDark : styles.sortOptionSelected)
                                     ]}
                                     onPress={() => {
                                         setSortBy(option.value);
@@ -150,6 +155,7 @@ const LabsScreen = () => {
                                 >
                                     <Text style={[
                                         styles.sortOptionText,
+                                        isDark && styles.textZinc400,
                                         sortBy === option.value && styles.sortOptionTextSelected
                                     ]}>
                                         {option.label}
@@ -161,7 +167,7 @@ const LabsScreen = () => {
                 )}
 
                 <View style={styles.resultsHeader}>
-                    <Text style={styles.resultsCount}>
+                    <Text style={[styles.resultsCount, isDark && styles.textWhite]}>
                         {campaigns.length} {campaigns.length === 1 ? 'Lab Test' : 'Lab Tests'} found
                     </Text>
                 </View>
@@ -177,12 +183,14 @@ const LabsScreen = () => {
                         key={cat}
                         style={[
                             styles.catChip,
+                            isDark && styles.catChipDark,
                             selectedCategory === cat && styles.catChipSelected
                         ]}
                         onPress={() => setSelectedCategory(cat)}
                     >
                         <Text style={[
                             styles.catChipText,
+                            isDark && styles.textZinc400,
                             selectedCategory === cat && styles.catChipTextSelected
                         ]}>
                             {cat}
@@ -207,11 +215,11 @@ const LabsScreen = () => {
         if (loading) return null;
         return (
             <View style={styles.emptyContainer}>
-                <View style={styles.emptyIconContainer}>
-                    <Feather name="activity" size={48} color="#0DA96E" style={{ opacity: 0.2 }} />
+                <View style={[styles.emptyIconContainer, isDark && styles.emptyIconContainerDark]}>
+                    <Feather name="activity" size={48} color={BRAND_GREEN} style={{ opacity: 0.2 }} />
                 </View>
-                <Text style={styles.emptyTitle}>No tests found</Text>
-                <Text style={styles.emptySubtitle}>
+                <Text style={[styles.emptyTitle, isDark && styles.textWhite]}>No tests found</Text>
+                <Text style={[styles.emptySubtitle, isDark && styles.textZinc400]}>
                     Try adjusting your filters or search terms
                 </Text>
                 <TouchableOpacity
@@ -230,8 +238,8 @@ const LabsScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+        <SafeAreaView style={[styles.container, isDark && styles.containerDark]}>
+            <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={isDark ? "#09090b" : "#FFFFFF"} />
             <FlatList
                 data={campaigns}
                 renderItem={({ item }) => (
@@ -263,6 +271,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFFFFF',
     },
+    containerDark: {
+        backgroundColor: '#09090b',
+    },
     listContent: {
         paddingBottom: 40,
     },
@@ -286,6 +297,9 @@ const styles = StyleSheet.create({
         height: 52,
         marginRight: 12,
     },
+    searchInputWrapperDark: {
+        backgroundColor: '#18181b',
+    },
     searchInput: {
         flex: 1,
         marginLeft: 10,
@@ -301,8 +315,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    sortButtonDark: {
+        backgroundColor: '#18181b',
+    },
     sortButtonActive: {
         backgroundColor: '#D1F2E2',
+    },
+    sortButtonActiveDark: {
+        backgroundColor: '#064e3b',
     },
     categoryList: {
         paddingHorizontal: 20,
@@ -316,6 +336,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#E5E7EB',
         marginRight: 10,
+    },
+    catChipDark: {
+        backgroundColor: '#18181b',
+        borderColor: '#27272a',
     },
     catChipSelected: {
         backgroundColor: '#0DA96E',
@@ -366,6 +390,10 @@ const styles = StyleSheet.create({
         shadowRadius: 12,
         elevation: 4,
     },
+    sortOptionsCardDark: {
+        backgroundColor: '#18181b',
+        borderColor: '#27272a',
+    },
     sortTitle: {
         fontSize: 16,
         fontWeight: '700',
@@ -383,8 +411,14 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: '#F3F4F6',
     },
+    sortOptionDark: {
+        backgroundColor: '#27272a',
+    },
     sortOptionSelected: {
         backgroundColor: '#D1F2E2',
+    },
+    sortOptionSelectedDark: {
+        backgroundColor: '#064e3b',
     },
     sortOptionText: {
         fontSize: 13,
@@ -408,6 +442,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 20,
     },
+    emptyIconContainerDark: {
+        backgroundColor: '#18181b',
+    },
     emptyTitle: {
         fontSize: 20,
         fontWeight: '700',
@@ -430,6 +467,12 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontWeight: '700',
         fontSize: 15,
+    },
+    textWhite: {
+        color: '#FFFFFF',
+    },
+    textZinc400: {
+        color: '#A1A1AA',
     },
 });
 
