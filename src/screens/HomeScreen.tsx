@@ -15,7 +15,7 @@ import LabSection from '../components/LabSection';
 
 const HomeScreen = () => {
     return (
-        <SafeAreaView className="flex-1 bg-background">
+        <SafeAreaView className="flex-1 bg-background dark:bg-zinc-950">
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <Hero />
                 <DoctorSearchBar />

@@ -20,8 +20,12 @@ import Feather from 'react-native-vector-icons/Feather';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useAuth, User } from '../context/AuthContext';
 import { userService } from '../services/userService';
+import { DrawerScreenProps } from '@react-navigation/drawer';
+import { RootDrawerParamList } from '../navigation/types';
 
-const ProfileScreen = () => {
+type Props = DrawerScreenProps<RootDrawerParamList, 'Profile'>;
+
+const ProfileScreen = ({ navigation }: Props) => {
     const { user, logout, updateUser, refreshUser } = useAuth();
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';
@@ -62,6 +66,17 @@ const ProfileScreen = () => {
     const notificationOptions = ['Enabled', 'Disabled'];
 
     if (!user) return null;
+
+    const handleLogout = async () => {
+        try {
+            await logout();
+            navigation.navigate('SignIn');
+        } catch (error) {
+            console.error('Logout failed:', error);
+            // Ensure navigation happens even if API fails
+            navigation.navigate('SignIn');
+        }
+    };
 
     const handleImagePick = async () => {
         const options = {
@@ -438,7 +453,7 @@ const ProfileScreen = () => {
                 {/* Logout Button */}
                 <TouchableOpacity
                     style={[styles.logoutButton, isDark && styles.logoutButtonDark]}
-                    onPress={logout}
+                    onPress={handleLogout}
                 >
                     <Feather name="log-out" size={20} color="#EF4444" />
                     <Text style={[styles.logoutText, isDark && { color: '#EF4444' }]}>Log Out</Text>
