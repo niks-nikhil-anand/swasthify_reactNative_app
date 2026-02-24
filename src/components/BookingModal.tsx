@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import RazorpayCheckout from 'react-native-razorpay';
+import { useColorScheme } from 'nativewind';
 import { Campaign } from '../services/publicService';
 import { appointmentService } from '../services/appointmentService';
 
@@ -26,6 +27,9 @@ interface BookingModalProps {
 }
 
 const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign }) => {
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
+
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
     const [loadingStep, setLoadingStep] = useState<'idle' | 'reserving' | 'ordering' | 'verifying'>('idle');
@@ -182,23 +186,23 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
     if (isSuccess) {
         return (
             <Modal visible={visible} animationType="slide" transparent>
-                <View style={styles.modalOverlay}>
-                    <View style={styles.successContainer}>
+                <View style={[styles.modalOverlay, isDark && styles.modalOverlayDark]}>
+                    <View style={[styles.successContainer, isDark && styles.successContainerDark]}>
                         <View style={styles.successIcon}>
                             <Feather name="check" size={40} color="white" />
                         </View>
-                        <Text style={styles.successTitle}>Booking Confirmed!</Text>
-                        <Text style={styles.successSubtitle}>
+                        <Text style={[styles.successTitle, isDark && styles.textWhite]}>Booking Confirmed!</Text>
+                        <Text style={[styles.successSubtitle, isDark && styles.textZinc400]}>
                             Your appointment with {campaign.source === 'lab' ? campaign.lab?.user?.name : `Dr. ${campaign.doctor?.user?.name}`} has been successfully booked.
                         </Text>
-                        <View style={styles.successDetails}>
+                        <View style={[styles.successDetails, isDark && styles.successDetailsDark]}>
                             <View style={styles.successDetailRow}>
-                                <Feather name="calendar" size={16} color="#6B7280" />
-                                <Text style={styles.successDetailText}>{selectedDate}</Text>
+                                <Feather name="calendar" size={16} color={isDark ? "#94A3B8" : "#6B7280"} />
+                                <Text style={[styles.successDetailText, isDark && styles.textZinc200]}>{selectedDate}</Text>
                             </View>
                             <View style={styles.successDetailRow}>
-                                <Feather name="clock" size={16} color="#6B7280" />
-                                <Text style={styles.successDetailText}>{selectedSlot}</Text>
+                                <Feather name="clock" size={16} color={isDark ? "#94A3B8" : "#6B7280"} />
+                                <Text style={[styles.successDetailText, isDark && styles.textZinc200]}>{selectedSlot}</Text>
                             </View>
                         </View>
                         <TouchableOpacity style={styles.doneButton} onPress={onClose}>
@@ -212,24 +216,24 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
 
     return (
         <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
-            <View style={styles.modalOverlay}>
-                <View style={styles.modalContent}>
+            <View style={[styles.modalOverlay, isDark && styles.modalOverlayDark]}>
+                <View style={[styles.modalContent, isDark && styles.modalContentDark]}>
                     {/* Header */}
-                    <View style={styles.header}>
-                        <Text style={styles.headerTitle}>Select Slot</Text>
+                    <View style={[styles.header, isDark && styles.headerDark]}>
+                        <Text style={[styles.headerTitle, isDark && styles.textWhite]}>Select Slot</Text>
                         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                            <Feather name="x" size={24} color="#111827" />
+                            <Feather name="x" size={24} color={isDark ? "#94A3B8" : "#111827"} />
                         </TouchableOpacity>
                     </View>
 
                     <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                         {/* Doctor Info Mini */}
-                        <View style={styles.doctorInfoShort}>
-                            <View style={styles.doctorAvatar}>
+                        <View style={[styles.doctorInfoShort, isDark && styles.doctorInfoShortDark]}>
+                            <View style={[styles.doctorAvatar, isDark && styles.doctorAvatarDark]}>
                                 <Feather name={(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab' ? "activity" : "user"} size={24} color={BRAND_GREEN} />
                             </View>
                             <View>
-                                <Text style={styles.drName}>
+                                <Text style={[styles.drName, isDark && styles.textWhite]}>
                                     {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab'
                                         ? campaign.lab?.user?.name
                                         : (() => {
@@ -237,7 +241,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                                             return n.toLowerCase().startsWith('dr') ? n : `Dr. ${n}`;
                                         })()}
                                 </Text>
-                                <Text style={styles.drSpec}>
+                                <Text style={[styles.drSpec, isDark && styles.textZinc400]}>
                                     {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab'
                                         ? 'Diagnostic Center'
                                         : campaign.doctor?.specializations?.map(s => s.name).join(', ') || 'Specialist'}
@@ -246,50 +250,52 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                         </View>
 
                         {/* Date Selection */}
-                        <Text style={styles.sectionTitle}>Available Dates</Text>
+                        <Text style={[styles.sectionTitle, isDark && styles.textWhite]}>Available Dates</Text>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.datesGrid}>
                             {availableDates.map((item) => (
                                 <TouchableOpacity
                                     key={item.full}
                                     style={[
                                         styles.dateChip,
+                                        isDark && styles.dateChipDark,
                                         selectedDate === item.full && styles.dateChipActive
                                     ]}
                                     onPress={() => setSelectedDate(item.full)}
                                 >
-                                    <Text style={[styles.dayName, selectedDate === item.full && styles.textWhite]}>{item.dayName}</Text>
-                                    <Text style={[styles.dayNum, selectedDate === item.full && styles.textWhite]}>{item.day}</Text>
-                                    <Text style={[styles.monthName, selectedDate === item.full && styles.textWhite]}>{item.month}</Text>
+                                    <Text style={[styles.dayName, isDark && styles.textZinc400, selectedDate === item.full && styles.textWhite]}>{item.dayName}</Text>
+                                    <Text style={[styles.dayNum, isDark && styles.textWhite, selectedDate === item.full && styles.textWhite]}>{item.day}</Text>
+                                    <Text style={[styles.monthName, isDark && styles.textZinc500, selectedDate === item.full && styles.textWhite]}>{item.month}</Text>
                                 </TouchableOpacity>
                             ))}
                         </ScrollView>
 
                         {/* Time Slots */}
-                        <Text style={styles.sectionTitle}>Available Slots</Text>
+                        <Text style={[styles.sectionTitle, isDark && styles.textWhite]}>Available Slots</Text>
                         <View style={styles.slotsGrid}>
                             {timeSlots.map((slot) => (
                                 <TouchableOpacity
                                     key={slot}
                                     style={[
                                         styles.slotChip,
+                                        isDark && styles.slotChipDark,
                                         selectedSlot === slot && styles.slotChipActive
                                     ]}
                                     onPress={() => setSelectedSlot(slot)}
                                 >
-                                    <Text style={[styles.slotText, selectedSlot === slot && styles.textWhite]}>{slot}</Text>
+                                    <Text style={[styles.slotText, isDark && styles.textZinc300, selectedSlot === slot && styles.textWhite]}>{slot}</Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
                     </ScrollView>
 
                     {/* Footer / Action */}
-                    <View style={styles.modalFooter}>
+                    <View style={[styles.modalFooter, isDark && styles.modalFooterDark]}>
                         <View>
-                            <Text style={styles.footerLabel}>Consultation Fee</Text>
-                            <Text style={styles.footerPrice}>₹{campaign.price}</Text>
+                            <Text style={[styles.footerLabel, isDark && styles.textZinc500]}>Consultation Fee</Text>
+                            <Text style={[styles.footerPrice, isDark && styles.textWhite]}>₹{campaign.price}</Text>
                         </View>
                         <TouchableOpacity
-                            style={[styles.confirmButton, (!selectedDate || !selectedSlot) && styles.buttonDisabled]}
+                            style={[styles.confirmButton, isDark && styles.confirmButtonDark, (!selectedDate || !selectedSlot) && styles.buttonDisabled]}
                             onPress={handleBooking}
                             disabled={loadingStep !== 'idle' || !selectedDate || !selectedSlot}
                         >
@@ -305,9 +311,9 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
 
             {/* Global Loading Overlay for Steps */}
             {loadingStep !== 'idle' && (
-                <View style={styles.loadingOverlay}>
+                <View style={[styles.loadingOverlay, isDark && styles.loadingOverlayDark]}>
                     <ActivityIndicator size="large" color={BRAND_GREEN} />
-                    <Text style={styles.loadingText}>
+                    <Text style={[styles.loadingText, isDark && styles.textWhite]}>
                         {loadingStep === 'reserving' && 'Reserving your slot...'}
                         {loadingStep === 'ordering' && 'Initializing payment...'}
                         {loadingStep === 'verifying' && 'Finalizing appointment...'}
@@ -324,12 +330,18 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)',
         justifyContent: 'flex-end',
     },
+    modalOverlayDark: {
+        backgroundColor: 'rgba(0,0,0,0.8)',
+    },
     modalContent: {
         backgroundColor: 'white',
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
         maxHeight: height * 0.8,
         paddingBottom: Platform.OS === 'ios' ? 40 : 20,
+    },
+    modalContentDark: {
+        backgroundColor: '#09090b', // zinc-950
     },
     header: {
         flexDirection: 'row',
@@ -338,6 +350,9 @@ const styles = StyleSheet.create({
         padding: 24,
         borderBottomWidth: 1,
         borderBottomColor: '#F3F4F6',
+    },
+    headerDark: {
+        borderBottomColor: '#18181b', // zinc-900
     },
     headerTitle: {
         fontSize: 20,
@@ -358,6 +373,9 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 20,
     },
+    doctorInfoShortDark: {
+        backgroundColor: '#18181b', // zinc-900
+    },
     doctorAvatar: {
         width: 48,
         height: 48,
@@ -366,6 +384,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 16,
+    },
+    doctorAvatarDark: {
+        backgroundColor: '#064e3b', // emerald-900
     },
     drName: {
         fontSize: 16,
@@ -398,6 +419,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderWidth: 1,
         borderColor: '#E5E7EB',
+    },
+    dateChipDark: {
+        backgroundColor: '#18181b',
+        borderColor: '#27272a',
     },
     dateChipActive: {
         backgroundColor: BRAND_GREEN,
@@ -433,6 +458,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#E5E7EB',
     },
+    slotChipDark: {
+        backgroundColor: '#18181b',
+        borderColor: '#27272a',
+    },
     slotChipActive: {
         backgroundColor: BRAND_GREEN,
         borderColor: BRAND_GREEN,
@@ -445,6 +474,18 @@ const styles = StyleSheet.create({
     textWhite: {
         color: 'white',
     },
+    textZinc200: {
+        color: '#e4e4e7',
+    },
+    textZinc300: {
+        color: '#d4d4d8',
+    },
+    textZinc400: {
+        color: '#a1a1aa',
+    },
+    textZinc500: {
+        color: '#71717a',
+    },
     modalFooter: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -453,6 +494,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
         borderTopWidth: 1,
         borderTopColor: '#F3F4F6',
+    },
+    modalFooterDark: {
+        borderTopColor: '#18181b',
+        backgroundColor: '#09090b',
     },
     footerLabel: {
         fontSize: 10,
@@ -474,6 +519,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         minWidth: 160,
     },
+    confirmButtonDark: {
+        backgroundColor: '#10b981', // emerald-500
+    },
     buttonDisabled: {
         opacity: 0.5,
     },
@@ -489,6 +537,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         zIndex: 100,
     },
+    loadingOverlayDark: {
+        backgroundColor: 'rgba(9, 9, 11, 0.9)',
+    },
     loadingText: {
         marginTop: 16,
         fontSize: 16,
@@ -503,6 +554,9 @@ const styles = StyleSheet.create({
         width: width * 0.85,
         alignSelf: 'center',
         marginTop: height * 0.2,
+    },
+    successContainerDark: {
+        backgroundColor: '#09090b',
     },
     successIcon: {
         width: 80,
@@ -532,6 +586,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 20,
         marginBottom: 32,
+    },
+    successDetailsDark: {
+        backgroundColor: '#18181b',
     },
     successDetailRow: {
         flexDirection: 'row',

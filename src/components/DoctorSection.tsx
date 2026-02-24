@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import { useNavigation } from '@react-navigation/native';
 import { publicService, Campaign } from '../services/publicService';
 import CampaignCard from './CampaignCard';
@@ -10,6 +11,8 @@ const PAGE_SIZE = 4;
 
 const DoctorSection = () => {
     const navigation = useNavigation<any>();
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -68,8 +71,8 @@ const DoctorSection = () => {
                     Find experienced doctors across all specialties for personalized in-person care.
                 </Text>
                 <TouchableOpacity className="self-end border border-gray-100 dark:border-slate-700 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800">
-                                    <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold text-[10px]">See All {'>'}</Text>
-                                </TouchableOpacity>
+                    <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold text-[10px]">See All {'>'}</Text>
+                </TouchableOpacity>
             </View>
 
             <FlatList
@@ -95,7 +98,7 @@ const DoctorSection = () => {
                                 width: i + 1 === page ? 22 : 7,
                                 height: 7,
                                 borderRadius: 10,
-                                backgroundColor: i + 1 === page ? '#0DA96E' : '#D1D5DB',
+                                backgroundColor: i + 1 === page ? '#0DA96E' : (isDark ? '#4B5563' : '#D1D5DB'),
                             }} />
                         </TouchableOpacity>
                     ))}
