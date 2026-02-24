@@ -45,30 +45,30 @@ const FAQScreen = () => {
     const navigation = useNavigation<NavigationProp>();
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white dark:bg-zinc-950">
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 {/* ═══════════════ HERO SECTION ═══════════════ */}
-                <View className="relative w-full py-16 overflow-hidden bg-[#0DA96E]/5">
+                <View className="relative w-full py-16 overflow-hidden bg-[#0DA96E]/5 dark:bg-[#0DA96E]/10">
                     {/* Decorative circle */}
                     <View className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-[#0DA96E]/10 rounded-full opacity-50" />
 
                     <View className="px-4 items-center relative z-10">
                         {/* Badge */}
                         <View className="px-4 py-1.5 rounded-full bg-[#0DA96E]/10 mb-6">
-                            <Text className="text-[#0DA96E] font-medium text-sm">
+                            <Text className="text-[#0DA96E] dark:text-[#10B981] font-medium text-sm">
                                 Help Center
                             </Text>
                         </View>
 
                         {/* Title */}
-                        <Text className="text-3xl font-bold tracking-tight mb-6 text-center text-gray-900">
+                        <Text className="text-3xl font-bold tracking-tight mb-6 text-center text-gray-900 dark:text-white">
                             Got questions?{'\n'}
                             <Text className="text-[#0DA96E] font-extrabold italic">We've got answers</Text>
                         </Text>
 
                         {/* Subtitle */}
-                        <Text className="text-base text-gray-500 text-center leading-relaxed max-w-lg">
+                        <Text className="text-base text-gray-500 dark:text-zinc-400 text-center leading-relaxed max-w-lg">
                             Everything you need to know about our platform, services, and how we help you stay healthy.
                         </Text>
                     </View>
@@ -78,9 +78,9 @@ const FAQScreen = () => {
                 <View className="px-4 py-12">
                     <View className="gap-4">
                         {faqData.map((faq, i) => (
-                            <View key={i} className="bg-white rounded-xl border border-gray-300/50 p-5 shadow-sm">
-                                <Text className="text-base font-bold text-gray-900 mb-2">{faq.q}</Text>
-                                <Text className="text-sm text-gray-500 leading-relaxed">{faq.a}</Text>
+                            <View key={i} className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-300/50 dark:border-zinc-800 p-5 shadow-sm">
+                                <Text className="text-base font-bold text-gray-900 dark:text-white mb-2">{faq.q}</Text>
+                                <Text className="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">{faq.a}</Text>
                             </View>
                         ))}
                     </View>
@@ -88,11 +88,11 @@ const FAQScreen = () => {
 
                 {/* ═══════════════ CTA SECTION ═══════════════ */}
                 <View className="px-4 py-8">
-                    <View className="bg-[#0DA96E]/5 rounded-2xl border border-[#0DA96E]/10 p-8 items-center">
-                        <Text className="text-xl font-bold text-center mb-3 text-gray-900">
+                    <View className="bg-[#0DA96E]/5 dark:bg-[#0DA96E]/10 rounded-2xl border border-[#0DA96E]/10 dark:border-[#0DA96E]/20 p-8 items-center">
+                        <Text className="text-xl font-bold text-center mb-3 text-gray-900 dark:text-white">
                             Still have questions?
                         </Text>
-                        <Text className="text-sm text-gray-500 text-center leading-6 mb-6 px-2">
+                        <Text className="text-sm text-gray-500 dark:text-zinc-400 text-center leading-6 mb-6 px-2">
                             Can't find the answer you're looking for? Our support team is here to help you with any queries or concerns you might have.
                         </Text>
                         <View className="flex-row items-center">
@@ -106,9 +106,9 @@ const FAQScreen = () => {
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => navigation.navigate('About')}
-                                className="border border-gray-300 px-6 py-3 rounded-lg"
+                                className="border border-gray-300 dark:border-zinc-700 px-6 py-3 rounded-lg"
                             >
-                                <Text className="text-gray-900 font-semibold text-sm">About Us</Text>
+                                <Text className="text-gray-900 dark:text-zinc-200 font-semibold text-sm">About Us</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
