@@ -10,6 +10,11 @@ const AbhaIdSection = () => {
             >
                 <View className="flex-row items-center p-6 pb-4">
                     <View className="flex-1 pr-4">
+                        <View className="bg-amber-100 dark:bg-amber-900/30 self-start px-2 py-0.5 rounded-full mb-2 border border-amber-200 dark:border-amber-800">
+                            <Text className="text-amber-700 dark:text-amber-400 text-[8px] font-black uppercase tracking-widest">
+                                Coming Soon
+                            </Text>
+                        </View>
                         <View className="bg-[#0DA96E]/10 dark:bg-[#064E3B] self-start px-2 py-1 rounded-md mb-2">
                             <Text className="text-[#0DA96E] dark:text-[#48C496] text-[10px] font-bold tracking-wider uppercase">
                                 Ayushman Bharat Digital Mission
