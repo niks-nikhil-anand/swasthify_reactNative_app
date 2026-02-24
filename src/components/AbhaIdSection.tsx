@@ -5,20 +5,20 @@ const AbhaIdSection = () => {
     return (
         <View className="px-4 my-5">
             <View
-                className="bg-[#E7FAF2] rounded-[32px] overflow-hidden shadow-sm border border-[#D1F2E2]"
+                className="bg-[#E7FAF2] dark:bg-[#064E3B]/20 rounded-[32px] overflow-hidden shadow-sm border border-[#D1F2E2] dark:border-[#064E3B]/40"
                 style={{ elevation: 2 }}
             >
                 <View className="flex-row items-center p-6 pb-4">
                     <View className="flex-1 pr-4">
-                        <View className="bg-[#0DA96E]/10 self-start px-2 py-1 rounded-md mb-2">
-                            <Text className="text-[#0DA96E] text-[10px] font-bold tracking-wider uppercase">
+                        <View className="bg-[#0DA96E]/10 dark:bg-[#064E3B] self-start px-2 py-1 rounded-md mb-2">
+                            <Text className="text-[#0DA96E] dark:text-[#48C496] text-[10px] font-bold tracking-wider uppercase">
                                 Ayushman Bharat Digital Mission
                             </Text>
                         </View>
-                        <Text className="text-xl font-bold text-[#111827] mb-1">
+                        <Text className="text-xl font-bold text-[#111827] dark:text-white mb-1">
                             Your ABHA ID is your key
                         </Text>
-                        <Text className="text-[#0DA96E] font-bold text-lg mb-2">
+                        <Text className="text-[#0DA96E] dark:text-[#10B981] font-bold text-lg mb-2">
                             to smarter healthcare.
                         </Text>
                     </View>
@@ -30,7 +30,7 @@ const AbhaIdSection = () => {
                 </View>
 
                 <View className="px-6 pb-6">
-                    <Text className="text-[#4B5563] leading-5 mb-6 text-sm">
+                    <Text className="text-[#4B5563] dark:text-gray-400 leading-5 mb-6 text-sm">
                         Create your Ayushman Bharat Health Account (ABHA) ID to store and share your health records digitally and securely.
                     </Text>
 
@@ -42,9 +42,9 @@ const AbhaIdSection = () => {
                         <Text className="text-white text-lg">→</Text>
                     </TouchableOpacity>
 
-                    <View className="flex-row justify-between mt-4 border-t border-gray-200 pt-4">
+                    <View className="flex-row justify-between mt-4 border-t border-gray-200 dark:border-slate-800 pt-4">
                         <View className="flex-row items-center">
-                            <Text className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">Secure • Portable • Paperless</Text>
+                            <Text className="text-gray-400 dark:text-slate-500 text-[10px] uppercase font-bold tracking-widest">Secure • Portable • Paperless</Text>
                         </View>
                     </View>
                 </View>
