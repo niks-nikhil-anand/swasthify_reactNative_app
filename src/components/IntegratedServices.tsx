@@ -74,7 +74,7 @@ const IntegratedServices = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootDrawerParamList>>();
 
     return (
-        <View className="px-4 py-10 bg-white dark:bg-card">
+        <View className="px-4 py-10 bg-white dark:bg-zinc-950">
             <View className="mb-8">
                 <View className="flex-row flex-wrap items-center mb-3">
                     <View className="bg-[#D1F2E2] dark:bg-[#064E3B] px-2.5 py-1 rounded-lg mr-2">
