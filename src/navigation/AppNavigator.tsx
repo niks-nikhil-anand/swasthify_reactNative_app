@@ -18,6 +18,7 @@ import AppointmentsScreen from '../screens/AppointmentsScreen';
 import HealthRecordsScreen from '../screens/HealthRecordsScreen';
 import SpecialitiesScreen from '../screens/SpecialitiesScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
+import PackageDetailScreen from '../screens/PackageDetailScreen';
 import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -254,6 +255,14 @@ const AppNavigator = () => {
                 component={SpecialitiesScreen}
                 options={{
                     title: 'Our Specialities',
+                    drawerItemStyle: { display: 'none' },
+                }}
+            />
+            <Drawer.Screen
+                name="PackageDetail"
+                component={PackageDetailScreen}
+                options={{
+                    headerShown: false,
                     drawerItemStyle: { display: 'none' },
                 }}
             />
