@@ -13,19 +13,19 @@ interface Speciality {
 
 const SpecialityCard = ({ speciality, onPress }: { speciality: Speciality, onPress?: () => void }) => (
     <TouchableOpacity
-        className="bg-white dark:bg-slate-800 p-2.5 rounded-[20px] border border-gray-100 dark:border-slate-700 shadow-sm w-[31.5%] items-center mb-4"
+        className="bg-white dark:bg-slate-800 p-2.5 rounded-[24px] border border-gray-100 dark:border-slate-700 shadow-sm w-full items-center"
         style={{ elevation: 2 }}
         onPress={onPress}
         activeOpacity={0.7}
     >
-        <View className={`w-16 h-16 rounded-full mb-2 overflow-hidden items-center justify-center ${speciality.color} dark:bg-opacity-20`}>
+        <View className={`w-16 h-16 rounded-full mb-3 overflow-hidden items-center justify-center ${speciality.color} dark:bg-opacity-20 border border-gray-100 dark:border-slate-700`}>
             <Image
                 source={speciality.image}
-                className="w-full h-full"
+                className="w-full h-full rounded-full"
                 resizeMode="cover"
             />
         </View>
-        <Text className="text-[10px] font-bold text-[#111827] dark:text-white text-center mb-0.5" numberOfLines={2}>
+        <Text className="text-[10px] font-extrabold text-[#111827] dark:text-white text-center mb-1" numberOfLines={2}>
             {speciality.title}
         </Text>
         <Text className="text-[#6B7280] dark:text-gray-400 text-[8px] text-center">
@@ -95,13 +95,14 @@ const Specialities = () => {
                 </TouchableOpacity>
             </View>
 
-            <View className="flex-row flex-wrap justify-between px-4">
+            <View className="flex-row flex-wrap px-2">
                 {specialities.map((item, index) => (
-                    <SpecialityCard
-                        key={index}
-                        speciality={item}
-                        onPress={() => navigation.navigate('Doctors')}
-                    />
+                    <View key={index} className="w-1/3 p-1.5">
+                        <SpecialityCard
+                            speciality={item}
+                            onPress={() => navigation.navigate('Doctors')}
+                        />
+                    </View>
                 ))}
             </View>
         </View>
