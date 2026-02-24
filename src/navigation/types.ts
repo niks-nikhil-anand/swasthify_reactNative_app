@@ -9,7 +9,7 @@ export type RootDrawerParamList = {
     Contact: undefined;
     Pricing: undefined;
     FAQ: undefined;
-    Doctors: undefined;
+    Doctors: { query?: string } | undefined;
     Labs: undefined;
     Appointments: undefined;
     HealthRecords: undefined;
