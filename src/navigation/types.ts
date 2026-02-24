@@ -16,6 +16,14 @@ export type RootDrawerParamList = {
     Profile: undefined;
     CampaignDetail: { id: string };
     Specialities: undefined;
+    PackageDetail: {
+        id: string;
+        title: string;
+        price: string;
+        features: string;
+        image: any;
+        isRecommended?: boolean;
+    };
 };
 
 export type HomeScreenNavigationProp = DrawerNavigationProp<

@@ -122,14 +122,6 @@ const AppNavigator = () => {
             })}
         >
             <Drawer.Screen
-                name="Onboarding"
-                component={OnboardingScreen}
-                options={{
-                    headerShown: false,
-                    drawerItemStyle: { display: 'none' },
-                }}
-            />
-            <Drawer.Screen
                 name="Home"
                 component={HomeScreen}
                 options={{
@@ -137,6 +129,14 @@ const AppNavigator = () => {
                     drawerIcon: ({ color, size }) => (
                         <Feather name="home" color={color} size={size} />
                     ),
+                }}
+            />
+            <Drawer.Screen
+                name="Onboarding"
+                component={OnboardingScreen}
+                options={{
+                    headerShown: false,
+                    drawerItemStyle: { display: 'none' },
                 }}
             />
             <Drawer.Screen
