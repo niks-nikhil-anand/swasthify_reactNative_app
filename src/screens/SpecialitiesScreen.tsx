@@ -15,7 +15,6 @@ import { RootDrawerParamList } from '../navigation/types';
 import Feather from 'react-native-vector-icons/Feather';
 
 const { width } = Dimensions.get('window');
-const COLUMN_WIDTH = (width - 40 - 24) / 3; // 40 is total horizontal padding, 24 is gap between columns
 
 const SPECIALITIES = [
     {
@@ -137,29 +136,31 @@ const SpecialitiesScreen = () => {
                     </Text>
                 </View>
 
-                <View className="flex-row flex-wrap justify-between gap-y-6">
+                <View className="flex-row flex-wrap -mx-2">
                     {SPECIALITIES.map((spec, index) => (
-                        <TouchableOpacity
-                            key={index}
-                            style={{ width: COLUMN_WIDTH }}
-                            onPress={() => navigation.navigate('Doctors')}
-                            activeOpacity={0.7}
-                            className="items-center"
-                        >
-                            <View className={`w-full aspect-square rounded-[24px] overflow-hidden items-center justify-center p-2 mb-2 ${spec.color}`}>
-                                <Image
-                                    source={spec.image}
-                                    style={{ width: '80%', height: '80%' }}
-                                    resizeMode="contain"
-                                />
-                            </View>
-                            <Text className="text-[11px] font-bold text-[#111827] dark:text-white text-center mb-1" numberOfLines={2}>
-                                {spec.title}
-                            </Text>
-                            <Text className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold">
-                                from <Text className="text-[#0DA96E]">{spec.price}</Text>
-                            </Text>
-                        </TouchableOpacity>
+                        <View key={index} className="w-1/3 px-2 mb-8">
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('Doctors')}
+                                activeOpacity={0.7}
+                                className="items-center"
+                            >
+                                <View className={`w-full aspect-square rounded-full overflow-hidden items-center justify-center p-0.5 mb-3 ${spec.color} border border-gray-100 dark:border-slate-800`}>
+                                    <View className="w-full h-full rounded-full overflow-hidden">
+                                        <Image
+                                            source={spec.image}
+                                            className="w-full h-full"
+                                            resizeMode="cover"
+                                        />
+                                    </View>
+                                </View>
+                                <Text className="text-[11px] font-extrabold text-[#111827] dark:text-white text-center mb-1" numberOfLines={2}>
+                                    {spec.title}
+                                </Text>
+                                <Text className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold text-center">
+                                    from <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold">{spec.price}</Text>
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
                     ))}
                 </View>
             </ScrollView>
