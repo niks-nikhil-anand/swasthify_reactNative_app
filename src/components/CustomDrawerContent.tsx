@@ -1,5 +1,15 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, Pressable } from 'react-native';
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    withSpring,
+    withTiming,
+    interpolateColor,
+    interpolate,
+    Extrapolate
+} from 'react-native-reanimated';
+import { useColorScheme } from 'nativewind';
 import {
     DrawerContentScrollView,
     DrawerItemList,
@@ -12,9 +22,11 @@ import { useAuth } from '../context/AuthContext';
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const { navigation } = props;
     const { user, logout } = useAuth();
-    const [imgError, setImgError] = React.useState(false);
+    const { colorScheme, setColorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
+    const [imgError, setImgError] = useState(false);
 
-    React.useEffect(() => {
+    useEffect(() => {
         setImgError(false);
     }, [user?.profilePic]);
 
@@ -27,9 +39,53 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         }
     };
 
+    const toggleValue = useSharedValue(isDark ? 1 : 0);
+
+    useEffect(() => {
+        toggleValue.value = withSpring(isDark ? 1 : 0, {
+            damping: 15,
+            stiffness: 120,
+        });
+    }, [isDark]);
+
+    const toggleTheme = () => {
+        const nextTheme = isDark ? 'light' : 'dark';
+        setColorScheme(nextTheme);
+    };
+
+    const trackAnimatedStyle = useAnimatedStyle(() => {
+        const backgroundColor = interpolateColor(
+            toggleValue.value,
+            [0, 1],
+            ['#E2E8F0', '#064E3B']
+        );
+        return { backgroundColor };
+    });
+
+    const thumbAnimatedStyle = useAnimatedStyle(() => {
+        const translateX = interpolate(
+            toggleValue.value,
+            [0, 1],
+            [2, 26]
+        );
+        return { transform: [{ translateX }] };
+    });
+
+    const sunAnimatedStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(toggleValue.value, [0, 0.5], [1, 0], Extrapolate.CLAMP);
+        const scale = interpolate(toggleValue.value, [0, 0.5], [1, 0], Extrapolate.CLAMP);
+        return { opacity, transform: [{ scale }] };
+    });
+
+    const moonAnimatedStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(toggleValue.value, [0.5, 1], [0, 1], Extrapolate.CLAMP);
+        const scale = interpolate(toggleValue.value, [0.5, 1], [0, 1], Extrapolate.CLAMP);
+        return { opacity, transform: [{ scale }] };
+    });
+
     return (
-        <SafeAreaView style={{ flex: 1 }} className="bg-card">
-            <View style={styles.header}>
+        <SafeAreaView style={{ flex: 1 }} className="bg-white dark:bg-[#020817]">
+            <View style={[styles.header, isDark && styles.headerDark]}>
                 {user ? (
                     <View style={styles.profileContainer}>
                         <View style={styles.avatarWrapper}>
@@ -38,10 +94,10 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                                 style={styles.profileImage}
                                 onError={() => setImgError(true)}
                             />
-                            <View style={styles.onlineIndicator} />
+                            <View style={[styles.onlineIndicator, isDark && { borderColor: '#111827' }]} />
                         </View>
                         <View style={styles.profileInfo}>
-                            <Text numberOfLines={1} style={styles.profileName}>{user.name}</Text>
+                            <Text numberOfLines={1} style={[styles.profileName, isDark && styles.textWhite]}>{user.name}</Text>
                         </View>
                     </View>
                 ) : (
@@ -57,14 +113,13 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
                 <View style={styles.headerIcons}>
                     <TouchableOpacity
-                        style={styles.iconButton}
+                        style={[styles.iconButton, isDark && styles.iconButtonDark]}
                         onPress={() => navigation.closeDrawer()}
-                        className="bg-muted"
                     >
                         <Feather
                             name="x"
                             size={20}
-                            color="#4B5563"
+                            color={isDark ? "#94A3B8" : "#4B5563"}
                         />
                     </TouchableOpacity>
                 </View>
@@ -79,14 +134,33 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                 </View>
             </DrawerContentScrollView>
 
-            <View style={styles.footer}>
+            <View style={[styles.footer, isDark && styles.footerDark]}>
+                <View style={styles.themeToggleContainer}>
+                    <View style={styles.themeInfo}>
+                        <Feather name={isDark ? "moon" : "sun"} size={18} color={isDark ? "#94A3B8" : "#F59E0B"} />
+                        <Text style={[styles.themeText, isDark && styles.textWhite]}>
+                            {isDark ? 'Dark Mode' : 'Light Mode'}
+                        </Text>
+                    </View>
 
+                    <Pressable onPress={toggleTheme} hitSlop={10}>
+                        <Animated.View style={[styles.customTrack, trackAnimatedStyle]}>
+                            <Animated.View style={[styles.customThumb, thumbAnimatedStyle]}>
+                                <Animated.View style={[styles.iconContainer, sunAnimatedStyle]}>
+                                    <Feather name="sun" size={10} color="#F59E0B" />
+                                </Animated.View>
+                                <Animated.View style={[styles.iconContainer, moonAnimatedStyle, StyleSheet.absoluteFill]}>
+                                    <Feather name="moon" size={10} color="#0DA96E" />
+                                </Animated.View>
+                            </Animated.View>
+                        </Animated.View>
+                    </Pressable>
+                </View>
 
                 <TouchableOpacity
-                    style={[styles.loginButton, user && { borderColor: '#EF4444' }]}
+                    style={[styles.loginButton, isDark && styles.loginButtonDark, user && { borderColor: '#EF4444' }]}
                     onPress={handleAuthAction}
                     activeOpacity={0.8}
-                    className="bg-card border-border"
                 >
                     <Text style={[styles.loginButtonText, user && { color: '#EF4444' }]}>
                         {user ? 'Log out' : 'Log in'}
@@ -204,7 +278,64 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 16,
     },
-
+    themeToggleContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 12,
+        paddingHorizontal: 4,
+        marginBottom: 8,
+    },
+    themeInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    themeText: {
+        fontSize: 15,
+        fontWeight: '600',
+        color: '#4B5563',
+        marginLeft: 10,
+    },
+    textWhite: {
+        color: '#F9FAFB',
+    },
+    headerDark: {
+        borderBottomColor: '#1F2937',
+    },
+    iconButtonDark: {
+        backgroundColor: '#1F2937',
+    },
+    footerDark: {
+        borderTopWidth: 1,
+        borderTopColor: '#1F2937',
+    },
+    loginButtonDark: {
+        borderColor: '#1F2937',
+    },
+    customTrack: {
+        width: 52,
+        height: 28,
+        borderRadius: 14,
+        padding: 2,
+        justifyContent: 'center',
+    },
+    customThumb: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: '#FFFFFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2.5,
+        elevation: 3,
+    },
+    iconContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 
 export default CustomDrawerContent;
