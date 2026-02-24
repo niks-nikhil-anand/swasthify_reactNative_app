@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, Platform, Dimensions } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootDrawerParamList } from '../navigation/types';
@@ -16,6 +17,8 @@ const { width } = Dimensions.get('window');
 
 const DoctorSearchBar = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootDrawerParamList>>();
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
     const [searchQuery, setSearchQuery] = React.useState('');
     const opacity = useSharedValue(0);
     const translateY = useSharedValue(20);
@@ -42,19 +45,26 @@ const DoctorSearchBar = () => {
         <View style={styles.outerContainer}>
             <Animated.View style={[styles.container, animatedStyle]}>
                 <View style={styles.header}>
-                    <Text style={styles.title}>Search Nearby Doctors</Text>
-                    <Text style={styles.description}>Book OPD appointments made easy</Text>
+                    <Text className="section-heading dark:text-white text-center mb-1">
+                        Search Nearby{' '}
+                        <Text className="section-heading-highlight bg-emerald-100 dark:bg-emerald-900/30 px-3 rounded-xl overflow-hidden">
+                            Doctors
+                        </Text>
+                    </Text>
+                    <Text className="section-description dark:text-gray-400 text-center">
+                        Book OPD appointments made easy
+                    </Text>
                 </View>
 
-                <View style={[styles.searchWrapper]}>
+                <View style={[styles.searchWrapper, isDark && styles.searchWrapperDark]}>
                     <View style={styles.searchIconContainer}>
                         <Search color="#64748b" size={20} />
                     </View>
 
                     <TextInput
                         placeholder="Search doctors, specialities, symptoms..."
-                        placeholderTextColor="#94a3b8"
-                        style={styles.input}
+                        placeholderTextColor={isDark ? "#64748b" : "#94a3b8"}
+                        style={[styles.input, isDark && styles.textWhite]}
                         value={searchQuery}
                         onChangeText={setSearchQuery}
                         onSubmitEditing={handleSearch}
@@ -89,18 +99,6 @@ const styles = StyleSheet.create({
     header: {
         marginBottom: 16,
         alignItems: 'center',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: '800',
-        color: '#111827',
-        textAlign: 'center',
-        marginBottom: 4,
-    },
-    description: {
-        fontSize: 14,
-        color: '#64748b',
-        textAlign: 'center',
     },
     searchWrapper: {
         backgroundColor: 'rgba(255, 255, 255, 0.9)', // Glassmorphism-like background
@@ -151,6 +149,16 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 14,
         fontWeight: '700',
+    },
+    searchWrapperDark: {
+        backgroundColor: '#1F2937',
+        borderColor: 'rgba(13, 169, 110, 0.3)',
+    },
+    textWhite: {
+        color: '#F9FAFB',
+    },
+    textGray400: {
+        color: '#94A3B8',
     },
 });
 
