@@ -1,5 +1,6 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { useColorScheme } from 'nativewind';
 import HomeScreen from '../screens/HomeScreen';
 import DoctorsScreen from '../screens/DoctorsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -27,7 +28,8 @@ const BRAND_GREEN = '#0DA96E';
 import { useAuth } from '../context/AuthContext';
 
 const AppNavigator = () => {
-    const isDark = false;
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
     const { user, isLoading, hasSeenOnboarding } = useAuth();
     const [imgError, setImgError] = React.useState(false);
 
@@ -112,7 +114,7 @@ const AppNavigator = () => {
                                 className="w-10 h-10 rounded-full border-2 border-[#D1F2E2] dark:border-[#064E3B]"
                                 onError={() => setImgError(true)}
                             />
-                            <View className="absolute bottom-0.5 right-0.5 w-3 h-3 bg-brand-green border-2 border-white dark:border-slate-900 rounded-full" />
+                            <View className="absolute bottom-0.5 right-0.5 w-3 h-3 bg-[#0DA96E] border-2 border-white dark:border-[#111827] rounded-full" />
                         </View>
                     </TouchableOpacity>
                 ),
