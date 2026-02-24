@@ -76,7 +76,7 @@ const Specialities = () => {
     ];
 
     return (
-        <View className="py-10 bg-white dark:bg-background">
+        <View className="py-10 bg-white dark:bg-zinc-950">
             <View className="px-4 mb-8">
                 <View className="flex-row flex-wrap items-center mb-2">
                     <Text className="section-heading dark:text-white">Wide Range of </Text>

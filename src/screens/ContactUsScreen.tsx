@@ -110,32 +110,32 @@ const ContactUsScreen = () => {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white dark:bg-zinc-950">
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 {/* ═══════════════ HERO SECTION ═══════════════ */}
-                <View className="relative w-full py-12 overflow-hidden bg-[#0DA96E]/5">
+                <View className="relative w-full py-12 overflow-hidden bg-[#0DA96E]/5 dark:bg-[#0DA96E]/10">
                     {/* Gradient overlay */}
-                    <View className="absolute top-0 left-0 w-full h-full bg-white opacity-50" />
+                    <View className="absolute top-0 left-0 w-full h-full bg-white dark:bg-zinc-950 opacity-50 dark:opacity-20" />
                     {/* Decorative blurred circle */}
                     <View className="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-[#0DA96E]/10 rounded-full opacity-60" />
 
                     <View className="px-4 relative z-10 items-center">
                         {/* Badge */}
                         <View className="px-4 py-1.5 rounded-full bg-[#0DA96E]/10 mb-4">
-                            <Text className="text-[#0DA96E] font-medium text-xs">
+                            <Text className="text-[#0DA96E] dark:text-[#10B981] font-medium text-xs">
                                 We'd love to hear from you
                             </Text>
                         </View>
 
                         {/* Title */}
-                        <Text className="text-3xl font-bold tracking-tight mb-4 text-center text-gray-900">
+                        <Text className="text-3xl font-bold tracking-tight mb-4 text-center text-gray-900 dark:text-white">
                             Get in Touch with{' '}
                             <Text className="text-[#0DA96E]">Swasthify</Text>
                         </Text>
 
                         {/* Subtitle */}
-                        <Text className="text-base text-gray-500 text-center leading-6 max-w-lg mb-4">
+                        <Text className="text-base text-gray-500 dark:text-zinc-400 text-center leading-6 max-w-lg mb-4">
                             Have questions about our services or need assistance? We're here to help. Reach out to us and we'll respond as soon as possible.
                         </Text>
                     </View>
@@ -147,10 +147,10 @@ const ContactUsScreen = () => {
 
                         {/* ─── Contact Information ─── */}
                         <View className="mb-8">
-                            <Text className="text-2xl font-bold mb-3 text-gray-900">
+                            <Text className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">
                                 Contact Information
                             </Text>
-                            <Text className="text-base text-gray-500 leading-6 mb-6">
+                            <Text className="text-base text-gray-500 dark:text-zinc-400 leading-6 mb-6">
                                 Fill out the form or contact us directly using the details below. Our team is ready to assist you.
                             </Text>
 
@@ -161,18 +161,18 @@ const ContactUsScreen = () => {
                                         key={index}
                                         activeOpacity={item.action ? 0.7 : 1}
                                         onPress={item.action}
-                                        className="bg-white rounded-xl border border-gray-300/50 shadow-sm"
+                                        className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-300/50 dark:border-zinc-800 shadow-sm"
                                     >
                                         <View className="p-4 flex-row items-start gap-4">
                                             <View className={`w-10 h-10 rounded-xl items-center justify-center ${item.iconBg}`}>
                                                 <Text className="text-xl">{item.emoji}</Text>
                                             </View>
                                             <View className="flex-1">
-                                                <Text className="font-bold text-base mb-1 text-gray-900">
+                                                <Text className="font-bold text-base mb-1 text-gray-900 dark:text-white">
                                                     {item.title}
                                                 </Text>
                                                 {item.lines.map((line, i) => (
-                                                    <Text key={i} className="text-sm text-gray-500">
+                                                    <Text key={i} className="text-sm text-gray-500 dark:text-zinc-400">
                                                         {line}
                                                     </Text>
                                                 ))}
@@ -184,7 +184,7 @@ const ContactUsScreen = () => {
                         </View>
 
                         {/* ─── Contact Form Card ─── */}
-                        <View className="bg-white rounded-xl border border-gray-300/50 shadow-xl overflow-hidden relative">
+                        <View className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-300/50 dark:border-zinc-800 shadow-xl overflow-hidden relative">
                             {/* Gradient accent bar */}
                             <View className="flex-row h-2">
                                 <View className="flex-1 bg-[#0DA96E]" />
@@ -198,26 +198,26 @@ const ContactUsScreen = () => {
                                     <View className="p-2 rounded-full bg-[#0DA96E]/10">
                                         <Text className="text-xl">💬</Text>
                                     </View>
-                                    <Text className="text-xl font-bold text-gray-900">
+                                    <Text className="text-xl font-bold text-gray-900 dark:text-white">
                                         Send us a Message
                                     </Text>
                                 </View>
 
                                 {/* Full Name */}
                                 <View className="mb-4">
-                                    <Text className="text-sm font-medium mb-2 text-gray-900">Full Name</Text>
+                                    <Text className="text-sm font-medium mb-2 text-gray-900 dark:text-zinc-200">Full Name</Text>
                                     <TextInput
                                         value={formData.name}
                                         onChangeText={(v) => handleChange('name', v)}
                                         placeholder="John Doe"
                                         placeholderTextColor="#6B7280"
-                                        className="h-10 bg-gray-100/30 border border-gray-300 rounded-lg px-4 text-sm text-gray-900"
+                                        className="h-10 bg-gray-100/30 dark:bg-zinc-800/50 border border-gray-300 dark:border-zinc-700 rounded-lg px-4 text-sm text-gray-900 dark:text-zinc-100"
                                     />
                                 </View>
 
                                 {/* Email */}
                                 <View className="mb-4">
-                                    <Text className="text-sm font-medium mb-2 text-gray-900">Email Address</Text>
+                                    <Text className="text-sm font-medium mb-2 text-gray-900 dark:text-zinc-200">Email Address</Text>
                                     <TextInput
                                         value={formData.email}
                                         onChangeText={(v) => handleChange('email', v)}
@@ -225,16 +225,16 @@ const ContactUsScreen = () => {
                                         placeholderTextColor="#6B7280"
                                         keyboardType="email-address"
                                         autoCapitalize="none"
-                                        className="h-10 bg-gray-100/30 border border-gray-300 rounded-lg px-4 text-sm text-gray-900"
+                                        className="h-10 bg-gray-100/30 dark:bg-zinc-800/50 border border-gray-300 dark:border-zinc-700 rounded-lg px-4 text-sm text-gray-900 dark:text-zinc-100"
                                     />
                                 </View>
 
                                 {/* Phone */}
                                 <View className="mb-4">
-                                    <Text className="text-sm font-medium mb-2 text-gray-900">Phone Number</Text>
-                                    <View className="flex-row h-10 bg-gray-100/30 border border-gray-300 rounded-lg overflow-hidden">
-                                        <View className="bg-gray-100/50 px-3 justify-center border-r border-gray-300">
-                                            <Text className="text-sm font-medium text-gray-500">+91</Text>
+                                    <Text className="text-sm font-medium mb-2 text-gray-900 dark:text-zinc-200">Phone Number</Text>
+                                    <View className="flex-row h-10 bg-gray-100/30 dark:bg-zinc-800/50 border border-gray-300 dark:border-zinc-700 rounded-lg overflow-hidden">
+                                        <View className="bg-gray-100/50 dark:bg-zinc-800/80 px-3 justify-center border-r border-gray-300 dark:border-zinc-700">
+                                            <Text className="text-sm font-medium text-gray-500 dark:text-zinc-400">+91</Text>
                                         </View>
                                         <TextInput
                                             value={formData.phone}
@@ -242,26 +242,26 @@ const ContactUsScreen = () => {
                                             placeholder="9876543210"
                                             placeholderTextColor="#6B7280"
                                             keyboardType="phone-pad"
-                                            className="flex-1 px-3 text-sm text-gray-900"
+                                            className="flex-1 px-3 text-sm text-gray-900 dark:text-zinc-100"
                                         />
                                     </View>
                                 </View>
 
                                 {/* Subject */}
                                 <View className="mb-4">
-                                    <Text className="text-sm font-medium mb-2 text-gray-900">Subject</Text>
+                                    <Text className="text-sm font-medium mb-2 text-gray-900 dark:text-zinc-200">Subject</Text>
                                     <TextInput
                                         value={formData.subject}
                                         onChangeText={(v) => handleChange('subject', v)}
                                         placeholder="How can we help?"
                                         placeholderTextColor="#6B7280"
-                                        className="h-10 bg-gray-100/30 border border-gray-300 rounded-lg px-4 text-sm text-gray-900 "
+                                        className="h-10 bg-gray-100/30 dark:bg-zinc-800/50 border border-gray-300 dark:border-zinc-700 rounded-lg px-4 text-sm text-gray-900 dark:text-zinc-100"
                                     />
                                 </View>
 
                                 {/* Message */}
                                 <View className="mb-6">
-                                    <Text className="text-sm font-medium mb-2 text-gray-900">Message</Text>
+                                    <Text className="text-sm font-medium mb-2 text-gray-900 dark:text-zinc-200">Message</Text>
                                     <TextInput
                                         value={formData.message}
                                         onChangeText={(v) => handleChange('message', v)}
@@ -270,7 +270,7 @@ const ContactUsScreen = () => {
                                         multiline
                                         numberOfLines={6}
                                         textAlignVertical="top"
-                                        className="bg-gray-100/30 border border-gray-300 rounded-lg px-4 pt-3 text-sm text-gray-900"
+                                        className="bg-gray-100/30 dark:bg-zinc-800/50 border border-gray-300 dark:border-zinc-700 rounded-lg px-4 pt-3 text-sm text-gray-900 dark:text-zinc-100"
                                         style={{ minHeight: 140 }}
                                     />
                                 </View>
@@ -309,11 +309,11 @@ const ContactUsScreen = () => {
 
                 {/* ═══════════════ CTA SECTION ═══════════════ */}
                 <View className="px-4 pb-8">
-                    <View className="bg-[#0DA96E]/5 rounded-2xl border border-[#0DA96E]/10 p-8 items-center">
-                        <Text className="text-xl font-bold text-center mb-3 text-gray-900">
+                    <View className="bg-[#0DA96E]/5 dark:bg-[#0DA96E]/10 rounded-2xl border border-[#0DA96E]/10 dark:border-[#0DA96E]/20 p-8 items-center">
+                        <Text className="text-xl font-bold text-center mb-3 text-gray-900 dark:text-white">
                             Still have questions?
                         </Text>
-                        <Text className="text-sm text-gray-500 text-center leading-6 mb-6 px-2">
+                        <Text className="text-sm text-gray-500 dark:text-zinc-400 text-center leading-6 mb-6 px-2">
                             Our team is here to help. But if you're ready to get started, you can register for free right now.
                         </Text>
                         <View className="flex-row items-center">
@@ -329,9 +329,9 @@ const ContactUsScreen = () => {
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => navigation.navigate('FAQ')}
-                                className="border border-gray-300 px-6 py-3 rounded-lg"
+                                className="border border-gray-300 dark:border-zinc-700 px-6 py-3 rounded-lg"
                             >
-                                <Text className="text-gray-900 font-semibold text-sm">
+                                <Text className="text-gray-900 dark:text-zinc-200 font-semibold text-sm">
                                     View FAQ
                                 </Text>
                             </TouchableOpacity>
