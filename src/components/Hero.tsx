@@ -119,8 +119,7 @@ const Hero = () => {
 
 const styles = StyleSheet.create({
     root: {
-        backgroundColor: '#ffffff',
-        // No horizontal padding — images go edge-to-edge
+        // Transparent by default to show parent background
     },
     slideContainer: {
         width: width,
