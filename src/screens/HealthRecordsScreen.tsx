@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import DocumentPicker from 'react-native-document-picker';
+import { useColorScheme } from 'nativewind';
 import { healthRecordService, HealthRecord } from '../services/healthRecordService';
 import { HealthRecordsListSkeleton } from '../components/HealthRecordSkeleton';
 
@@ -37,12 +38,13 @@ const HealthRecordsScreen = () => {
     const categories = ['Prescription', 'Lab Report', 'Vaccination', 'Imaging (X-Ray/MRI)', 'Other'];
 
     const getCategoryStyles = (cat: string) => {
+        const isDark = colorScheme === 'dark';
         switch (cat) {
-            case 'Prescription': return { color: '#3B82F6', bg: '#EFF6FF', icon: 'pill' };
-            case 'Vaccination': return { color: '#8B5CF6', bg: '#F5F3FF', icon: 'activity' };
-            case 'Lab Report': return { color: '#10B981', bg: '#ECFDF5', icon: 'file-text' };
-            case 'Imaging (X-Ray/MRI)': return { color: '#EF4444', bg: '#FEF2F2', icon: 'image' };
-            default: return { color: '#F59E0B', bg: '#FFFBEB', icon: 'file' };
+            case 'Prescription': return { color: isDark ? '#60A5FA' : '#3B82F6', bg: isDark ? '#1E3A8A40' : '#EFF6FF', icon: 'pill' };
+            case 'Vaccination': return { color: isDark ? '#A78BFA' : '#8B5CF6', bg: isDark ? '#4C1D9540' : '#F5F3FF', icon: 'activity' };
+            case 'Lab Report': return { color: isDark ? '#34D399' : '#10B981', bg: isDark ? '#064E3B40' : '#ECFDF5', icon: 'file-text' };
+            case 'Imaging (X-Ray/MRI)': return { color: isDark ? '#F87171' : '#EF4444', bg: isDark ? '#7F1D1D40' : '#FEF2F2', icon: 'image' };
+            default: return { color: isDark ? '#FBBF24' : '#F59E0B', bg: isDark ? '#78350F40' : '#FFFBEB', icon: 'file' };
         }
     };
 
@@ -128,48 +130,51 @@ const HealthRecordsScreen = () => {
     const totalUsedSize = records.reduce((acc, rec) => acc + (rec.sizeMb || 0), 0);
     const storagePercentage = Math.min((totalUsedSize / STORAGE_LIMIT_MB) * 100, 100);
 
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
+
     return (
-        <View className="flex-1 bg-gray-50">
+        <View className="flex-1 bg-zinc-50 dark:bg-zinc-950">
             <ScrollView
                 className="flex-1 px-4 pt-4"
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[BRAND_GREEN]} />}
             >
                 {/* Storage Status Bar */}
-                <View className="bg-white p-5 rounded-3xl shadow-sm mb-6 border border-gray-100">
+                <View className="bg-white dark:bg-zinc-900 p-5 rounded-3xl shadow-sm mb-6 border border-zinc-100 dark:border-zinc-800">
                     <View className="flex-row justify-between items-center mb-3">
                         <View className="flex-row items-center">
-                            <View className="w-10 h-10 bg-emerald-50 rounded-2xl items-center justify-center mr-3">
+                            <View className="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl items-center justify-center mr-3">
                                 <Feather name="database" size={20} color={BRAND_GREEN} />
                             </View>
                             <View>
-                                <Text className="text-gray-900 font-bold text-lg">Storage Status</Text>
-                                <Text className="text-gray-500 text-xs mt-0.5">Used {totalUsedSize.toFixed(2)} MB of {STORAGE_LIMIT_MB / 1024} GB</Text>
+                                <Text className="text-zinc-900 dark:text-white font-bold text-lg">Storage Status</Text>
+                                <Text className="text-zinc-500 dark:text-zinc-400 text-xs mt-0.5">Used {totalUsedSize.toFixed(2)} MB of {STORAGE_LIMIT_MB / 1024} GB</Text>
                             </View>
                         </View>
                     </View>
-                    <View className="h-2.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                    <View className="h-2.5 w-full bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
                         <View
                             className="h-full bg-brand-green"
                             style={{ width: `${storagePercentage}%`, backgroundColor: BRAND_GREEN }}
                         />
                     </View>
-                    <Text className="text-right text-xs font-semibold text-gray-400 mt-2">
+                    <Text className="text-right text-xs font-semibold text-zinc-400 dark:text-zinc-500 mt-2">
                         {storagePercentage.toFixed(1)}% used
                     </Text>
                 </View>
 
                 {/* Records List */}
-                <Text className="text-xl font-bold text-gray-900 mb-4 px-1">My Records</Text>
+                <Text className="text-xl font-bold text-zinc-900 dark:text-white mb-4 px-1">My Records</Text>
 
                 {isLoading ? (
                     <HealthRecordsListSkeleton />
                 ) : records.length === 0 ? (
-                    <View className="bg-white p-10 rounded-3xl items-center justify-center border border-dashed border-gray-300">
-                        <View className="w-20 h-20 bg-gray-50 rounded-full items-center justify-center mb-4">
-                            <Feather name="folder" size={32} color="#9CA3AF" />
+                    <View className="bg-white dark:bg-zinc-900 p-10 rounded-3xl items-center justify-center border border-dashed border-zinc-300 dark:border-zinc-700">
+                        <View className="w-20 h-20 bg-zinc-50 dark:bg-zinc-800 rounded-full items-center justify-center mb-4">
+                            <Feather name="folder" size={32} color={isDark ? "#64748B" : "#9CA3AF"} />
                         </View>
-                        <Text className="text-gray-900 font-bold text-lg mb-2">No Records Yet</Text>
-                        <Text className="text-gray-500 text-center text-sm mb-6">
+                        <Text className="text-zinc-900 dark:text-white font-bold text-lg mb-2">No Records Yet</Text>
+                        <Text className="text-zinc-500 dark:text-zinc-400 text-center text-sm mb-6">
                             Start building your digital health profile by uploading your records securely.
                         </Text>
                         <TouchableOpacity
@@ -186,7 +191,7 @@ const HealthRecordsScreen = () => {
                         return (
                             <TouchableOpacity
                                 key={record.id}
-                                className="bg-white p-4 rounded-2xl shadow-sm mb-4 border border-gray-100 flex-row items-center"
+                                className="bg-white dark:bg-zinc-900 p-4 rounded-2xl shadow-sm mb-4 border border-zinc-100 dark:border-zinc-800 flex-row items-center"
                             >
                                 <View
                                     className="w-12 h-12 rounded-2xl items-center justify-center mr-4"
@@ -196,7 +201,7 @@ const HealthRecordsScreen = () => {
                                 </View>
                                 <View className="flex-1">
                                     <View className="flex-row justify-between items-start">
-                                        <Text className="text-gray-900 font-bold text-base flex-1 mr-2" numberOfLines={1}>
+                                        <Text className="text-zinc-900 dark:text-white font-bold text-base flex-1 mr-2" numberOfLines={1}>
                                             {record.title}
                                         </Text>
                                         <View
@@ -208,25 +213,25 @@ const HealthRecordsScreen = () => {
                                             </Text>
                                         </View>
                                     </View>
-                                    <Text className="text-gray-500 text-xs mt-1" numberOfLines={1}>
+                                    <Text className="text-zinc-500 dark:text-zinc-400 text-xs mt-1" numberOfLines={1}>
                                         {record.description || 'No description provided'}
                                     </Text>
                                     <View className="flex-row items-center mt-2">
-                                        <Feather name="clock" size={12} color="#9CA3AF" />
-                                        <Text className="text-gray-400 text-[10px] ml-1 mr-3">
+                                        <Feather name="clock" size={12} color={isDark ? "#64748B" : "#9CA3AF"} />
+                                        <Text className="text-zinc-400 dark:text-zinc-500 text-[10px] ml-1 mr-3">
                                             {new Date(record.createdAt).toLocaleDateString()}
                                         </Text>
                                         {record.sizeMb !== undefined && (
                                             <>
-                                                <Feather name="hard-drive" size={12} color="#9CA3AF" />
-                                                <Text className="text-gray-400 text-[10px] ml-1">
+                                                <Feather name="hard-drive" size={12} color={isDark ? "#64748B" : "#9CA3AF"} />
+                                                <Text className="text-zinc-400 dark:text-zinc-500 text-[10px] ml-1">
                                                     {record.sizeMb.toFixed(2)} MB
                                                 </Text>
                                             </>
                                         )}
                                     </View>
                                 </View>
-                                <Feather name="chevron-right" size={20} color="#D1D5DB" className="ml-2" />
+                                <Feather name="chevron-right" size={20} color={isDark ? "#475569" : "#D1D5DB"} className="ml-2" />
                             </TouchableOpacity>
                         );
                     })
@@ -254,14 +259,14 @@ const HealthRecordsScreen = () => {
                 onRequestClose={() => setIsModalVisible(false)}
             >
                 <View className="flex-1 bg-black/60 justify-end">
-                    <View className="bg-white rounded-t-[40px] px-6 pt-8 pb-10" style={{ maxHeight: '90%' }}>
+                    <View className="bg-white dark:bg-zinc-950 rounded-t-[40px] px-6 pt-8 pb-10" style={{ maxHeight: '90%' }}>
                         <View className="flex-row justify-between items-center mb-6">
-                            <Text className="text-2xl font-bold text-gray-900">Upload Record</Text>
+                            <Text className="text-2xl font-bold text-zinc-900 dark:text-white">Upload Record</Text>
                             <TouchableOpacity
                                 onPress={() => setIsModalVisible(false)}
-                                className="w-10 h-10 bg-gray-100 rounded-full items-center justify-center"
+                                className="w-10 h-10 bg-zinc-100 dark:bg-zinc-900 rounded-full items-center justify-center"
                             >
-                                <Feather name="x" size={20} color="#6B7280" />
+                                <Feather name="x" size={20} color={isDark ? "#94A3B8" : "#6B7280"} />
                             </TouchableOpacity>
                         </View>
 
@@ -269,52 +274,52 @@ const HealthRecordsScreen = () => {
                             {/* File Picker State */}
                             <TouchableOpacity
                                 onPress={handlePickDocument}
-                                className={`mb-6 p-6 rounded-3xl border-2 border-dashed items-center justify-center bg-gray-50 ${selectedFile ? 'border-brand-green bg-emerald-50' : 'border-gray-200'}`}
+                                className={`mb-6 p-6 rounded-3xl border-2 border-dashed items-center justify-center bg-zinc-50 dark:bg-zinc-900/50 ${selectedFile ? 'border-brand-green bg-emerald-50 dark:bg-emerald-900/10' : 'border-zinc-200 dark:border-zinc-800'}`}
                             >
-                                <View className={`w-14 h-14 rounded-2xl items-center justify-center mb-3 ${selectedFile ? 'bg-white' : 'bg-gray-100'}`}>
-                                    <Feather name={selectedFile ? "check-circle" : "upload-cloud"} size={28} color={selectedFile ? BRAND_GREEN : "#6B7280"} />
+                                <View className={`w-14 h-14 rounded-2xl items-center justify-center mb-3 ${selectedFile ? (isDark ? 'bg-emerald-900/20' : 'bg-white') : (isDark ? 'bg-zinc-800' : 'bg-gray-100')}`}>
+                                    <Feather name={selectedFile ? "check-circle" : "upload-cloud"} size={28} color={selectedFile ? BRAND_GREEN : (isDark ? "#94A3B8" : "#6B7280")} />
                                 </View>
-                                <Text className={`font-bold text-base ${selectedFile ? 'text-gray-900' : 'text-gray-600'}`}>
+                                <Text className={`font-bold text-base ${selectedFile ? (isDark ? 'text-zinc-200' : 'text-gray-900') : (isDark ? 'text-zinc-400' : 'text-gray-600')}`}>
                                     {selectedFile ? selectedFile.name : 'Select Medical Document'}
                                 </Text>
-                                <Text className="text-gray-500 text-xs mt-1">PDF, JPEG, or PNG up to 10MB</Text>
+                                <Text className="text-zinc-500 dark:text-zinc-400 text-xs mt-1">PDF, JPEG, or PNG up to 10MB</Text>
                             </TouchableOpacity>
 
-                            <Text className="text-sm font-bold text-gray-700 mb-2 ml-1">Title</Text>
+                            <Text className="text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2 ml-1">Title</Text>
                             <TextInput
-                                className="bg-gray-50 border border-gray-100 rounded-2xl p-4 text-gray-900 font-medium mb-4"
+                                className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-4 text-zinc-900 dark:text-white font-medium mb-4"
                                 placeholder="E.g., Dr. Sharma Prescription"
                                 value={title}
                                 onChangeText={setTitle}
-                                placeholderTextColor="#9CA3AF"
+                                placeholderTextColor={isDark ? "#64748B" : "#9CA3AF"}
                             />
 
-                            <Text className="text-sm font-bold text-gray-700 mb-2 ml-1">Category</Text>
+                            <Text className="text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2 ml-1">Category</Text>
                             <View className="flex-row flex-wrap mb-4">
                                 {categories.map((cat) => (
                                     <TouchableOpacity
                                         key={cat}
                                         onPress={() => setCategory(cat)}
-                                        className={`mr-2 mb-2 px-4 py-2.5 rounded-xl border ${category === cat ? 'bg-brand-green border-brand-green' : 'bg-white border-gray-200'}`}
+                                        className={`mr-2 mb-2 px-4 py-2.5 rounded-xl border ${category === cat ? 'bg-brand-green border-brand-green' : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800'}`}
                                         style={category === cat ? { backgroundColor: BRAND_GREEN } : {}}
                                     >
-                                        <Text className={`text-xs font-bold ${category === cat ? 'text-white' : 'text-gray-500'}`}>
+                                        <Text className={`text-xs font-bold ${category === cat ? 'text-white' : 'text-zinc-500 dark:text-zinc-400'}`}>
                                             {cat}
                                         </Text>
                                     </TouchableOpacity>
                                 ))}
                             </View>
 
-                            <Text className="text-sm font-bold text-gray-700 mb-2 ml-1">Description (Optional)</Text>
+                            <Text className="text-sm font-bold text-zinc-700 dark:text-zinc-300 mb-2 ml-1">Description (Optional)</Text>
                             <TextInput
-                                className="bg-gray-50 border border-gray-100 rounded-2xl p-4 text-gray-900 font-medium mb-8"
+                                className="bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl p-4 text-zinc-900 dark:text-white font-medium mb-8"
                                 placeholder="Add some notes about this record..."
                                 value={description}
                                 onChangeText={setDescription}
                                 multiline
                                 numberOfLines={3}
                                 textAlignVertical="top"
-                                placeholderTextColor="#9CA3AF"
+                                placeholderTextColor={isDark ? "#64748B" : "#9CA3AF"}
                             />
 
                             <TouchableOpacity
