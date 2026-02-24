@@ -63,13 +63,13 @@ const PricingScreen = () => {
     const navigation = useNavigation<NavigationProp>();
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white dark:bg-zinc-950">
             <ScrollView showsVerticalScrollIndicator={false}>
 
                 {/* ═══════════════ HERO SECTION ═══════════════ */}
-                <View className="relative w-full py-16 overflow-hidden bg-[#0DA96E]/5">
+                <View className="relative w-full py-16 overflow-hidden bg-[#0DA96E]/5 dark:bg-[#064E3B]/10">
                     {/* Decorative circle */}
-                    <View className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-[#0DA96E]/10 rounded-full opacity-50" />
+                    <View className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-[#0DA96E]/10 dark:bg-[#0DA96E]/5 rounded-full opacity-50" />
 
                     <View className="px-4 items-center relative z-10">
                         {/* Badge */}
@@ -80,13 +80,13 @@ const PricingScreen = () => {
                         </View>
 
                         {/* Title */}
-                        <Text className="text-3xl font-bold tracking-tight mb-6 text-center text-gray-900">
+                        <Text className="text-3xl font-bold tracking-tight mb-6 text-center text-gray-900 dark:text-white">
                             Affordable care,{'\n'}
-                            <Text className="text-[#0DA96E] font-extrabold italic">zero hidden costs</Text>
+                            <Text className="text-[#0DA96E] font-extrabold italic dark:text-[#10B981]">zero hidden costs</Text>
                         </Text>
 
                         {/* Subtitle */}
-                        <Text className="text-base text-gray-500 text-center leading-relaxed max-w-lg">
+                        <Text className="text-base text-gray-500 dark:text-gray-400 text-center leading-relaxed max-w-lg">
                             Transparent pricing for every service. Know exactly what you pay before you book. No surprises, just quality care.
                         </Text>
                     </View>
@@ -99,8 +99,8 @@ const PricingScreen = () => {
                             <View
                                 key={item.name}
                                 className={`rounded-2xl overflow-hidden relative ${item.mostPopular
-                                    ? 'border-2 border-[#0DA96E]/50 shadow-xl bg-white'
-                                    : 'border border-gray-300/50 shadow-sm bg-white'
+                                    ? 'border-2 border-[#0DA96E]/50 shadow-xl bg-white dark:bg-zinc-900'
+                                    : 'border border-gray-300/50 shadow-sm bg-white dark:bg-zinc-900 dark:border-zinc-800'
                                     }`}
                             >
                                 {/* Most Popular Badge */}
@@ -114,23 +114,23 @@ const PricingScreen = () => {
 
                                 {/* Card Header */}
                                 <View className="items-center pt-8 pb-4 px-6">
-                                    <View className="w-14 h-14 rounded-2xl bg-[#0DA96E]/10 items-center justify-center mb-4">
+                                    <View className="w-14 h-14 rounded-2xl bg-[#0DA96E]/10 dark:bg-[#064E3B]/20 items-center justify-center mb-4">
                                         <Text className="text-2xl">{item.emoji}</Text>
                                     </View>
-                                    <Text className="text-2xl font-bold tracking-tight text-gray-900 text-center">
+                                    <Text className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white text-center">
                                         {item.name}
                                     </Text>
-                                    <Text className="text-gray-500 mt-3 text-center leading-relaxed text-sm px-2">
+                                    <Text className="text-gray-500 dark:text-gray-400 mt-3 text-center leading-relaxed text-sm px-2">
                                         {item.description}
                                     </Text>
                                 </View>
 
                                 {/* Price */}
-                                <View className="mx-6 mb-6 bg-[#0DA96E]/5 rounded-2xl py-5 border border-[#0DA96E]/10 items-center">
-                                    <Text className="text-xs font-medium text-[#0DA96E]/60 uppercase tracking-wider mb-1">
+                                <View className="mx-6 mb-6 bg-[#0DA96E]/5 dark:bg-[#064E3B]/10 rounded-2xl py-5 border border-[#0DA96E]/10 dark:border-[#064E3B]/20 items-center">
+                                    <Text className="text-xs font-medium text-[#0DA96E]/60 dark:text-[#10B981]/60 uppercase tracking-wider mb-1">
                                         Starting from
                                     </Text>
-                                    <Text className="text-4xl font-black text-gray-900">
+                                    <Text className="text-4xl font-black text-gray-900 dark:text-white">
                                         {item.price}
                                     </Text>
                                 </View>
@@ -140,10 +140,10 @@ const PricingScreen = () => {
                                     <View className="gap-4">
                                         {item.features.map((feature) => (
                                             <View key={feature} className="flex-row items-start gap-3">
-                                                <View className="p-0.5 rounded-full bg-[#0DA96E]/15 mt-0.5">
-                                                    <Text className="text-[#0DA96E] text-xs font-bold">✓</Text>
+                                                <View className="p-0.5 rounded-full bg-[#0DA96E]/15 dark:bg-[#064E3B]/30 mt-0.5">
+                                                    <Text className="text-[#0DA96E] dark:text-[#10B981] text-xs font-bold">✓</Text>
                                                 </View>
-                                                <Text className="text-sm text-gray-900/85 font-medium flex-1">
+                                                <Text className="text-sm text-gray-900/85 dark:text-white/85 font-medium flex-1">
                                                     {feature}
                                                 </Text>
                                             </View>
@@ -164,14 +164,14 @@ const PricingScreen = () => {
                                         }}
                                         className={`w-full h-12 rounded-lg items-center justify-center flex-row shadow-lg ${item.mostPopular
                                             ? 'bg-[#0DA96E]'
-                                            : 'bg-white border-2 border-[#0DA96E]/20'
+                                            : 'bg-white dark:bg-zinc-800 border-2 border-[#0DA96E]/20 dark:border-[#064E3B]/40'
                                             }`}
                                     >
-                                        <Text className={`text-base font-bold ${item.mostPopular ? 'text-white' : 'text-[#0DA96E]'
+                                        <Text className={`text-base font-bold ${item.mostPopular ? 'text-white' : 'text-[#0DA96E] dark:text-[#10B981]'
                                             }`}>
                                             Book Now
                                         </Text>
-                                        <Text className={`text-base ml-2 ${item.mostPopular ? 'text-white' : 'text-[#0DA96E]'
+                                        <Text className={`text-base ml-2 ${item.mostPopular ? 'text-white' : 'text-[#0DA96E] dark:text-[#10B981]'
                                             }`}>
                                             →
                                         </Text>
@@ -183,15 +183,15 @@ const PricingScreen = () => {
                 </View>
 
                 {/* ═══════════════ FAQ SECTION ═══════════════ */}
-                <View className="px-4 py-12 bg-gray-50">
+                <View className="px-4 py-12 bg-gray-50 dark:bg-zinc-950">
                     <View className="items-center mb-8">
-                        <View className="px-3 py-1 rounded-full bg-gray-200 mb-4">
-                            <Text className="text-sm font-medium text-gray-700">FAQ</Text>
+                        <View className="px-3 py-1 rounded-full bg-gray-200 dark:bg-zinc-800 mb-4">
+                            <Text className="text-sm font-medium text-gray-700 dark:text-gray-300">FAQ</Text>
                         </View>
-                        <Text className="text-2xl font-bold text-gray-900 text-center mb-3">
+                        <Text className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-3">
                             Frequently Asked Questions
                         </Text>
-                        <Text className="text-base text-gray-500 text-center max-w-lg">
+                        <Text className="text-base text-gray-500 dark:text-gray-400 text-center max-w-lg">
                             Everything you need to know about our pricing and services.
                         </Text>
                     </View>
@@ -215,9 +215,9 @@ const PricingScreen = () => {
                                 a: 'Home sample collection is included in the Lab & Diagnostics pricing with no extra charges.',
                             },
                         ].map((faq, i) => (
-                            <View key={i} className="bg-white rounded-xl border border-gray-300/50 p-5">
-                                <Text className="text-base font-bold text-gray-900 mb-2">{faq.q}</Text>
-                                <Text className="text-sm text-gray-500 leading-relaxed">{faq.a}</Text>
+                            <View key={i} className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-300/50 dark:border-zinc-800 p-5">
+                                <Text className="text-base font-bold text-gray-900 dark:text-white mb-2">{faq.q}</Text>
+                                <Text className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{faq.a}</Text>
                             </View>
                         ))}
                     </View>
@@ -225,11 +225,11 @@ const PricingScreen = () => {
 
                 {/* ═══════════════ CTA SECTION ═══════════════ */}
                 <View className="px-4 py-8">
-                    <View className="bg-[#0DA96E]/5 rounded-2xl border border-[#0DA96E]/10 p-8 items-center">
-                        <Text className="text-xl font-bold text-center mb-3 text-gray-900">
+                    <View className="bg-[#0DA96E]/5 dark:bg-[#064E3B]/10 rounded-2xl border border-[#0DA96E]/10 dark:border-[#064E3B]/20 p-8 items-center">
+                        <Text className="text-xl font-bold text-center mb-3 text-gray-900 dark:text-white">
                             Ready to find your doctor?
                         </Text>
-                        <Text className="text-sm text-gray-500 text-center leading-6 mb-6 px-2">
+                        <Text className="text-sm text-gray-500 dark:text-gray-400 text-center leading-6 mb-6 px-2">
                             Join thousands of patients who trust Swasthify for quality healthcare at transparent prices. Book your first consultation today.
                         </Text>
                         <View className="flex-row items-center">
@@ -243,9 +243,9 @@ const PricingScreen = () => {
                             <TouchableOpacity
                                 activeOpacity={0.7}
                                 onPress={() => navigation.navigate('Contact')}
-                                className="border border-gray-300 px-6 py-3 rounded-lg"
+                                className="border border-gray-300 dark:border-zinc-700 px-6 py-3 rounded-lg"
                             >
-                                <Text className="text-gray-900 font-semibold text-sm">Contact Support</Text>
+                                <Text className="text-gray-900 dark:text-white font-semibold text-sm">Contact Support</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

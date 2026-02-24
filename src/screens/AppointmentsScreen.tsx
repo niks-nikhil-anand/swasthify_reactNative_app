@@ -12,6 +12,7 @@ import {
     Image,
     Linking,
 } from 'react-native';
+import { useColorScheme } from 'nativewind';
 import Feather from 'react-native-vector-icons/Feather';
 import { appointmentService } from '../services/appointmentService';
 import AppointmentCard, { Appointment } from '../components/AppointmentCard';
@@ -20,6 +21,8 @@ import AppointmentCardSkeleton from '../components/AppointmentCardSkeleton';
 type StatusTab = 'Upcoming' | 'Completed' | 'Cancelled';
 
 const AppointmentsScreen = () => {
+    const { colorScheme } = useColorScheme();
+    const isDark = colorScheme === 'dark';
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -118,18 +121,18 @@ const AppointmentsScreen = () => {
             <View className="p-6 bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800">
                 <View className="flex-row items-center mb-6">
                     <View className="flex-1 flex-row items-center bg-zinc-100 dark:bg-zinc-800 px-4 h-12 rounded-2xl border border-zinc-200 dark:border-zinc-700">
-                        <Feather name="search" size={18} color="#9CA3AF" />
+                        <Feather name="search" size={18} color={isDark ? "#94A3B8" : "#9CA3AF"} />
                         <TextInput
                             className="flex-1 ml-3 text-sm font-semibold text-zinc-900 dark:text-white"
                             placeholder="Provider or test name..."
-                            placeholderTextColor="#9CA3AF"
+                            placeholderTextColor={isDark ? "#64748B" : "#9CA3AF"}
                             value={searchQuery}
                             onChangeText={setSearchQuery}
                         />
                     </View>
                     <TouchableOpacity
                         onPress={() => setSortBy(sortBy === 'newest' ? 'oldest' : 'newest')}
-                        className="ml-3 w-12 h-12 bg-emerald-500 rounded-2xl items-center justify-center shadow-lg shadow-emerald-500/20"
+                        className="ml-3 w-12 h-12 bg-emerald-500 dark:bg-emerald-600 rounded-2xl items-center justify-center shadow-lg shadow-emerald-500/20"
                     >
                         <Feather name={sortBy === 'newest' ? 'arrow-down' : 'arrow-up'} size={20} color="white" />
                     </TouchableOpacity>
@@ -146,7 +149,7 @@ const AppointmentsScreen = () => {
                                 key={tab}
                                 onPress={() => setActiveTab(tab)}
                                 className={`flex-1 py-3 px-2 rounded-2xl flex-row items-center justify-center border ${isActive
-                                    ? 'bg-zinc-900 border-zinc-900 shadow-sm'
+                                    ? 'bg-zinc-900 dark:bg-emerald-600 border-zinc-900 dark:border-emerald-600 shadow-sm'
                                     : 'bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800'
                                     }`}
                             >
@@ -154,7 +157,7 @@ const AppointmentsScreen = () => {
                                     {tab}
                                 </Text>
                                 {count > 0 && (
-                                    <View className={`ml-2 px-1.5 py-0.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-zinc-100 dark:bg-zinc-800'}`}>
+                                    <View className={`ml-2 px-1.5 py-0.5 rounded-full ${isActive ? 'bg-emerald-500 dark:bg-emerald-500/40' : 'bg-zinc-100 dark:bg-zinc-800'}`}>
                                         <Text className={`text-[8px] font-black ${isActive ? 'text-white' : 'text-zinc-500'}`}>{count}</Text>
                                     </View>
                                 )}
