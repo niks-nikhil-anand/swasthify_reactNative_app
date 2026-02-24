@@ -104,7 +104,16 @@ const CampaignDetailScreen = () => {
         <SafeAreaView className="flex-1 bg-zinc-50 dark:bg-zinc-950">
             {/* Custom Header */}
             <View className="px-6 py-4 flex-row items-center justify-between border-b border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950">
-                <TouchableOpacity onPress={() => navigation.goBack()} className="p-2 -ml-2">
+                <TouchableOpacity
+                    onPress={() => {
+                        if (navigation.canGoBack()) {
+                            navigation.goBack();
+                        } else {
+                            navigation.navigate('Home');
+                        }
+                    }}
+                    className="p-2 -ml-2"
+                >
                     <Feather name="chevron-left" size={24} color="#10B981" />
                 </TouchableOpacity>
                 <Text className="text-sm font-black uppercase tracking-[0.2em] text-zinc-900 dark:text-white" numberOfLines={1}>
