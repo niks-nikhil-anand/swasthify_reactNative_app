@@ -54,8 +54,10 @@ const AppNavigator = () => {
 
     return (
         <Drawer.Navigator
+            key={`${user?.id || 'guest'}-${hasSeenOnboarding}`}
             initialRouteName={getInitialRoute()}
             drawerContent={(props) => <CustomDrawerContent {...props} />}
+            backBehavior="history"
             screenOptions={({ navigation }) => ({
                 headerStyle: {
                     backgroundColor: isDark ? '#111827' : '#FFFFFF',
@@ -121,6 +123,16 @@ const AppNavigator = () => {
                 ),
             })}
         >
+            {!hasSeenOnboarding && (
+                <Drawer.Screen
+                    name="Onboarding"
+                    component={OnboardingScreen}
+                    options={{
+                        headerShown: false,
+                        drawerItemStyle: { display: 'none' },
+                    }}
+                />
+            )}
             <Drawer.Screen
                 name="Home"
                 component={HomeScreen}
@@ -129,14 +141,6 @@ const AppNavigator = () => {
                     drawerIcon: ({ color, size }) => (
                         <Feather name="home" color={color} size={size} />
                     ),
-                }}
-            />
-            <Drawer.Screen
-                name="Onboarding"
-                component={OnboardingScreen}
-                options={{
-                    headerShown: false,
-                    drawerItemStyle: { display: 'none' },
                 }}
             />
             <Drawer.Screen
