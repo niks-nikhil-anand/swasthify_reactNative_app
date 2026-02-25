@@ -15,6 +15,7 @@ import { RootDrawerParamList } from '../navigation/types';
 import Footer from '../components/Footer';
 import { publicService } from '../services/publicService';
 import { Alert } from 'react-native';
+import SocialLinks from '../components/SocialLinks';
 
 type NavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 
@@ -338,6 +339,13 @@ const ContactUsScreen = () => {
                         </View>
                     </View>
                 </View>
+
+                {/* ═══════════════ SOCIAL SECTION ═══════════════ */}
+                <View className="px-4 pb-12 items-center">
+                    <Text className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-6">Follow Us</Text>
+                    <SocialLinks />
+                </View>
+
                 <Footer />
             </ScrollView>
         </SafeAreaView>
