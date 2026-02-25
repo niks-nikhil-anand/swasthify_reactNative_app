@@ -10,6 +10,7 @@ import {
 import Footer from '../components/Footer';
 import BookAppointmentCTA from '../components/BookAppointmentCTA';
 import LabTestCTA from '../components/LabTestCTA';
+import SocialLinks from '../components/SocialLinks';
 
 /* ═══════════════════════════════════════════════════
  *  HERO SECTION
@@ -170,10 +171,7 @@ const FounderSection = () => (
             </View>
 
             {/* Divider + Social */}
-            <View className="mt-8 pt-6 border-t border-gray-300/50 dark:border-zinc-800">
-                <Text className="text-sm text-gray-500 dark:text-zinc-400 mb-2">Connect with Abhinav</Text>
-                <View className="h-2 w-20 bg-emerald-500/20 rounded-full" />
-            </View>
+            
         </View>
     </View>
 );
@@ -303,6 +301,15 @@ const LocationSection = () => (
                         >
                             <Text className="text-lg font-medium text-gray-900 dark:text-zinc-200">+91 97592 25515</Text>
                         </TouchableOpacity>
+                    </View>
+
+                    {/* Divider */}
+                    <View className="w-full h-px bg-gray-300/60 dark:bg-zinc-800 my-6" />
+
+                    {/* Social Presence */}
+                    <View className="items-center">
+                        <Text className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-4">Follow Us</Text>
+                        <SocialLinks />
                     </View>
                 </View>
             </View>
