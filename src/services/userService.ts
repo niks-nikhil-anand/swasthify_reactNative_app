@@ -43,7 +43,7 @@ export const userService = {
 
     updateProfile: async (data: Partial<any>) => {
         try {
-            const response = await apiClient.patch('/api/me/update-profile', data);
+            const response = await apiClient.patch('/api/me/profile', data);
             return response.data;
         } catch (error: any) {
             throw error.response?.data?.message || 'Failed to update profile';
