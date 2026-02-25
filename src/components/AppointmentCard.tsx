@@ -138,11 +138,15 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onCancel
                 {/* Actions */}
                 <View className="flex-row items-center justify-between">
                     <View className="flex-row items-center">
-                        <Feather name={appointment.type === 'Video Consultation' ? 'video' : 'map-pin'} size={14} color="#10B981" />
-                        <Text className="ml-2 text-[10px] font-bold text-zinc-500 dark:text-zinc-400">{appointment.type}</Text>
-                        {appointment.type !== 'Video Consultation' && (
-                            <TouchableOpacity onPress={handleNavigate} className="ml-3">
-                                <Text className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Navigate</Text>
+                        {appointment.type === 'Video Consultation' ? (
+                            <>
+                                <Feather name="video" size={14} color="#10B981" />
+                                <Text className="ml-2 text-[10px] font-bold text-zinc-500 dark:text-zinc-400">{appointment.type}</Text>
+                            </>
+                        ) : (
+                            <TouchableOpacity onPress={handleNavigate} className="flex-row items-center">
+                                <Feather name="navigation" size={14} color="#10B981" />
+                                <Text className="ml-2 text-[10px] font-black text-emerald-600 uppercase tracking-widest">Navigate</Text>
                             </TouchableOpacity>
                         )}
                     </View>
