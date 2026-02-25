@@ -61,11 +61,14 @@ const ProfileScreen = ({ navigation }: Props) => {
     // For DATE type
     const [dobParts, setDobParts] = useState({ day: '', month: '', year: '' });
 
+    if (!user) return null;
+
     const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
     const genders = ['Male', 'Female', 'Other'];
     const notificationOptions = ['Enabled', 'Disabled'];
 
-    if (!user) return null;
+    const [emergencyName, setEmergencyName] = useState(user.emergencyContactName || '');
+    const [emergencyPhone, setEmergencyPhone] = useState(user.emergencyContactPhone || '');
 
     const handleLogout = async () => {
         try {
@@ -223,10 +226,12 @@ const ProfileScreen = ({ navigation }: Props) => {
         }
     };
 
-    const handleUpdateProfile = async (field: keyof User, value: string) => {
+    const handleUpdateProfile = async (field: keyof User, value: any) => {
         let finalValue = value;
+        let payloadField = field as string;
 
-        if (field === 'phone') {
+        // Custom handling for specific fields
+        if (field === 'phone' || field === 'emergencyContactPhone') {
             if (!value.startsWith('+91')) {
                 finalValue = '+91' + value;
             }
@@ -236,14 +241,26 @@ const ProfileScreen = ({ navigation }: Props) => {
             }
         }
 
-        if (!finalValue.trim()) {
+        if (field === 'gender') {
+            finalValue = value.toUpperCase(); // MALE, FEMALE, OTHER
+        }
+
+        if (field === 'height' || field === 'weight') {
+            finalValue = Number(value);
+            if (isNaN(finalValue)) {
+                Alert.alert("Error", "Please enter a valid numeric value");
+                return;
+            }
+        }
+
+        if (typeof finalValue === 'string' && !finalValue.trim()) {
             Alert.alert("Error", "Please enter a valid value");
             return;
         }
 
         setIsSubmitting(true);
         try {
-            await userService.updateProfile({ [field]: finalValue });
+            await userService.updateProfile({ [payloadField]: finalValue });
             await updateUser({ [field]: finalValue });
             Alert.alert("Success", "Profile updated successfully");
             setEditModalVisible(false);
@@ -260,16 +277,25 @@ const ProfileScreen = ({ navigation }: Props) => {
         setModalType(type);
 
         if (type === 'DATE') {
-            const parts = (currentValue || '').split('-');
-            setDobParts({
-                day: parts[0] || '',
-                month: parts[1] || '',
-                year: parts[2] || ''
-            });
+            const dateStr = currentValue || '';
+            let day = '', month = '', year = '';
+
+            if (dateStr.includes('-')) {
+                const parts = dateStr.split('-');
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) { // YYYY-MM-DD
+                        [year, month, day] = parts;
+                    } else { // DD-MM-YYYY
+                        [day, month, year] = parts;
+                    }
+                }
+            }
+
+            setDobParts({ day, month, year });
         } else if (type === 'PHONE') {
             setEditingValue(currentValue.replace('+91', '') || '');
         } else {
-            setEditingValue(currentValue || '');
+            setEditingValue(currentValue?.toString() || '');
         }
 
         setEditModalVisible(true);
@@ -367,9 +393,9 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="calendar"
                             title="Date of Birth"
-                            value={user.dob || "Not set"}
+                            value={user.dateOfBirth || "Not set"}
                             color="#8B5CF6"
-                            onPress={() => openEditModal('dob', 'Date of Birth', user.dob || '', 'DATE')}
+                            onPress={() => openEditModal('dateOfBirth', 'Date of Birth', user.dateOfBirth || '', 'DATE')}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
@@ -399,7 +425,7 @@ const ProfileScreen = ({ navigation }: Props) => {
                             title="Height"
                             value={user.height ? `${user.height} ft.` : "Not set"}
                             color="#10B981"
-                            onPress={() => openEditModal('height', 'Height', user.height || '')}
+                            onPress={() => openEditModal('height', 'Height', user.height?.toString() || '')}
                         />
                         <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
@@ -407,7 +433,7 @@ const ProfileScreen = ({ navigation }: Props) => {
                             title="Weight"
                             value={user.weight ? `${user.weight} kg` : "Not set"}
                             color="#3B82F6"
-                            onPress={() => openEditModal('weight', 'Weight', user.weight || '')}
+                            onPress={() => openEditModal('weight', 'Weight', user.weight?.toString() || '')}
                         />
                         <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
@@ -421,9 +447,31 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="frown"
                             title="Diseases"
-                            value={user.diseases || "None"}
+                            value={user.chronicDiseases || "None"}
                             color="#6366F1"
-                            onPress={() => openEditModal('diseases', 'Diseases', user.diseases || '')}
+                            onPress={() => openEditModal('chronicDiseases', 'Diseases', user.chronicDiseases || '')}
+                        />
+                    </View>
+                </View>
+
+                {/* Emergency Contact */}
+                <View style={styles.section}>
+                    <Text style={[styles.sectionTitle, isDark && styles.textGray400]}>Emergency Contact</Text>
+                    <View style={[styles.card, isDark && styles.cardDark]}>
+                        <ProfileItem
+                            icon="user"
+                            title="Contact Name"
+                            value={user.emergencyContactName || "Not set"}
+                            color="#EF4444"
+                            onPress={() => openEditModal('emergencyContactName', 'Emergency Name', user.emergencyContactName || '')}
+                        />
+                        <View style={[styles.divider, isDark && styles.dividerDark]} />
+                        <ProfileItem
+                            icon="phone"
+                            title="Contact Phone"
+                            value={user.emergencyContactPhone || "Not set"}
+                            color="#0DA96E"
+                            onPress={() => openEditModal('emergencyContactPhone', 'Emergency Phone', user.emergencyContactPhone || '', 'PHONE')}
                         />
                     </View>
                 </View>
@@ -795,7 +843,8 @@ const ProfileScreen = ({ navigation }: Props) => {
                                 style={styles.modalButton}
                                 onPress={() => {
                                     if (modalType === 'DATE') {
-                                        handleUpdateProfile('dob', `${dobParts.day}-${dobParts.month}-${dobParts.year}`);
+                                        const formattedDate = `${dobParts.year}-${dobParts.month.padStart(2, '0')}-${dobParts.day.padStart(2, '0')}`;
+                                        handleUpdateProfile('dateOfBirth', formattedDate);
                                     } else if (modalType === 'PHONE') {
                                         handleUpdateProfile('phone', editingValue);
                                     } else {
