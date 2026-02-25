@@ -4,10 +4,9 @@ export interface HealthRecord {
     id: string;
     title: string;
     description?: string | null;
-    category?: 'Prescription' | 'Lab Report' | 'Vaccination' | 'Imaging (X-Ray/MRI)' | 'Other';
+    category?: string;
     fileUrl: string;
-    sizeMb?: number;
-    uploadedBy: string;
+    sizeMb: number;
     createdAt: string;
 }
 

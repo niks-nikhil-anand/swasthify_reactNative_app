@@ -10,6 +10,8 @@ import {
     TextInput,
     Alert,
     Dimensions,
+    Linking,
+    Image,
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import DocumentPicker from 'react-native-document-picker';
@@ -28,6 +30,7 @@ const HealthRecordsScreen = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [viewingRecord, setViewingRecord] = useState<HealthRecord | null>(null);
 
     // Form state
     const [title, setTitle] = useState('');
@@ -117,6 +120,23 @@ const HealthRecordsScreen = () => {
             Alert.alert('Error', typeof error === 'string' ? error : 'Upload failed');
         } finally {
             setIsUploading(false);
+        }
+    };
+
+    const handleDownload = async (record: HealthRecord) => {
+        try {
+            await Linking.openURL(record.fileUrl);
+        } catch (error) {
+            Alert.alert('Error', 'Could not open the file.');
+        }
+    };
+
+    const handleView = (record: HealthRecord) => {
+        if (record.fileUrl.match(/\.(jpeg|jpg|png|gif)$/i)) {
+            setViewingRecord(record);
+        } else {
+            // For PDFs or other files, open in system browser/viewer
+            handleDownload(record);
         }
     };
 
@@ -231,7 +251,20 @@ const HealthRecordsScreen = () => {
                                         )}
                                     </View>
                                 </View>
-                                <Feather name="chevron-right" size={20} color={isDark ? "#475569" : "#D1D5DB"} className="ml-2" />
+                                <View className="flex-row items-center ml-2">
+                                    <TouchableOpacity
+                                        onPress={() => handleView(record)}
+                                        className="p-2 mr-1"
+                                    >
+                                        <Feather name="eye" size={20} color={BRAND_GREEN} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => handleDownload(record)}
+                                        className="p-2"
+                                    >
+                                        <Feather name="download" size={20} color={isDark ? "#94A3B8" : "#64748B"} />
+                                    </TouchableOpacity>
+                                </View>
                             </TouchableOpacity>
                         );
                     })
@@ -336,6 +369,46 @@ const HealthRecordsScreen = () => {
                             </TouchableOpacity>
                         </ScrollView>
                     </View>
+                </View>
+            </Modal>
+
+            {/* View Modal */}
+            <Modal
+                visible={!!viewingRecord}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => setViewingRecord(null)}
+            >
+                <View className="flex-1 bg-black/90 justify-center items-center">
+                    <TouchableOpacity
+                        onPress={() => setViewingRecord(null)}
+                        className="absolute top-12 right-6 z-10 w-10 h-10 bg-white/20 rounded-full items-center justify-center"
+                    >
+                        <Feather name="x" size={24} color="white" />
+                    </TouchableOpacity>
+
+                    {viewingRecord && (
+                        <View className="w-full h-[70%] items-center justify-center p-4">
+                            <Image
+                                source={{ uri: viewingRecord.fileUrl }}
+                                className="w-full h-full rounded-2xl"
+                                resizeMode="contain"
+                            />
+                            <View className="mt-6 items-center">
+                                <Text className="text-white font-bold text-xl mb-1">{viewingRecord.title}</Text>
+                                <Text className="text-zinc-400 text-sm">{viewingRecord.category}</Text>
+                            </View>
+
+                            <TouchableOpacity
+                                onPress={() => handleDownload(viewingRecord)}
+                                className="mt-8 bg-brand-green px-10 py-4 rounded-2xl flex-row items-center"
+                                style={{ backgroundColor: BRAND_GREEN }}
+                            >
+                                <Feather name="download" size={20} color="white" className="mr-2" />
+                                <Text className="text-white font-bold text-base">Download File</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
                 </View>
             </Modal>
         </View>
