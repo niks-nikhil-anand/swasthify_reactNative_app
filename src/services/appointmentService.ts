@@ -3,7 +3,6 @@ import apiClient from '../api/apiClient';
 export interface ReserveAppointmentPayload {
     type: 'DOCTOR' | 'LAB';
     organizerId: string;
-    campaignId: string;
     date: string;
     timeSlot: string;
 }

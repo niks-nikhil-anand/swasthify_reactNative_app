@@ -91,7 +91,6 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
             const appointment = await appointmentService.reserveAppointment({
                 type: sourceType,
                 organizerId: campaign.doctor?.id || campaign.lab?.id || campaign.doctorId || campaign.id!,
-                campaignId: campaign.id!,
                 date: selectedDate,
                 timeSlot: selectedSlot,
             });
@@ -123,10 +122,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                 image: 'https://www.swasthify.in/logo.png',
                 currency: orderData.currency || 'INR',
                 key: orderData.key,
-                // Razorpay RN SDK requires amount as a string
                 amount: String(orderData.amount),
                 name: 'Swasthify',
-                // API returns 'orderId' (camelCase) — handle both
                 order_id: orderData.orderId || orderData.order_id,
                 prefill: {
                     email: '',
@@ -136,13 +133,11 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                 theme: { color: BRAND_GREEN },
             };
 
-            console.log('[BookingModal] Razorpay options:', JSON.stringify(options));
-
             RazorpayCheckout.open(options).then(async (data: any) => {
                 // Step 4: Verify
                 setLoadingStep('verifying');
                 await appointmentService.verifyPayment({
-                    appointmentId: appointment.id || appointment._id,
+                    appointmentId: apptId,
                     razorpay_order_id: data.razorpay_order_id,
                     razorpay_payment_id: data.razorpay_payment_id,
                     razorpay_signature: data.razorpay_signature,
