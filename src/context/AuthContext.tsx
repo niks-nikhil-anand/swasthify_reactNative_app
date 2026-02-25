@@ -8,13 +8,15 @@ export interface User {
     email: string;
     role: string;
     phone?: string;
-    dob?: string;
+    dateOfBirth?: string; // Changed from dob
     gender?: string;
     bloodGroup?: string;
-    height?: string;
-    weight?: string;
+    height?: number; // Changed from string
+    weight?: number; // Changed from string
     allergies?: string;
-    diseases?: string;
+    chronicDiseases?: string; // Changed from diseases
+    emergencyContactName?: string; // New
+    emergencyContactPhone?: string; // New
     notificationsEnabled?: string;
     profilePic?: string;
 }
@@ -43,7 +45,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (!userData) return userData;
         const flattened = { ...userData };
         if (userData.patient) {
-            Object.assign(flattened, userData.patient);
+            const patient = userData.patient;
+            // Map backend fields to frontend User interface if they differ
+            flattened.dateOfBirth = patient.dateOfBirth || patient.dob;
+            flattened.chronicDiseases = patient.chronicDiseases || patient.diseases || patient.chronicDisease;
+            flattened.height = patient.height ? Number(patient.height) : undefined;
+            flattened.weight = patient.weight ? Number(patient.weight) : undefined;
+
+            Object.assign(flattened, patient);
             delete flattened.patient;
         }
         return flattened as User;
