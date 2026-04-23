@@ -14,7 +14,7 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import RazorpayCheckout from 'react-native-razorpay';
 import { useColorScheme } from 'nativewind';
-import { Campaign } from '../services/publicService';
+import { Campaign, publicService, PlatformFee } from '../services/publicService';
 import { appointmentService } from '../services/appointmentService';
 
 const { width, height } = Dimensions.get('window');
@@ -34,6 +34,34 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
     const [loadingStep, setLoadingStep] = useState<'idle' | 'reserving' | 'ordering' | 'verifying'>('idle');
     const [isSuccess, setIsSuccess] = useState(false);
+    const [step, setStep] = useState<'slot' | 'review'>('slot');
+    const [platformFee, setPlatformFee] = useState<PlatformFee | null>(null);
+
+    React.useEffect(() => {
+        const fetchFee = async () => {
+            const sourceType = (campaign.source ?? (campaign.lab ? 'lab' : 'doctor')).toUpperCase() as 'DOCTOR' | 'LAB';
+            const fee = await publicService.getPlatformFee(sourceType);
+            setPlatformFee(fee);
+        };
+        fetchFee();
+    }, [campaign.source, campaign.lab]);
+
+    const campaignDiscountAmount = useMemo(() => {
+        if (!campaign.discountPercentage) return 0;
+        return Math.round((campaign.price * campaign.discountPercentage) / 100);
+    }, [campaign]);
+
+    const platformDiscountAmount = useMemo(() => {
+        if (!platformFee) return 0;
+        if (platformFee.discountType === 'PERCENTAGE') {
+            return Math.round((platformFee.fee * platformFee.discount) / 100);
+        }
+        return platformFee.discount;
+    }, [platformFee]);
+
+    const doctorFinalPrice = campaign.price - campaignDiscountAmount;
+    const platformFinalPrice = platformFee ? (platformFee.fee - platformDiscountAmount) : 0;
+    const totalPayable = doctorFinalPrice + platformFinalPrice;
 
     // Generate next 7 available days based on campaign schedule
     const availableDates = useMemo(() => {
@@ -90,7 +118,7 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
             const sourceType = (campaign.source ?? (campaign.lab ? 'lab' : 'doctor')).toUpperCase() as 'DOCTOR' | 'LAB';
             const appointment = await appointmentService.reserveAppointment({
                 type: sourceType,
-                organizerId: campaign.doctor?.id || campaign.lab?.id || campaign.doctorId || campaign.id!,
+                organizerId: campaign.id || campaign._id || campaign.doctorId!,
                 date: selectedDate,
                 timeSlot: selectedSlot,
             });
@@ -215,91 +243,199 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                 <View style={[styles.modalContent, isDark && styles.modalContentDark]}>
                     {/* Header */}
                     <View style={[styles.header, isDark && styles.headerDark]}>
-                        <Text style={[styles.headerTitle, isDark && styles.textWhite]}>Select Slot</Text>
+                        <Text style={[styles.headerTitle, isDark && styles.textWhite]}>
+                            {step === 'slot' ? 'Select Slot' : 'Review Booking'}
+                        </Text>
                         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                             <Feather name="x" size={24} color={isDark ? "#94A3B8" : "#111827"} />
                         </TouchableOpacity>
                     </View>
 
-                    <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-                        {/* Doctor Info Mini */}
-                        <View style={[styles.doctorInfoShort, isDark && styles.doctorInfoShortDark]}>
-                            <View style={[styles.doctorAvatar, isDark && styles.doctorAvatarDark]}>
-                                <Feather name={(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab' ? "activity" : "user"} size={24} color={BRAND_GREEN} />
+                    {step === 'slot' ? (
+                        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+                            {/* Doctor Info Mini */}
+                            <View style={[styles.doctorInfoShort, isDark && styles.doctorInfoShortDark]}>
+                                <View style={[styles.doctorAvatar, isDark && styles.doctorAvatarDark]}>
+                                    <Feather name={(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab' ? "activity" : "user"} size={24} color={BRAND_GREEN} />
+                                </View>
+                                <View>
+                                    <Text style={[styles.drName, isDark && styles.textWhite]}>
+                                        {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab'
+                                            ? campaign.lab?.user?.name
+                                            : (() => {
+                                                const n = campaign.doctor?.user?.name || 'Specialist';
+                                                return n.toLowerCase().startsWith('dr') ? n : `Dr. ${n}`;
+                                            })()}
+                                    </Text>
+                                    <Text style={[styles.drSpec, isDark && styles.textZinc400]}>
+                                        {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab'
+                                            ? 'Diagnostic Center'
+                                            : campaign.doctor?.specializations?.map(s => s.name).join(', ') || 'Specialist'}
+                                    </Text>
+                                </View>
                             </View>
-                            <View>
-                                <Text style={[styles.drName, isDark && styles.textWhite]}>
-                                    {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab'
-                                        ? campaign.lab?.user?.name
-                                        : (() => {
-                                            const n = campaign.doctor?.user?.name || 'Specialist';
-                                            return n.toLowerCase().startsWith('dr') ? n : `Dr. ${n}`;
-                                        })()}
-                                </Text>
-                                <Text style={[styles.drSpec, isDark && styles.textZinc400]}>
-                                    {(campaign.source ?? (campaign.lab ? 'lab' : 'doctor')) === 'lab'
-                                        ? 'Diagnostic Center'
-                                        : campaign.doctor?.specializations?.map(s => s.name).join(', ') || 'Specialist'}
-                                </Text>
-                            </View>
-                        </View>
 
-                        {/* Date Selection */}
-                        <Text style={[styles.sectionTitle, isDark && styles.textWhite]}>Available Dates</Text>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.datesGrid}>
-                            {availableDates.map((item) => (
-                                <TouchableOpacity
-                                    key={item.full}
-                                    style={[
-                                        styles.dateChip,
-                                        isDark && styles.dateChipDark,
-                                        selectedDate === item.full && styles.dateChipActive
-                                    ]}
-                                    onPress={() => setSelectedDate(item.full)}
-                                >
-                                    <Text style={[styles.dayName, isDark && styles.textZinc400, selectedDate === item.full && styles.textWhite]}>{item.dayName}</Text>
-                                    <Text style={[styles.dayNum, isDark && styles.textWhite, selectedDate === item.full && styles.textWhite]}>{item.day}</Text>
-                                    <Text style={[styles.monthName, isDark && styles.textZinc500, selectedDate === item.full && styles.textWhite]}>{item.month}</Text>
-                                </TouchableOpacity>
-                            ))}
+                            {/* Date Selection */}
+                            <Text style={[styles.sectionTitle, isDark && styles.textWhite]}>Available Dates</Text>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.datesGrid}>
+                                {availableDates.map((item) => (
+                                    <TouchableOpacity
+                                        key={item.full}
+                                        style={[
+                                            styles.dateChip,
+                                            isDark && styles.dateChipDark,
+                                            selectedDate === item.full && styles.dateChipActive
+                                        ]}
+                                        onPress={() => setSelectedDate(item.full)}
+                                    >
+                                        <Text style={[styles.dayName, isDark && styles.textZinc400, selectedDate === item.full && styles.textWhite]}>{item.dayName}</Text>
+                                        <Text style={[styles.dayNum, isDark && styles.textWhite, selectedDate === item.full && styles.textWhite]}>{item.day}</Text>
+                                        <Text style={[styles.monthName, isDark && styles.textZinc500, selectedDate === item.full && styles.textWhite]}>{item.month}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </ScrollView>
+
+                            {/* Time Slots */}
+                            <Text style={[styles.sectionTitle, isDark && styles.textWhite]}>Available Slots</Text>
+                            <View style={styles.slotsGrid}>
+                                {timeSlots.map((slot) => (
+                                    <TouchableOpacity
+                                        key={slot}
+                                        style={[
+                                            styles.slotChip,
+                                            isDark && styles.slotChipDark,
+                                            selectedSlot === slot && styles.slotChipActive
+                                        ]}
+                                        onPress={() => setSelectedSlot(slot)}
+                                    >
+                                        <Text style={[styles.slotText, isDark && styles.textZinc300, selectedSlot === slot && styles.textWhite]}>{slot}</Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
                         </ScrollView>
+                    ) : (
+                        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+                            {/* Review Header Section */}
+                            <View style={[styles.doctorInfoShort, isDark && styles.doctorInfoShortDark, { marginBottom: 24 }]}>
+                                <View style={[styles.doctorAvatar, isDark && styles.doctorAvatarDark]}>
+                                    <Feather name="shield" size={24} color={BRAND_GREEN} />
+                                </View>
+                                <View>
+                                    <Text style={[styles.drName, isDark && styles.textWhite]}>Secure Booking</Text>
+                                    <Text style={[styles.drSpec, isDark && styles.textZinc400]}>Review your selection & breakdown</Text>
+                                </View>
+                            </View>
 
-                        {/* Time Slots */}
-                        <Text style={[styles.sectionTitle, isDark && styles.textWhite]}>Available Slots</Text>
-                        <View style={styles.slotsGrid}>
-                            {timeSlots.map((slot) => (
-                                <TouchableOpacity
-                                    key={slot}
-                                    style={[
-                                        styles.slotChip,
-                                        isDark && styles.slotChipDark,
-                                        selectedSlot === slot && styles.slotChipActive
-                                    ]}
-                                    onPress={() => setSelectedSlot(slot)}
-                                >
-                                    <Text style={[styles.slotText, isDark && styles.textZinc300, selectedSlot === slot && styles.textWhite]}>{slot}</Text>
-                                </TouchableOpacity>
-                            ))}
-                        </View>
-                    </ScrollView>
+                            {/* Booking Summary */}
+                            <View className="mb-8">
+                                <Text style={[styles.sectionTitle, isDark && styles.textWhite]}>Appointment Details</Text>
+                                <View className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-100 dark:border-zinc-800">
+                                    <View className="flex-row items-center mb-4">
+                                        <View className="w-10 h-10 rounded-xl bg-emerald-500/10 items-center justify-center mr-4">
+                                            <Feather name="calendar" size={18} color={BRAND_GREEN} />
+                                        </View>
+                                        <View>
+                                            <Text className="text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest">Date</Text>
+                                            <Text className="text-zinc-900 dark:text-white font-bold">{selectedDate}</Text>
+                                        </View>
+                                    </View>
+                                    <View className="flex-row items-center">
+                                        <View className="w-10 h-10 rounded-xl bg-emerald-500/10 items-center justify-center mr-4">
+                                            <Feather name="clock" size={18} color={BRAND_GREEN} />
+                                        </View>
+                                        <View>
+                                            <Text className="text-zinc-500 dark:text-zinc-400 text-[10px] font-black uppercase tracking-widest">Time Slot</Text>
+                                            <Text className="text-zinc-900 dark:text-white font-bold">{selectedSlot}</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+
+                            {/* Fee Breakdown */}
+                            <Text style={[styles.sectionTitle, isDark && styles.textWhite]}>Fee Breakdown</Text>
+                            <View className="bg-zinc-50 dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-100 dark:border-zinc-800">
+                                {/* Doctor Price */}
+                                <View className="flex-row justify-between items-center mb-4">
+                                    <Text className="text-zinc-600 dark:text-zinc-400 font-medium">Consultation Fee</Text>
+                                    <Text className="text-zinc-900 dark:text-white font-bold">₹{campaign.price}</Text>
+                                </View>
+
+                                {/* Campaign Discount */}
+                                {campaignDiscountAmount > 0 && (
+                                    <View className="flex-row justify-between items-center mb-4">
+                                        <Text className="text-emerald-600 font-medium">Campaign Discount</Text>
+                                        <Text className="text-emerald-600 font-bold">-₹{campaignDiscountAmount}</Text>
+                                    </View>
+                                )}
+
+                                {/* Divider */}
+                                <View className="h-[1px] bg-zinc-200 dark:bg-zinc-800 my-2" />
+
+                                {/* Platform Fee */}
+                                <View className="flex-row justify-between items-center my-4">
+                                    <Text className="text-zinc-600 dark:text-zinc-400 font-medium">Platform Fee</Text>
+                                    <Text className="text-zinc-900 dark:text-white font-bold">₹{platformFee?.fee || 0}</Text>
+                                </View>
+
+                                {/* Platform Discount */}
+                                {platformFee && platformFee.discount > 0 && (
+                                    <View className="flex-row justify-between items-center mb-4">
+                                        <Text className="text-emerald-600 font-medium">
+                                            {platformFee.discountType === 'PERCENTAGE' ? `${platformFee.discount}% ` : ''}Platform Discount
+                                        </Text>
+                                        <Text className="text-emerald-600 font-bold">-₹{platformDiscountAmount}</Text>
+                                    </View>
+                                )}
+
+                                {/* Total Divider */}
+                                <View className="h-[1px] bg-zinc-200 dark:bg-zinc-800 my-2" />
+
+                                {/* Total */}
+                                <View className="flex-row justify-between items-center mt-4">
+                                    <Text className="text-zinc-900 dark:text-white font-black text-lg">Total Amount</Text>
+                                    <Text className="text-emerald-600 font-black text-2xl">₹{totalPayable}</Text>
+                                </View>
+                            </View>
+                        </ScrollView>
+                    )}
 
                     {/* Footer / Action */}
                     <View style={[styles.modalFooter, isDark && styles.modalFooterDark]}>
-                        <View>
-                            <Text style={[styles.footerLabel, isDark && styles.textZinc500]}>Consultation Fee</Text>
-                            <Text style={[styles.footerPrice, isDark && styles.textWhite]}>₹{campaign.price}</Text>
-                        </View>
-                        <TouchableOpacity
-                            style={[styles.confirmButton, isDark && styles.confirmButtonDark, (!selectedDate || !selectedSlot) && styles.buttonDisabled]}
-                            onPress={handleBooking}
-                            disabled={loadingStep !== 'idle' || !selectedDate || !selectedSlot}
-                        >
-                            {loadingStep !== 'idle' ? (
-                                <ActivityIndicator color="white" />
-                            ) : (
-                                <Text style={styles.confirmButtonText}>Confirm & Pay</Text>
-                            )}
-                        </TouchableOpacity>
+                        {step === 'slot' ? (
+                            <>
+                                <View>
+                                    <Text style={[styles.footerLabel, isDark && styles.textZinc500]}>Estimated Price</Text>
+                                    <Text style={[styles.footerPrice, isDark && styles.textWhite]}>₹{totalPayable}</Text>
+                                </View>
+                                <TouchableOpacity
+                                    style={[styles.confirmButton, isDark && styles.confirmButtonDark, (!selectedDate || !selectedSlot) && styles.buttonDisabled]}
+                                    onPress={() => setStep('review')}
+                                    disabled={!selectedDate || !selectedSlot}
+                                >
+                                    <Text style={styles.confirmButtonText}>Review Order</Text>
+                                </TouchableOpacity>
+                            </>
+                        ) : (
+                            <View className="flex-row items-center w-full">
+                                <TouchableOpacity
+                                    className="mr-4 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800"
+                                    onPress={() => setStep('slot')}
+                                >
+                                    <Feather name="arrow-left" size={24} color={isDark ? "white" : "black"} />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={[styles.confirmButton, isDark && styles.confirmButtonDark, { flex: 1 }]}
+                                    onPress={handleBooking}
+                                    disabled={loadingStep !== 'idle'}
+                                >
+                                    {loadingStep !== 'idle' ? (
+                                        <ActivityIndicator color="white" />
+                                    ) : (
+                                        <Text style={styles.confirmButtonText}>Pay ₹{totalPayable}</Text>
+                                    )}
+                                </TouchableOpacity>
+                            </View>
+                        )}
                     </View>
                 </View>
             </View>

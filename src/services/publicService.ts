@@ -83,6 +83,16 @@ export interface ContactTicket {
     message: string;
 }
 
+export interface PlatformFee {
+    id: string;
+    name: string;
+    fee: number;
+    feeType: 'FIXED' | 'PERCENTAGE';
+    discount: number;
+    discountType: 'FIXED' | 'PERCENTAGE';
+    entityType: 'DOCTOR' | 'LAB';
+}
+
 export const publicService = {
     getCampaigns: async (params: {
         source: 'doctor' | 'lab';
@@ -138,6 +148,20 @@ export const publicService = {
         } catch (error: any) {
             console.error('Error creating contact ticket:', error);
             throw error.response?.data?.message || 'Failed to send inquiry. Please try again later.';
+        }
+    },
+
+    getPlatformFee: async (entityType: 'DOCTOR' | 'LAB'): Promise<PlatformFee | null> => {
+        try {
+            const response = await apiClient.get('/api/public/platform-fee');
+            const data = response.data.data || response.data;
+            if (Array.isArray(data)) {
+                return data.find((item: PlatformFee) => item.entityType === entityType) || null;
+            }
+            return data;
+        } catch (error: any) {
+            console.error('Error fetching platform fee:', error);
+            return null;
         }
     }
 };
