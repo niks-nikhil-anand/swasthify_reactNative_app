@@ -28,6 +28,14 @@ const DoctorSearchBar = () => {
         translateY.value = withDelay(500, withTiming(0, { duration: 700, easing: Easing.out(Easing.quad) }));
     }, []);
 
+    // Clear search query when the screen comes back into focus
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setSearchQuery('');
+        });
+        return unsubscribe;
+    }, [navigation]);
+
     const animatedStyle = useAnimatedStyle(() => ({
         opacity: opacity.value,
         transform: [{ translateY: translateY.value }],
@@ -35,9 +43,9 @@ const DoctorSearchBar = () => {
 
     const handleSearch = () => {
         if (searchQuery.trim()) {
-            navigation.navigate('Doctors', { query: searchQuery.trim() });
+            navigation.navigate('Doctors', { query: searchQuery.trim(), specialization: 'All' });
         } else {
-            navigation.navigate('Doctors');
+            navigation.navigate('Doctors', { query: '', specialization: 'All' });
         }
     };
 
