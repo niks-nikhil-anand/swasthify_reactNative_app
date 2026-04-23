@@ -113,12 +113,22 @@ const DoctorsScreen = () => {
 
         if (route.params?.specialization !== undefined && route.params.specialization !== selectedSpecialization) {
             setSelectedSpecialization(route.params.specialization);
-            // Updating selectedSpecialization triggers the other useEffect, so we don't strictly need to fetch here
-            // but we can just let the other effect handle it.
         } else if (shouldFetch) {
             fetchDoctors(1, true);
         }
     }, [route.params?.query, route.params?.specialization]);
+
+    // Clear search and filter states when popping this screen (i.e. going back to Home)
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', (e: any) => {
+            if (e.data.action.type === 'GO_BACK') {
+                setSearchQuery('');
+                setSelectedSpecialization('All');
+                navigation.setParams({ query: undefined, specialization: undefined });
+            }
+        });
+        return unsubscribe;
+    }, [navigation]);
 
     const handleSearchSubmit = () => {
         fetchDoctors(1, true);
