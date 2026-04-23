@@ -15,7 +15,16 @@ export const authService = {
             const response = await apiClient.post('/api/auth/login', data);
             return response.data;
         } catch (error: any) {
-            throw error.response?.data?.message || 'Login failed';
+            throw error.response?.data?.error || error.response?.data?.message || 'Login failed';
+        }
+    },
+
+    sendOtp: async (data: any) => {
+        try {
+            const response = await apiClient.post('/api/auth/otp', data);
+            return response.data;
+        } catch (error: any) {
+            throw error.response?.data?.error || error.response?.data?.message || 'Failed to send OTP';
         }
     },
 
