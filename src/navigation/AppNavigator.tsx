@@ -60,43 +60,60 @@ const AppNavigator = () => {
             backBehavior="history"
             screenOptions={({ navigation }) => ({
                 headerStyle: {
-                    backgroundColor: isDark ? '#111827' : '#FFFFFF',
-                    elevation: 4,
-                    shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.08,
-                    shadowRadius: 4,
+                    backgroundColor: isDark ? '#09090B' : '#FFFFFF',
+                    elevation: 0, // removed heavy manual shadows for a cleaner modern header
+                    shadowOpacity: 0,
+                    borderBottomWidth: 1,
+                    borderBottomColor: isDark ? '#27272A' : '#F1F5F9', // subtle bottom border instead of shadow
                 },
                 headerTintColor: BRAND_GREEN,
-                headerTitleStyle: {
-                    fontWeight: '700',
-                    fontSize: 18,
-                    color: isDark ? '#F9FAFB' : '#111827',
-                },
+                headerTitle: ({ children }) => (
+                    <View className="flex-row items-center">
+                        <Image 
+                            source={require('../assets/logo.png')} 
+                            style={{ width: 22, height: 22, marginRight: 8, tintColor: BRAND_GREEN }} 
+                            resizeMode="contain"
+                        />
+                        <Text style={{ fontWeight: '800', fontSize: 17, letterSpacing: -0.3, color: isDark ? '#F9FAFB' : '#0F172A' }}>
+                            {children}
+                        </Text>
+                    </View>
+                ),
                 headerLeftContainerStyle: {
-                    paddingLeft: 20,
+                    paddingLeft: 12,
                 },
                 headerRightContainerStyle: {
                     paddingRight: 20,
                 },
                 drawerActiveTintColor: BRAND_GREEN,
-                drawerInactiveTintColor: isDark ? '#9CA3AF' : '#4B5563',
-                drawerActiveBackgroundColor: isDark ? '#064E3B' : '#D1F2E2',
+                drawerInactiveTintColor: isDark ? '#94A3B8' : '#64748B',
+                drawerActiveBackgroundColor: isDark ? 'rgba(13, 169, 110, 0.15)' : '#E6F6EF',
                 drawerStyle: {
-                    backgroundColor: isDark ? '#111827' : '#FFFFFF',
-                    width: 300,
+                    backgroundColor: isDark ? '#09090B' : '#FFFFFF',
+                    width: '80%',
+                    maxWidth: 320,
+                    borderTopRightRadius: 24,
+                    borderBottomRightRadius: 24,
                 },
                 drawerItemStyle: {
-                    borderRadius: 12,
-                    marginHorizontal: 12,
-                    paddingVertical: 4,
-                    marginBottom: 2,
+                    borderRadius: 14,
+                    marginHorizontal: 16,
+                    paddingVertical: 2,
+                    marginBottom: 6,
                 },
                 drawerLabelStyle: {
-                    fontSize: 16,
-                    fontWeight: '600',
-                    marginLeft: -10,
+                    fontSize: 15,
+                    fontWeight: '700',
+                    marginLeft: 4, // Added space between drawer icon and text
                 },
+                headerLeft: () => (
+                    <TouchableOpacity
+                        onPress={() => navigation.openDrawer()}
+                        className="w-10 h-10 ml-1 rounded-full items-center justify-center bg-slate-100 dark:bg-slate-800/80 border border-slate-200/50 dark:border-white/5 active:bg-slate-200 dark:active:bg-slate-700"
+                    >
+                        <Feather name="menu" size={20} color={isDark ? '#F1F5F9' : '#0F172A'} />
+                    </TouchableOpacity>
+                ),
                 headerRight: () => (
                     <TouchableOpacity
                         onPress={() => {
