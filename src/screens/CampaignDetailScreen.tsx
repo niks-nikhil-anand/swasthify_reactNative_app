@@ -3,7 +3,7 @@ import { View, Text, ScrollView, Image, TouchableOpacity, ActivityIndicator, Dim
 import { useRoute, useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import { MapPin, Navigation, ExternalLink, Calendar, Clock, Award, Sparkles, ChevronLeft, Share2, Info, Shield, CheckCircle } from 'lucide-react-native';
-import { publicService, Campaign } from '../services/publicService';
+import { publicService, Campaign, PlatformFee } from '../services/publicService';
 import CampaignDetailSkeleton from '../components/CampaignDetailSkeleton';
 import BookingModal from '../components/BookingModal';
 
@@ -19,6 +19,7 @@ const CampaignDetailScreen = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [bookingVisible, setBookingVisible] = useState(false);
+    const [platformFee, setPlatformFee] = useState<PlatformFee | null>(null);
 
 
     useEffect(() => {
@@ -26,6 +27,11 @@ const CampaignDetailScreen = () => {
             try {
                 const data = await publicService.getCampaignById(id);
                 setCampaign(data);
+
+                // Fetch platform fee as well
+                const sourceType = (data.source ?? (data.lab ? 'lab' : 'doctor')).toUpperCase() as 'DOCTOR' | 'LAB';
+                const feeData = await publicService.getPlatformFee(sourceType);
+                setPlatformFee(feeData);
             } catch (err: any) {
                 setError(err.toString());
             } finally {
@@ -99,6 +105,14 @@ const CampaignDetailScreen = () => {
     const discountedPrice = campaign.discountPercentage > 0
         ? Math.round(campaign.price - (campaign.price * campaign.discountPercentage) / 100)
         : campaign.price;
+
+    const platformDiscountAmount = platformFee
+        ? (platformFee.discountType === 'PERCENTAGE'
+            ? Math.round((platformFee.fee * platformFee.discount) / 100)
+            : platformFee.discount)
+        : 0;
+
+    const totalPayable = discountedPrice + (platformFee ? (platformFee.fee - platformDiscountAmount) : 0);
 
     return (
         <SafeAreaView className="flex-1 bg-zinc-50 dark:bg-zinc-950">
@@ -416,7 +430,7 @@ const CampaignDetailScreen = () => {
                         <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest">Total Payable</Text>
                         <View className="flex-row items-baseline space-x-2">
                             <Text className="text-3xl font-black text-zinc-900 dark:text-white tabular-nums">
-                                {campaign.price === 0 ? "FREE" : `₹${discountedPrice}`}
+                                {(campaign.price === 0 && (!platformFee || (platformFee.fee - platformDiscountAmount) === 0)) ? "FREE" : `₹${totalPayable}`}
                             </Text>
                             {campaign.discountPercentage > 0 && (
                                 <Text className="text-sm font-bold text-zinc-400 line-through">₹{campaign.price}</Text>
