@@ -94,7 +94,7 @@ const Specialities = () => {
                         <View key={item.id ?? index} className="w-1/3 p-1.5">
                             <SpecialityCard
                                 speciality={item}
-                                onPress={() => navigation.navigate('Doctors')}
+                                onPress={() => navigation.navigate('Doctors', { specialization: item.title })}
                             />
                         </View>
                     ))
