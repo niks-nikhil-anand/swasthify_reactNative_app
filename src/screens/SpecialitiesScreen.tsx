@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -7,104 +7,46 @@ import {
     SafeAreaView,
     ScrollView,
     StatusBar,
+    ActivityIndicator,
     Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootDrawerParamList } from '../navigation/types';
 import Feather from 'react-native-vector-icons/Feather';
+import apiClient from '../api/apiClient';
 
 const { width } = Dimensions.get('window');
 
-const SPECIALITIES = [
-    {
-        title: "Gynaecology",
-        price: "₹599",
-        image: require('../assets/specialities/gynaecology_real.png'),
-        color: "bg-pink-50/50 dark:bg-pink-900/20",
-    },
-    {
-        title: "Sexology",
-        price: "₹599",
-        image: require('../assets/specialities/sexology_real.png'),
-        color: "bg-indigo-50/50 dark:bg-indigo-900/20",
-    },
-    {
-        title: "General physician",
-        price: "₹499",
-        image: require('../assets/specialities/general_physician_real.png'),
-        color: "bg-blue-50/50 dark:bg-blue-900/20",
-    },
-    {
-        title: "Dermatology",
-        price: "₹549",
-        image: require('../assets/specialities/dermatology_real_v2.png'),
-        color: "bg-teal-50/50 dark:bg-teal-900/20",
-    },
-    {
-        title: "Psychiatry",
-        price: "₹599",
-        image: require('../assets/specialities/psychiatry_real.png'),
-        color: "bg-green-50/50 dark:bg-green-900/20",
-    },
-    {
-        title: "Stomach and digestion",
-        price: "₹499",
-        image: require('../assets/specialities/stomach_digestion_real.png'),
-        color: "bg-orange-50/50 dark:bg-orange-900/20",
-    },
-    {
-        title: "Cardiology",
-        price: "₹799",
-        image: require('../assets/specialities/cardiology_real.jpg'),
-        color: "bg-red-50/50 dark:bg-red-900/20",
-    },
-    {
-        title: "Pediatrics",
-        price: "₹499",
-        image: require('../assets/specialities/pediatrics_real.jpg'),
-        color: "bg-yellow-50/50 dark:bg-yellow-900/20",
-    },
-    {
-        title: "Orthopedics",
-        price: "₹599",
-        image: require('../assets/specialities/orthopedics_real.jpg'),
-        color: "bg-orange-50/50 dark:bg-orange-900/20",
-    },
-    {
-        title: "Neurology",
-        price: "₹899",
-        image: require('../assets/specialities/neurology_real.jpg'),
-        color: "bg-purple-50/50 dark:bg-purple-900/20",
-    },
-    {
-        title: "Ophthalmology",
-        price: "₹499",
-        image: require('../assets/specialities/ophthalmology_real.jpg'),
-        color: "bg-sky-50/50 dark:bg-sky-900/20",
-    },
-    {
-        title: "Dentist",
-        price: "₹249",
-        image: require('../assets/specialities/dentist_v2.png'),
-        color: "bg-slate-50/50 dark:bg-slate-900/20",
-    },
-    {
-        title: "Dietitian",
-        price: "₹349",
-        image: require('../assets/specialities/dietitian_v2.png'),
-        color: "bg-lime-50/50 dark:bg-lime-900/20",
-    },
-    {
-        title: "Physiotherapist",
-        price: "₹449",
-        image: require('../assets/specialities/physiotherapist_v2.png'),
-        color: "bg-cyan-50/50 dark:bg-cyan-900/20",
-    },
-];
+interface Speciality {
+    id: string;
+    title: string;
+    price: string;
+    image: string;
+    color: string;
+    type: string;
+}
 
 const SpecialitiesScreen = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootDrawerParamList>>();
+    const [specialities, setSpecialities] = useState<Speciality[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSpecialities = async () => {
+            try {
+                // Fetch up to 50 specialities as per requirements
+                const response = await apiClient.get('/api/public/specializations?limit=50&type=DOCTOR');
+                setSpecialities(response.data);
+            } catch (error) {
+                console.error('Error fetching specialities:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSpecialities();
+    }, []);
 
     return (
         <SafeAreaView className="flex-1 bg-white dark:bg-slate-900">
@@ -136,33 +78,48 @@ const SpecialitiesScreen = () => {
                     </Text>
                 </View>
 
-                <View className="flex-row flex-wrap -mx-2">
-                    {SPECIALITIES.map((spec, index) => (
-                        <View key={index} className="w-1/3 px-2 mb-8">
-                            <TouchableOpacity
-                                onPress={() => navigation.navigate('Doctors')}
-                                activeOpacity={0.7}
-                                className="items-center"
-                            >
-                                <View className={`w-full aspect-square rounded-full overflow-hidden items-center justify-center p-0.5 mb-3 ${spec.color} border border-gray-100 dark:border-slate-800`}>
-                                    <View className="w-full h-full rounded-full overflow-hidden">
-                                        <Image
-                                            source={spec.image}
-                                            className="w-full h-full"
-                                            resizeMode="cover"
-                                        />
-                                    </View>
+                {loading ? (
+                    <View className="py-20 items-center justify-center">
+                        <ActivityIndicator size="large" color="#0DA96E" />
+                        <Text className="mt-4 text-gray-500 dark:text-gray-400 font-medium">Loading Specialities...</Text>
+                    </View>
+                ) : (
+                    <View className="flex-row flex-wrap -mx-2">
+                        {specialities.map((spec, index) => {
+                            const rawImage = spec.image || '';
+                            const baseUrl = rawImage.startsWith('http')
+                                ? rawImage
+                                : `https://www.swasthify.in${rawImage}`;
+                            const imageUri = encodeURI(baseUrl);
+
+                            return (
+                                <View key={spec.id ?? index} className="w-1/3 px-2 mb-8">
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('Doctors')}
+                                        activeOpacity={0.7}
+                                        className="items-center"
+                                    >
+                                        <View className={`w-full aspect-square rounded-full overflow-hidden items-center justify-center p-0.5 mb-3 ${spec.color} border border-gray-100 dark:border-slate-800`}>
+                                            <View className="w-full h-full rounded-full overflow-hidden">
+                                                <Image
+                                                    source={{ uri: imageUri }}
+                                                    className="w-full h-full"
+                                                    resizeMode="cover"
+                                                />
+                                            </View>
+                                        </View>
+                                        <Text className="text-[11px] font-extrabold text-[#111827] dark:text-white text-center mb-1" numberOfLines={2}>
+                                            {spec.title}
+                                        </Text>
+                                        <Text className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold text-center">
+                                            from <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold">{spec.price}</Text>
+                                        </Text>
+                                    </TouchableOpacity>
                                 </View>
-                                <Text className="text-[11px] font-extrabold text-[#111827] dark:text-white text-center mb-1" numberOfLines={2}>
-                                    {spec.title}
-                                </Text>
-                                <Text className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold text-center">
-                                    from <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold">{spec.price}</Text>
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    ))}
-                </View>
+                            );
+                        })}
+                    </View>
+                )}
             </ScrollView>
         </SafeAreaView>
     );
