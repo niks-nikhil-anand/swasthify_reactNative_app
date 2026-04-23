@@ -95,7 +95,7 @@ const SpecialitiesScreen = () => {
                             return (
                                 <View key={spec.id ?? index} className="w-1/3 px-2 mb-8">
                                     <TouchableOpacity
-                                        onPress={() => navigation.navigate('Doctors')}
+                                        onPress={() => navigation.navigate('Doctors', { specialization: spec.title })}
                                         activeOpacity={0.7}
                                         className="items-center"
                                     >
