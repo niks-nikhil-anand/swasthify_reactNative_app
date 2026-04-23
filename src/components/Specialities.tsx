@@ -1,79 +1,68 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, ImageSourcePropType } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootDrawerParamList } from '../navigation/types';
+import apiClient from '../api/apiClient';
 
 interface Speciality {
+    id: string;
     title: string;
     price: string;
-    image: ImageSourcePropType;
+    image: string;
     color: string;
+    type: string;
 }
 
-const SpecialityCard = ({ speciality, onPress }: { speciality: Speciality, onPress?: () => void }) => (
-    <TouchableOpacity
-        className="bg-white dark:bg-slate-800 p-2.5 rounded-[24px] border border-gray-100 dark:border-slate-700 shadow-sm w-full items-center"
-        style={{ elevation: 2 }}
-        onPress={onPress}
-        activeOpacity={0.7}
-    >
-        <View className={`w-16 h-16 rounded-full mb-3 overflow-hidden items-center justify-center ${speciality.color} dark:bg-opacity-20 border border-gray-100 dark:border-slate-700`}>
-            <Image
-                source={speciality.image}
-                className="w-full h-full rounded-full"
-                resizeMode="cover"
-            />
-        </View>
-        <Text className="text-[10px] font-extrabold text-[#111827] dark:text-white text-center mb-1" numberOfLines={2}>
-            {speciality.title}
-        </Text>
-        <Text className="text-[#6B7280] dark:text-gray-400 text-[8px] text-center">
-            starts from <Text className="font-bold text-[#111827] dark:text-[#48C496]">{speciality.price}</Text>
-        </Text>
-    </TouchableOpacity>
-);
+const SpecialityCard = ({ speciality, onPress }: { speciality: Speciality, onPress?: () => void }) => {
+    // Determine image URI and safely handle spaces or invalid characters in remote URLs
+    const rawImage = speciality.image || '';
+    const baseUrl = rawImage.startsWith('http') ? rawImage : `https://www.swasthify.in${rawImage}`;
+    const imageUri = encodeURI(baseUrl);
+
+    return (
+        <TouchableOpacity
+            className="bg-white dark:bg-slate-800 p-2.5 rounded-[24px] border border-gray-100 dark:border-slate-700 shadow-sm w-full items-center"
+            style={{ elevation: 2 }}
+            onPress={onPress}
+            activeOpacity={0.7}
+        >
+            <View className={`w-16 h-16 rounded-full mb-3 overflow-hidden items-center justify-center ${speciality.color} dark:bg-opacity-20 border border-gray-100 dark:border-slate-700`}>
+                <Image
+                    source={{ uri: imageUri }}
+                    className="w-full h-full rounded-full"
+                    resizeMode="cover"
+                />
+            </View>
+            <Text className="text-[10px] font-extrabold text-[#111827] dark:text-white text-center mb-1" numberOfLines={2}>
+                {speciality.title}
+            </Text>
+            <Text className="text-[#6B7280] dark:text-gray-400 text-[8px] text-center">
+                starts from <Text className="font-bold text-[#111827] dark:text-[#48C496]">{speciality.price}</Text>
+            </Text>
+        </TouchableOpacity>
+    );
+};
 
 const Specialities = () => {
     const navigation = useNavigation<NativeStackNavigationProp<RootDrawerParamList>>();
-    const specialities: Speciality[] = [
-        {
-            title: "Gynaecology",
-            price: "₹599",
-            image: require('../assets/specialities/gynaecology_real.png'),
-            color: "bg-pink-50",
-        },
-        {
-            title: "Sexology",
-            price: "₹599",
-            image: require('../assets/specialities/sexology_real.png'),
-            color: "bg-indigo-50",
-        },
-        {
-            title: "General physician",
-            price: "₹499",
-            image: require('../assets/specialities/general_physician_real.png'),
-            color: "bg-blue-50",
-        },
-        {
-            title: "Dermatology",
-            price: "₹549",
-            image: require('../assets/specialities/dermatology_real_v2.png'),
-            color: "bg-teal-50",
-        },
-        {
-            title: "Psychiatry",
-            price: "₹599",
-            image: require('../assets/specialities/psychiatry_real.png'),
-            color: "bg-green-50",
-        },
-        {
-            title: "Stomach and digestion",
-            price: "₹499",
-            image: require('../assets/specialities/stomach_digestion_real.png'),
-            color: "bg-orange-50",
-        },
-    ];
+    const [specialities, setSpecialities] = useState<Speciality[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSpecialities = async () => {
+            try {
+                const response = await apiClient.get('/api/public/specializations?limit=6&type=DOCTOR');
+                setSpecialities(response.data);
+            } catch (error) {
+                console.error('Error fetching specialities:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSpecialities();
+    }, []);
 
     return (
         <View className="py-10 bg-white dark:bg-zinc-950">
@@ -96,14 +85,20 @@ const Specialities = () => {
             </View>
 
             <View className="flex-row flex-wrap px-2">
-                {specialities.map((item, index) => (
-                    <View key={index} className="w-1/3 p-1.5">
-                        <SpecialityCard
-                            speciality={item}
-                            onPress={() => navigation.navigate('Doctors')}
-                        />
+                {loading ? (
+                    <View className="w-full py-10 items-center justify-center">
+                        <ActivityIndicator size="small" color="#0DA96E" />
                     </View>
-                ))}
+                ) : (
+                    specialities.map((item, index) => (
+                        <View key={item.id ?? index} className="w-1/3 p-1.5">
+                            <SpecialityCard
+                                speciality={item}
+                                onPress={() => navigation.navigate('Doctors')}
+                            />
+                        </View>
+                    ))
+                )}
             </View>
         </View>
     );
