@@ -46,6 +46,7 @@ const DoctorsScreen = () => {
     const isDark = colorScheme === 'dark';
     const route = useRoute<RouteProp<RootDrawerParamList, 'Doctors'>>();
     const initialQuery = route.params?.query || '';
+    const initialSpecialization = route.params?.specialization || 'All';
 
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
@@ -55,7 +56,7 @@ const DoctorsScreen = () => {
 
     // Filters
     const [searchQuery, setSearchQuery] = useState(initialQuery);
-    const [selectedSpecialization, setSelectedSpecialization] = useState('All');
+    const [selectedSpecialization, setSelectedSpecialization] = useState(initialSpecialization);
     const [sortBy, setSortBy] = useState('featured');
     const [showSortOptions, setShowSortOptions] = useState(false);
 
@@ -103,11 +104,21 @@ const DoctorsScreen = () => {
     }, [selectedSpecialization, sortBy]);
 
     useEffect(() => {
-        if (route.params?.query !== undefined) {
+        let shouldFetch = false;
+
+        if (route.params?.query !== undefined && route.params.query !== searchQuery) {
             setSearchQuery(route.params.query);
+            shouldFetch = true;
+        }
+
+        if (route.params?.specialization !== undefined && route.params.specialization !== selectedSpecialization) {
+            setSelectedSpecialization(route.params.specialization);
+            // Updating selectedSpecialization triggers the other useEffect, so we don't strictly need to fetch here
+            // but we can just let the other effect handle it.
+        } else if (shouldFetch) {
             fetchDoctors(1, true);
         }
-    }, [route.params?.query]);
+    }, [route.params?.query, route.params?.specialization]);
 
     const handleSearchSubmit = () => {
         fetchDoctors(1, true);
