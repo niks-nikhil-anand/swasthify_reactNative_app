@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Image, StyleSheet, Dimensions } from 'react-native';
+import { View, Image, StyleSheet, Dimensions, Text } from 'react-native';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
@@ -41,6 +41,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
         };
     });
 
+    const footerAnimatedStyle = useAnimatedStyle(() => {
+        return {
+            opacity: opacity.value,
+        };
+    });
+
     return (
         <View style={styles.container}>
             <Animated.View style={[styles.logoContainer, animatedStyle]}>
@@ -49,7 +55,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
                     style={styles.logo}
                     resizeMode="contain"
                 />
-                <Animated.Text style={styles.brandText}>Swasthify</Animated.Text>
+                <Text style={styles.brandText}>swasthify</Text>
+                <Text style={styles.taglineText}>HEALTH, SIMPLIFIED.</Text>
+            </Animated.View>
+
+            <Animated.View style={[styles.footerContainer, footerAnimatedStyle]}>
+                <Text style={styles.footerText}>BIHAR'S TRUSTED HEALTHCARE PLATFORM</Text>
             </Animated.View>
         </View>
     );
@@ -58,7 +69,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#F8FAF9', // Slightly off-white/very light green tint
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -67,15 +78,34 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     logo: {
-        width: width * 0.4,
-        height: width * 0.4,
-        marginBottom: 20,
+        width: width * 0.35,
+        height: width * 0.35,
+        marginBottom: 10,
     },
     brandText: {
-        fontSize: 32,
-        fontWeight: '800',
-        color: '#0DA96E', // BRAND_GREEN
-        letterSpacing: 1,
+        fontSize: 42,
+        fontWeight: 'bold',
+        color: '#0F172A', // Dark Slate
+        letterSpacing: -0.5,
+    },
+    taglineText: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: '#64748B', // Muted Slate
+        letterSpacing: 4,
+        marginTop: 5,
+    },
+    footerContainer: {
+        position: 'absolute',
+        bottom: 50,
+        width: '100%',
+        alignItems: 'center',
+    },
+    footerText: {
+        fontSize: 12,
+        fontWeight: '500',
+        color: '#94A3B8', // Light Slate
+        letterSpacing: 1.5,
     },
 });
 
