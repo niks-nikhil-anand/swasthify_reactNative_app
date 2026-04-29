@@ -10,7 +10,7 @@ import {
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../navigation/types';
 import { AuthWrapper } from '../components/auth/AuthWrapper';
-import Feather from 'react-native-vector-icons/Feather';
+import { Mail, Lock, Eye, EyeOff, Smartphone } from 'lucide-react-native';
 
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
@@ -22,45 +22,13 @@ type SignInScreenProps = {
 const SignInScreen = ({ navigation }: SignInScreenProps) => {
     const { login } = useAuth();
     
-    // View State
-    const [loginMethod, setLoginMethod] = useState<'email' | 'mobile'>('email');
-
     // Form State
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [phone, setPhone] = useState('');
-    const [otp, setOtp] = useState('');
-    const [otpSent, setOtpSent] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSignIn = async () => {
-        if (loginMethod === 'mobile') {
-            if (!otpSent) {
-                if (!phone || phone.length < 10) {
-                    return Alert.alert('Error', 'Please enter a valid mobile number');
-                }
-                setIsLoading(true);
-                // Simulate Send OTP
-                setTimeout(() => {
-                    setOtpSent(true);
-                    setIsLoading(false);
-                }, 1000);
-                return;
-            } else {
-                if (!otp || otp.length < 4) {
-                    return Alert.alert('Error', 'Please enter a valid OTP');
-                }
-                setIsLoading(true);
-                // Simulate Verify OTP
-                setTimeout(() => {
-                    setIsLoading(false);
-                    Alert.alert('Notice', 'OTP Verification API not yet hooked up.');
-                }, 1000);
-                return;
-            }
-        }
-
         if (!email || !password) {
             return Alert.alert('Error', 'Please enter both email and password');
         }
@@ -88,142 +56,98 @@ const SignInScreen = ({ navigation }: SignInScreenProps) => {
 
     return (
         <AuthWrapper
-            title={loginMethod === 'email' ? "Welcome Back" : "Mobile Login"}
-            description={loginMethod === 'email' ? "Sign in to continue your healthcare journey" : "Enter your mobile number to receive an OTP"}
-            showSocial={false}
-            backButtonLabel="Don't have an account? Sign Up"
-            onBackPress={() => navigation.navigate('SignUp')}
+            title="Welcome back"
+            description="Sign in to continue your healthcare journey."
         >
-            <View className="gap-y-5">
-                {loginMethod === 'email' ? (
-                    <>
-                        {/* Email Field */}
-                        <View>
-                            <Text className="text-sm font-bold text-gray-700 mb-2">Email</Text>
-                            <TextInput
-                                placeholder="name@example.com"
-                                placeholderTextColor="#9CA3AF"
-                                value={email}
-                                onChangeText={setEmail}
-                                className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900"
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                                editable={!isLoading}
-                            />
+            <View className="w-full">
+                {/* Email Field */}
+                <View className="mb-5">
+                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Email or phone</Text>
+                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
+                        <View className="mr-3">
+                            <Mail size={20} color="#94A3B8" />
                         </View>
+                        <TextInput
+                            placeholder="ayan@gmail.com"
+                            placeholderTextColor="#94A3B8"
+                            value={email}
+                            onChangeText={setEmail}
+                            className="flex-1 text-base text-slate-900 dark:text-white"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            editable={!isLoading}
+                        />
+                    </View>
+                </View>
 
-                        {/* Password Field */}
-                        <View>
-                            <View className="flex-row justify-between mb-2">
-                                <Text className="text-sm font-bold text-gray-700">Password</Text>
-                                <TouchableOpacity disabled={isLoading}>
-                                    <Text className="text-sm font-medium text-[#0DA96E]">Forgot?</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View className="relative">
-                                <TextInput
-                                    placeholder="••••••••"
-                                    placeholderTextColor="#9CA3AF"
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    secureTextEntry={!showPassword}
-                                    className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 pr-12"
-                                    editable={!isLoading}
-                                />
-                                <TouchableOpacity
-                                    onPress={() => setShowPassword(!showPassword)}
-                                    className="absolute right-4 top-3.5"
-                                    disabled={isLoading}
-                                >
-                                    <Feather name={showPassword ? "eye-off" : "eye"} size={20} color="#9CA3AF" />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        {/* Sign In Button */}
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={handleSignIn}
-                            disabled={isLoading}
-                            className="bg-[#0DA96E] py-4 rounded-xl items-center justify-center flex-row shadow-lg shadow-[#0DA96E]/20 mt-4 active:scale-[0.98]"
-                        >
-                            {isLoading && <ActivityIndicator color="white" size="small" style={{ marginRight: 8 }} />}
-                            <Text className="text-white font-bold text-lg">Sign In</Text>
+                {/* Password Field */}
+                <View className="mb-5">
+                    <View className="flex-row justify-between items-center mb-2">
+                        <Text className="text-sm font-bold text-slate-900 dark:text-white">Password</Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                            <Text className="text-[13px] font-bold text-primary">Forgot?</Text>
                         </TouchableOpacity>
-
-                        {/* Toggle to OTP Logging */}
-                        <View className="items-center mt-2">
-                            <TouchableOpacity onPress={() => setLoginMethod('mobile')} className="flex-row items-center">
-                                <Feather name="smartphone" size={16} color="#4B5563" />
-                                <Text className="font-bold text-gray-600 text-sm ml-2">Login via Mobile OTP</Text>
-                            </TouchableOpacity>
+                    </View>
+                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
+                        <View className="mr-3">
+                            <Lock size={20} color="#94A3B8" />
                         </View>
-                    </>
-                ) : (
-                    <>
-                        {/* Mobile OTP Flow */}
-                        {!otpSent ? (
-                            <View>
-                                <Text className="text-sm font-bold text-gray-700 mb-2">Mobile Number</Text>
-                                <View className="flex-row items-center border border-gray-200 rounded-xl bg-gray-50 overflow-hidden">
-                                    <View className="px-4 py-3 border-r border-gray-200">
-                                        <Text className="text-gray-900 font-bold">+91</Text>
-                                    </View>
-                                    <TextInput
-                                        placeholder="Enter 10-digit number"
-                                        placeholderTextColor="#9CA3AF"
-                                        value={phone}
-                                        onChangeText={setPhone}
-                                        className="flex-1 px-4 py-3 text-gray-900"
-                                        keyboardType="phone-pad"
-                                        maxLength={10}
-                                        editable={!isLoading}
-                                    />
-                                </View>
-                            </View>
-                        ) : (
-                            <View>
-                                <Text className="text-sm font-bold text-gray-700 mb-2">Enter OTP</Text>
-                                <TextInput
-                                    placeholder="Enter 4 or 6 digit code"
-                                    placeholderTextColor="#9CA3AF"
-                                    value={otp}
-                                    onChangeText={setOtp}
-                                    className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-center tracking-widest text-lg"
-                                    keyboardType="number-pad"
-                                    maxLength={6}
-                                    editable={!isLoading}
-                                />
-                                <TouchableOpacity 
-                                    onPress={() => setOtpSent(false)} 
-                                    className="mt-3 self-end"
-                                    disabled={isLoading}
-                                >
-                                    <Text className="text-[#0DA96E] font-medium text-sm">Change Number?</Text>
-                                </TouchableOpacity>
-                            </View>
-                        )}
-
+                        <TextInput
+                            placeholder="••••••••"
+                            placeholderTextColor="#94A3B8"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={!showPassword}
+                            className="flex-1 text-base text-slate-900 dark:text-white pr-12"
+                            editable={!isLoading}
+                        />
                         <TouchableOpacity
-                            activeOpacity={0.8}
-                            onPress={handleSignIn}
+                            onPress={() => setShowPassword(!showPassword)}
+                            className="absolute right-4"
                             disabled={isLoading}
-                            className="bg-[#0DA96E] py-4 rounded-xl items-center justify-center flex-row shadow-lg shadow-[#0DA96E]/20 mt-2 active:scale-[0.98]"
                         >
-                            {isLoading && <ActivityIndicator color="white" size="small" style={{ marginRight: 8 }} />}
-                            <Text className="text-white font-bold text-lg">
-                                {otpSent ? 'Verify OTP' : 'Send OTP'}
-                            </Text>
+                            {showPassword ? <EyeOff size={20} color="#94A3B8" /> : <Eye size={20} color="#94A3B8" />}
                         </TouchableOpacity>
+                    </View>
+                </View>
 
-                        <View className="items-center mt-4">
-                            <TouchableOpacity onPress={() => { setLoginMethod('email'); setOtpSent(false); }} className="flex-row items-center">
-                                <Feather name="mail" size={16} color="#4B5563" />
-                                <Text className="font-bold text-gray-600 text-sm ml-2">Back to Email Login</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </>
-                )}
+                {/* Sign In Button */}
+                <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={handleSignIn}
+                    disabled={isLoading}
+                    className="bg-primary h-14 rounded-[20px] items-center justify-center mt-2.5 shadow-lg shadow-primary/20"
+                >
+                    {isLoading ? (
+                        <ActivityIndicator color="white" size="small" />
+                    ) : (
+                        <Text className="text-white text-lg font-bold">Sign In</Text>
+                    )}
+                </TouchableOpacity>
+
+                {/* OR Divider */}
+                <View className="flex-row items-center my-6">
+                    <View className="flex-1 h-[1.5px] bg-slate-100 dark:bg-slate-800" />
+                    <Text className="mx-3 text-[12px] font-bold text-slate-400">OR</Text>
+                    <View className="flex-1 h-[1.5px] bg-slate-100 dark:bg-slate-800" />
+                </View>
+
+                {/* Mobile OTP Button */}
+                <TouchableOpacity
+                    className="flex-row items-center justify-center h-14 rounded-[20px] border-[1.5px] border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900"
+                    onPress={() => navigation.navigate('Otp', { phone: '' })}
+                >
+                    <Smartphone size={20} color="#0F172A" />
+                    <Text className="ml-2.5 text-base font-bold text-slate-900 dark:text-white">Continue with Mobile OTP</Text>
+                </TouchableOpacity>
+
+                {/* Footer */}
+                <View className="flex-row justify-center mt-8">
+                    <Text className="text-sm text-slate-500">Don't have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                        <Text className="text-sm font-bold text-primary">Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </AuthWrapper>
     );
