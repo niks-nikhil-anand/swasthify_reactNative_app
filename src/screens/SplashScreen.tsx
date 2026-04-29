@@ -66,14 +66,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) => {
 
             <Animated.View style={[styles.content, animatedStyle]}>
                 {/* Logo with shadow effect */}
-                <View style={styles.logoOuter}>
-                    <View style={styles.logoInner}>
-                        <Image
-                            source={require('../assets/logo.png')}
-                            style={styles.logo}
-                            resizeMode="contain"
-                        />
-                    </View>
+                <View style={styles.logoContainer}>
+                    <Image
+                        source={require('../assets/logo.png')}
+                        style={styles.logo}
+                        resizeMode="contain"
+                    />
                 </View>
 
                 <View style={styles.textContainer}>
@@ -100,26 +98,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         zIndex: 1,
     },
-    logoOuter: {
+    logoContainer: {
         shadowColor: '#0EA968',
-        shadowOffset: { width: 0, height: 20 },
-        shadowOpacity: 0.3,
-        shadowRadius: 30,
-        elevation: 20,
-    },
-    logoInner: {
-        width: 100,
-        height: 100,
-        borderRadius: 28,
-        backgroundColor: '#0EA968',
-        alignItems: 'center',
-        justifyContent: 'center',
-        overflow: 'hidden',
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.15,
+        shadowRadius: 20,
+        elevation: 10,
     },
     logo: {
-        width: 60,
-        height: 60,
-        tintColor: '#FFFFFF',
+        width: 140,
+        height: 140,
     },
     textContainer: {
         marginTop: 24,
