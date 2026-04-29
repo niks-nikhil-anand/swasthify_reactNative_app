@@ -19,6 +19,8 @@ import HealthRecordsScreen from '../screens/HealthRecordsScreen';
 import SpecialitiesScreen from '../screens/SpecialitiesScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import PackageDetailScreen from '../screens/PackageDetailScreen';
+import OtpScreen from '../screens/OtpScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
@@ -259,6 +261,24 @@ const AppNavigator = () => {
                 component={SignUpScreen}
                 options={{
                     title: 'Sign Up',
+                    headerShown: false,
+                    drawerItemStyle: { display: 'none' },
+                }}
+            />
+            <Drawer.Screen
+                name="Otp"
+                component={OtpScreen}
+                options={{
+                    title: 'OTP Verification',
+                    headerShown: false,
+                    drawerItemStyle: { display: 'none' },
+                }}
+            />
+            <Drawer.Screen
+                name="ForgotPassword"
+                component={ForgotPasswordScreen}
+                options={{
+                    title: 'Forgot Password',
                     headerShown: false,
                     drawerItemStyle: { display: 'none' },
                 }}
