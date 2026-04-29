@@ -5,37 +5,39 @@ import {
     TextInput,
     TouchableOpacity,
     ActivityIndicator,
-    Alert
+    Alert,
 } from 'react-native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../navigation/types';
 import { AuthWrapper } from '../components/auth/AuthWrapper';
-import Feather from 'react-native-vector-icons/Feather';
+import { User, Mail, Lock, Eye, EyeOff, Check } from 'lucide-react-native';
+
+import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/authService';
 
 type SignUpScreenProps = {
     navigation: DrawerNavigationProp<RootDrawerParamList, 'SignUp'>;
 };
 
-import { useAuth } from '../context/AuthContext';
-import { authService } from '../services/authService';
-
 const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
     const { login } = useAuth();
+    
     // Form States
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [agreed, setAgreed] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleSignUp = async () => {
-        if (!name || !email || !password || !confirmPassword) {
+        if (!name || !email || !password || !phone) {
             return Alert.alert('Error', 'Please fill in all fields');
         }
 
-        if (password !== confirmPassword) {
-            return Alert.alert('Error', 'Passwords do not match');
+        if (!agreed) {
+            return Alert.alert('Error', 'Please agree to the Terms and Privacy Policy');
         }
 
         setIsLoading(true);
@@ -59,89 +61,130 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
 
     return (
         <AuthWrapper
-            title="Create Account"
-            description="Join Swasthify for the best healthcare experience"
-            showSocial={false}
-            backButtonLabel="Already have an account? Sign In"
-            onBackPress={() => navigation.navigate('SignIn')}
+            title="Create account"
+            description="Join Swasthify for the best healthcare experience."
         >
-            {/* Form Section */}
-            <View className="gap-y-5">
+            <View className="w-full">
                 {/* Full Name */}
-                <View>
-                    <Text className="text-sm font-bold text-gray-700 mb-2">Full Name</Text>
-                    <TextInput
-                        placeholder="John Doe"
-                        placeholderTextColor="#9CA3AF"
-                        value={name}
-                        onChangeText={setName}
-                        className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900"
-                        editable={!isLoading}
-                    />
-                </View>
-
-                {/* Email */}
-                <View>
-                    <Text className="text-sm font-bold text-gray-700 mb-2">Email</Text>
-                    <TextInput
-                        placeholder="name@example.com"
-                        placeholderTextColor="#9CA3AF"
-                        value={email}
-                        onChangeText={setEmail}
-                        className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900"
-                        keyboardType="email-address"
-                        autoCapitalize="none"
-                        editable={!isLoading}
-                    />
-                </View>
-
-                {/* Password */}
-                <View>
-                    <Text className="text-sm font-bold text-gray-700 mb-2">Password</Text>
-                    <View className="relative">
+                <View className="mb-4">
+                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Full name</Text>
+                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
+                        <View className="mr-3">
+                            <User size={20} color="#94A3B8" />
+                        </View>
                         <TextInput
-                            placeholder="••••••••"
-                            placeholderTextColor="#9CA3AF"
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry={!showPassword}
-                            className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 pr-12"
+                            placeholder="Ayan Singh"
+                            placeholderTextColor="#94A3B8"
+                            value={name}
+                            onChangeText={setName}
+                            className="flex-1 text-base text-slate-900 dark:text-white"
                             editable={!isLoading}
                         />
-                        <TouchableOpacity
-                            activeOpacity={0.7}
-                            onPress={() => setShowPassword(!showPassword)}
-                            className="absolute right-4 top-3.5"
-                        >
-                            <Feather name={showPassword ? "eye-off" : "eye"} size={20} color="#9CA3AF" />
-                        </TouchableOpacity>
                     </View>
                 </View>
 
-                {/* Confirm Password */}
-                <View>
-                    <Text className="text-sm font-bold text-gray-700 mb-2">Confirm Password</Text>
-                    <TextInput
-                        placeholder="••••••••"
-                        placeholderTextColor="#9CA3AF"
-                        value={confirmPassword}
-                        onChangeText={setConfirmPassword}
-                        secureTextEntry={true}
-                        className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-900"
-                        editable={!isLoading}
-                    />
+                {/* Email */}
+                <View className="mb-4">
+                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Email</Text>
+                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
+                        <View className="mr-3">
+                            <Mail size={20} color="#94A3B8" />
+                        </View>
+                        <TextInput
+                            placeholder="ayan@gmail.com"
+                            placeholderTextColor="#94A3B8"
+                            value={email}
+                            onChangeText={setEmail}
+                            className="flex-1 text-base text-slate-900 dark:text-white"
+                            keyboardType="email-address"
+                            autoCapitalize="none"
+                            editable={!isLoading}
+                        />
+                    </View>
                 </View>
 
-                {/* Sign Up Button */}
+                {/* Mobile */}
+                <View className="mb-4">
+                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Mobile number</Text>
+                    <View className="flex-row">
+                        <View className="flex-row items-center justify-center h-14 w-[84px] bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl mr-2">
+                            <Text className="text-base font-bold text-slate-900 dark:text-white">🇮🇳 +91</Text>
+                        </View>
+                        <View className="flex-1 flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
+                            <TextInput
+                                placeholder="98765 43210"
+                                placeholderTextColor="#94A3B8"
+                                value={phone}
+                                onChangeText={setPhone}
+                                className="flex-1 text-base text-slate-900 dark:text-white"
+                                keyboardType="phone-pad"
+                                editable={!isLoading}
+                            />
+                        </View>
+                    </View>
+                </View>
+
+                {/* Password */}
+                <View className="mb-4">
+                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Password</Text>
+                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
+                        <View className="mr-3">
+                            <Lock size={20} color="#94A3B8" />
+                        </View>
+                        <TextInput
+                            placeholder="••••••••"
+                            placeholderTextColor="#94A3B8"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry={!showPassword}
+                            className="flex-1 text-base text-slate-900 dark:text-white pr-12"
+                            editable={!isLoading}
+                        />
+                        <TouchableOpacity
+                            onPress={() => setShowPassword(!showPassword)}
+                            className="absolute right-4"
+                        >
+                            {showPassword ? <EyeOff size={20} color="#94A3B8" /> : <Eye size={20} color="#94A3B8" />}
+                        </TouchableOpacity>
+                    </View>
+                    <Text className="text-[12px] text-slate-500 mt-1.5">Use 8+ chars with letters, numbers & a symbol.</Text>
+                </View>
+
+                {/* Terms */}
+                <TouchableOpacity 
+                    className="flex-row items-start mt-1 mb-5"
+                    onPress={() => setAgreed(!agreed)}
+                    activeOpacity={0.7}
+                >
+                    <View className={`w-5 h-5 rounded-md border-[1.5px] items-center justify-center mr-2.5 mt-0.5 ${agreed ? 'bg-primary border-primary' : 'border-slate-100 dark:border-slate-800'}`}>
+                        {agreed && <Check size={14} color="#FFFFFF" />}
+                    </View>
+                    <Text className="flex-1 text-[13px] text-slate-500 leading-5">
+                        I agree to the <Text className="text-primary font-bold">Terms</Text> and <Text className="text-primary font-bold">Privacy Policy</Text>.
+                    </Text>
+                </TouchableOpacity>
+
+                {/* Submit Button */}
                 <TouchableOpacity
                     activeOpacity={0.8}
                     onPress={handleSignUp}
                     disabled={isLoading}
-                    className="bg-[#0DA96E] py-4 rounded-xl items-center justify-center flex-row shadow-lg shadow-[#0DA96E]/20 mt-4 active:scale-[0.98]"
+                    className="bg-primary h-14 rounded-[20px] items-center justify-center shadow-lg shadow-primary/20"
                 >
-                    {isLoading && <ActivityIndicator color="white" size="small" style={{ marginRight: 8 }} />}
-                    <Text className="text-white font-bold text-lg">Create Account</Text>
+                    {isLoading ? (
+                        <ActivityIndicator color="white" size="small" />
+                    ) : (
+                        <Text className="text-white text-lg font-bold">Create Account</Text>
+                    )}
                 </TouchableOpacity>
+
+                {/* Footer */}
+                <View className="flex-row justify-center mt-5">
+                    <Text className="text-sm text-slate-500">Already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+                        <Text className="text-sm font-bold text-primary">Sign In</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </AuthWrapper>
     );
