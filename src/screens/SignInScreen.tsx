@@ -10,7 +10,7 @@ import {
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../navigation/types';
 import { AuthWrapper } from '../components/auth/AuthWrapper';
-import { Mail, Lock, Eye, EyeOff, Smartphone } from 'lucide-react-native';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
 
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
@@ -62,7 +62,7 @@ const SignInScreen = ({ navigation }: SignInScreenProps) => {
             <View className="w-full">
                 {/* Email Field */}
                 <View className="mb-5">
-                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Email or phone</Text>
+                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Email address</Text>
                     <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
                         <View className="mr-3">
                             <Mail size={20} color="#94A3B8" />
@@ -125,24 +125,8 @@ const SignInScreen = ({ navigation }: SignInScreenProps) => {
                     )}
                 </TouchableOpacity>
 
-                {/* OR Divider */}
-                <View className="flex-row items-center my-6">
-                    <View className="flex-1 h-[1.5px] bg-slate-100 dark:bg-slate-800" />
-                    <Text className="mx-3 text-[12px] font-bold text-slate-400">OR</Text>
-                    <View className="flex-1 h-[1.5px] bg-slate-100 dark:bg-slate-800" />
-                </View>
-
-                {/* Mobile OTP Button */}
-                <TouchableOpacity
-                    className="flex-row items-center justify-center h-14 rounded-[20px] border-[1.5px] border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900"
-                    onPress={() => navigation.navigate('Otp', { phone: '' })}
-                >
-                    <Smartphone size={20} color="#0F172A" />
-                    <Text className="ml-2.5 text-base font-bold text-slate-900 dark:text-white">Continue with Mobile OTP</Text>
-                </TouchableOpacity>
-
                 {/* Footer */}
-                <View className="flex-row justify-center mt-8">
+                <View className="flex-row justify-center mt-10">
                     <Text className="text-sm text-slate-500">Don't have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
                         <Text className="text-sm font-bold text-primary">Sign Up</Text>
