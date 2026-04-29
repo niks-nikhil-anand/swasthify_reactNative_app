@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Swasthify — mobile redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<style>
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="components.jsx"></script>
+<script type="text/babel" src="screens-auth.jsx"></script>
+<script type="text/babel" src="screens-core.jsx"></script>
+<script type="text/babel" src="screens-doctors.jsx"></script>
+<script type="text/babel" src="screens-labs.jsx"></script>
+<script type="text/babel" src="screens-misc.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "primary": "#0EA968",
+  "primaryDark": "#0A8A55",
+  "primarySoft": "#E6F7EE",
+  "darkMode": false
+}/*EDITMODE-END*/;
+
+function App() {
+  const [tweaks, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--s-primary', tweaks.primary);
+    root.style.setProperty('--s-primary-dark', tweaks.primaryDark);
+    root.style.setProperty('--s-primary-soft', tweaks.primarySoft);
+    if (tweaks.darkMode) root.setAttribute('data-theme', 'dark');
+    else root.removeAttribute('data-theme');
+  }, [tweaks]);
+
+  // PHONE_W matches our .phone CSS width (360) + 16px ring (2 × 8px frame border = device frame)
+  const PHONE_W = 376;
+  const PHONE_H = 776;
+
+  const groups = [
+    {
+      id: 'auth',
+      title: 'Onboarding & Auth',
+      screens: [
+        ['splash', 'Splash', SplashScreen],
+        ['onboarding', 'Onboarding', OnboardingScreen],
+        ['signin', 'Sign In', SignInScreen],
+        ['signup', 'Sign Up', SignUpScreen],
+        ['otp', 'Mobile OTP', OtpScreen],
+        ['forgot', 'Forgot password', ForgotScreen],
+      ],
+    },
+    {
+      id: 'core',
+      title: 'Core app',
+      screens: [
+        ['home', 'Home / Dashboard', HomeScreen],
+        ['drawer', 'Sidebar / Drawer', DrawerScreen],
+        ['search', 'Search results', SearchScreen],
+        ['notifications', 'Notifications', NotificationsScreen],
+        ['profile', 'My Profile', ProfileScreen],
+      ],
+    },
+    {
+      id: 'doctors',
+      title: 'Doctors flow',
+      screens: [
+        ['doctors', 'Doctors list', DoctorsListScreen],
+        ['doctorDetails', 'Doctor / Service details', DoctorDetailsScreen],
+        ['booking', 'Booking flow', BookingScreen],
+        ['confirm', 'Booking confirmation', ConfirmationScreen],
+        ['video', 'Video consultation', VideoConsultScreen],
+      ],
+    },
+    {
+      id: 'labs',
+      title: 'Labs & packages',
+      screens: [
+        ['labs', 'Labs list', LabsListScreen],
+        ['labDetails', 'Lab test details', LabDetailsScreen],
+        ['packages', 'Health packages', HealthPackagesScreen],
+      ],
+    },
+    {
+      id: 'rest',
+      title: 'Records, ABHA & info',
+      screens: [
+        ['appts', 'Appointments', AppointmentsScreen],
+        ['records', 'Health records', HealthRecordsScreen],
+        ['abha', 'ABHA ID', AbhaScreen],
+        ['pricing', 'Pricing', PricingScreen],
+        ['contact', 'Contact', ContactScreen],
+      ],
+    },
+  ];
+
+  return (
+    <>
+      <DesignCanvas
+        title="Swasthify Mobile — Redesign"
+        subtitle="23 screens · Hi-fi mockups · Android 412×892"
+      >
+        {groups.map(g => (
+          <DCSection key={g.id} id={g.id} title={g.title}>
+            {g.screens.map(([id, label, Comp]) => (
+              <DCArtboard key={id} id={id} label={label} width={PHONE_W} height={PHONE_H}>
+                <Comp/>
+              </DCArtboard>
+            ))}
+          </DCSection>
+        ))}
+      </DesignCanvas>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection title="Brand color">
+          <TweakColor label="Primary" value={tweaks.primary} onChange={(v) => {
+            // derive a soft and dark variant
+            setTweak({ primary: v });
+          }}/>
+          <TweakColor label="Primary dark" value={tweaks.primaryDark} onChange={(v) => setTweak({ primaryDark: v })}/>
+          <TweakColor label="Primary soft" value={tweaks.primarySoft} onChange={(v) => setTweak({ primarySoft: v })}/>
+          <div style={{display:'flex', gap: 6, marginTop: 8, flexWrap:'wrap'}}>
+            {[
+              ['Swasthify', '#0EA968', '#0A8A55', '#E6F7EE'],
+              ['Indigo',    '#4F46E5', '#3730A3', '#E0E7FF'],
+              ['Coral',     '#FB7185', '#BE123C', '#FFE4E6'],
+              ['Amber',     '#F59E0B', '#92400E', '#FEF3C7'],
+              ['Teal',      '#0D9488', '#115E59', '#CCFBF1'],
+              ['Royal',     '#2563EB', '#1E40AF', '#DBEAFE'],
+            ].map(([n, p, pd, ps]) => (
+              <button key={n} onClick={() => setTweak({primary:p, primaryDark:pd, primarySoft:ps})}
+                style={{
+                  padding:'6px 10px', borderRadius: 999, fontSize: 11, fontWeight: 700,
+                  border:'1px solid #e5e7eb', background:'#fff', cursor:'pointer',
+                  display:'inline-flex', alignItems:'center', gap: 6,
+                }}>
+                <span style={{width: 12, height: 12, borderRadius:'50%', background: p}}/>
+                {n}
+              </button>
+            ))}
+          </div>
+        </TweakSection>
+        <TweakSection title="Theme">
+          <TweakToggle label="Dark mode" value={tweaks.darkMode} onChange={(v) => setTweak({ darkMode: v })}/>
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
