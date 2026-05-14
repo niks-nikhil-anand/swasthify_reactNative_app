@@ -76,7 +76,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                             setUser(newUserData);
                             AsyncStorage.setItem('auth_user', JSON.stringify(newUserData));
                         }
-                    }).catch(err => console.error('Initial user refresh failed:', err));
+                    }).catch(err => {
+                        console.error('Initial user refresh failed:', err);
+                        if (err.response?.status === 401) {
+                            logout();
+                        }
+                    });
                 }
                 if (onboardingSeen === 'true') {
                     setHasSeenOnboarding(true);
@@ -89,6 +94,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         };
 
         loadStoredAuth();
+    }, []);
+
+    // Global response interceptor for 401 errors
+    useEffect(() => {
+        const interceptor = apiClient.interceptors.response.use(
+            (response) => response,
+            async (error) => {
+                if (error.response?.status === 401) {
+                    await logout();
+                }
+                return Promise.reject(error);
+            }
+        );
+
+        return () => {
+            apiClient.interceptors.response.eject(interceptor);
+        };
     }, []);
 
     const completeOnboarding = async () => {
