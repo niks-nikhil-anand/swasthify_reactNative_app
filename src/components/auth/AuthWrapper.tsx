@@ -73,7 +73,7 @@ export function AuthWrapper({
                                 {title}
                             </Text>
                             {description && (
-                                <Text className="text-base text-slate-500 dark:text-slate-300 mt-2 leading-6">
+                                <Text className="text-base text-slate-600 dark:text-slate-200 mt-2 leading-6">
                                     {description}
                                 </Text>
                             )}

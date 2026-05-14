@@ -5,12 +5,12 @@ import {
     FlatList,
     TextInput,
     TouchableOpacity,
-    SafeAreaView,
     ScrollView,
     ActivityIndicator,
     StyleSheet,
     StatusBar,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { RootDrawerParamList } from '../navigation/types';
@@ -279,7 +279,7 @@ const DoctorsScreen = () => {
     };
 
     return (
-        <SafeAreaView style={[styles.container, isDark && styles.bgBackground]}>
+        <SafeAreaView style={[styles.container, isDark && styles.bgBackground]} edges={['top', 'left', 'right']}>
             <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={isDark ? "#020817" : "#FFFFFF"} />
             <FlatList
                 data={campaigns}
