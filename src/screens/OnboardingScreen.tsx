@@ -26,18 +26,21 @@ const SLIDES = [
         title: 'Care that comes \nto you',
         description: 'Book doctors, lab tests, and health packages — all in one place, designed for India.',
         highlight: 'to you',
+        image: require('../assets/onboarding_1.png'),
     },
     {
         id: '2',
         title: 'Experts in every \nspecialty',
         description: 'Connect with over 500+ certified healthcare professionals across 30+ specialties.',
         highlight: 'every',
+        image: require('../assets/onboarding_2.png'),
     },
     {
         id: '3',
         title: 'Your health \nin your pocket',
         description: 'Instant access to medical records, prescriptions and reports anywhere, anytime.',
         highlight: 'pocket',
+        image: require('../assets/onboarding_3.png'),
     },
 ];
 
@@ -110,34 +113,35 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
     };
 
     const Illustration = ({ index }: { index: number }) => {
+        const slide = SLIDES[index];
         return (
             <View style={styles.illustrationContainer}>
-                {/* Background Gradient card mock */}
                 <View style={styles.illustrationBg} />
-                
-                {/* Central Card */}
-                <View style={styles.centerCard}>
-                    <View style={styles.avatarContainer}>
-                        <Video size={28} color="#FFFFFF" />
-                    </View>
-                    <Text style={styles.drName}>Dr. Asha</Text>
-                    <Text style={styles.drSpecialty}>Cardiology</Text>
-                    <View style={styles.liveChip}>
-                        <View style={styles.liveDot} />
-                        <Text style={styles.liveText}>Live</Text>
-                    </View>
-                </View>
+                <Image 
+                    source={slide.image} 
+                    style={styles.image} 
+                    resizeMode="contain"
+                />
 
-                {/* Floating Chips */}
-                <View style={[styles.floatingChip, styles.chipAmber]}>
-                    <Heart size={14} color="#B45309" />
-                    <Text style={styles.chipTextAmber}>72 BPM</Text>
-                </View>
+                {index === 0 && (
+                    <>
+                        <View style={[styles.floatingChip, styles.chipAmber]}>
+                            <Heart size={14} color="#B45309" />
+                            <Text style={styles.chipTextAmber}>Care</Text>
+                        </View>
+                        <View style={[styles.floatingChip, styles.chipCoral]}>
+                            <Activity size={14} color="#991B1B" />
+                            <Text style={styles.chipTextCoral}>24/7</Text>
+                        </View>
+                    </>
+                )}
                 
-                <View style={[styles.floatingChip, styles.chipCoral]}>
-                    <Activity size={14} color="#991B1B" />
-                    <Text style={styles.chipTextCoral}>Healthy</Text>
-                </View>
+                {index === 1 && (
+                    <View style={[styles.floatingChip, styles.chipGreen]}>
+                        <Video size={14} color="#065F46" />
+                        <Text style={styles.chipTextGreen}>Experts</Text>
+                    </View>
+                )}
             </View>
         );
     };
@@ -227,74 +231,23 @@ const styles = StyleSheet.create({
         paddingHorizontal: 24,
     },
     illustrationContainer: {
-        width: 280,
-        height: 260,
-        marginBottom: 40,
+        width: 320,
+        height: 320,
+        marginBottom: 20,
         alignItems: 'center',
         justifyContent: 'center',
     },
     illustrationBg: {
         position: 'absolute',
-        width: 260,
-        height: 240,
-        borderRadius: 32,
-        backgroundColor: '#E6F6EF',
-        transform: [{ rotate: '-2deg' }],
+        width: 280,
+        height: 280,
+        borderRadius: 140,
+        backgroundColor: '#F0FDF4',
     },
-    centerCard: {
-        width: 150,
-        height: 210,
-        backgroundColor: '#FFFFFF',
-        borderRadius: 24,
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#0EA968',
-        shadowOffset: { width: 0, height: 20 },
-        shadowOpacity: 0.15,
-        shadowRadius: 30,
-        elevation: 10,
-        borderWidth: 1,
-        borderColor: '#F1F5F9',
-    },
-    avatarContainer: {
-        width: 64,
-        height: 64,
-        borderRadius: 32,
-        backgroundColor: '#0EA968',
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 12,
-    },
-    drName: {
-        fontSize: 18,
-        fontWeight: '900',
-        color: '#0F172A',
-    },
-    drSpecialty: {
-        fontSize: 13,
-        color: '#64748B',
-        marginTop: 2,
-    },
-    liveChip: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#E6F6EF',
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-        borderRadius: 12,
-        marginTop: 12,
-    },
-    liveDot: {
-        width: 6,
-        height: 6,
-        borderRadius: 3,
-        backgroundColor: '#0EA968',
-        marginRight: 6,
-    },
-    liveText: {
-        fontSize: 11,
-        fontWeight: '800',
-        color: '#0EA968',
+    image: {
+        width: 300,
+        height: 300,
+        zIndex: 1,
     },
     floatingChip: {
         position: 'absolute',
@@ -302,16 +255,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 12,
         paddingVertical: 8,
-        borderRadius: 16,
+        borderRadius: 20,
+        backgroundColor: '#FFFFFF',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 5,
+        zIndex: 2,
     },
     chipAmber: {
-        top: 20,
-        right: 0,
+        top: 40,
+        right: 20,
         backgroundColor: '#FEF3C7',
     },
     chipTextAmber: {
@@ -321,14 +276,25 @@ const styles = StyleSheet.create({
         marginLeft: 6,
     },
     chipCoral: {
-        bottom: 30,
-        left: -10,
+        bottom: 60,
+        left: 20,
         backgroundColor: '#FEE2E2',
     },
     chipTextCoral: {
         fontSize: 12,
         fontWeight: '700',
         color: '#991B1B',
+        marginLeft: 6,
+    },
+    chipGreen: {
+        top: 60,
+        left: 20,
+        backgroundColor: '#DCFCE7',
+    },
+    chipTextGreen: {
+        fontSize: 12,
+        fontWeight: '700',
+        color: '#065F46',
         marginLeft: 6,
     },
     textContainer: {
