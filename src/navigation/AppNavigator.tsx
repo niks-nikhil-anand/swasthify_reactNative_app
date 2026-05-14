@@ -261,29 +261,17 @@ const AppNavigator = () => {
                         <Icon name="appointments" color={color} size={18} />
                     ),
                     drawerLabel: ({ color, focused }) => (
-                        <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1, marginLeft: 8 }}>
-                            <Text 
-                                style={{ 
-                                    color, 
-                                    fontFamily: 'Plus Jakarta Sans', 
-                                    fontSize: 15, 
-                                    flex: 1,
-                                    fontWeight: focused ? '800' : '600'
-                                }}
-                            >
-                                Appointments
-                            </Text>
-                            <View style={{ 
-                                backgroundColor: '#FEE2E2', 
-                                width: 24, 
-                                height: 24, 
-                                borderRadius: 12, 
-                                alignItems: 'center', 
-                                justifyContent: 'center' 
-                            }}>
-                                <Text style={{ fontSize: 11, fontWeight: '800', color: '#DC2626' }}>2</Text>
-                            </View>
-                        </View>
+                        <Text 
+                            style={{ 
+                                color, 
+                                fontFamily: 'Plus Jakarta Sans', 
+                                fontSize: 15, 
+                                marginLeft: 8,
+                                fontWeight: focused ? '800' : '600'
+                            }}
+                        >
+                            Appointments
+                        </Text>
                     ),
                 }}
             />
