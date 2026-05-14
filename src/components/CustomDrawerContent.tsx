@@ -4,7 +4,6 @@ import Animated, {
     useSharedValue,
     useAnimatedStyle,
     withSpring,
-    withTiming,
     interpolateColor,
     interpolate,
     Extrapolate
@@ -15,7 +14,7 @@ import {
     DrawerItemList,
     DrawerContentComponentProps,
 } from '@react-navigation/drawer';
-import Feather from 'react-native-vector-icons/Feather';
+import Icon from './Icon';
 
 import { useAuth } from '../context/AuthContext';
 
@@ -84,56 +83,60 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     });
 
     return (
-        <SafeAreaView className="flex-1 bg-[#F8FAFC] dark:bg-[#09090B]">
+        <SafeAreaView className="flex-1 bg-white dark:bg-[#09090B]">
             {/* Premium Header Profile Section */}
-            <View className="px-5 pt-8 pb-6 border-b border-gray-200/50 dark:border-white/5 bg-white dark:bg-[#111827]">
+            <View className="px-[18px] pt-6 pb-[14px] border-b border-gray-100 dark:border-white/5 bg-white dark:bg-[#09090B]">
                 {user ? (
-                    <View className="flex-row items-center justify-between">
-                        <View className="flex-row items-center flex-1">
-                            <View className="relative shadow-sm">
-                                <Image
-                                    source={user && user.profilePic && !imgError ? { uri: user.profilePic } : require('../assets/user_avatar.png')}
-                                    className="w-14 h-14 rounded-full border-2 border-[#0DA96E]"
-                                    onError={() => setImgError(true)}
-                                />
-                                <View className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 bg-emerald-500 rounded-full border-[2px] border-white dark:border-[#111827]" />
-                            </View>
-                            <View className="ml-4 flex-1 justify-center">
-                                <Text className="text-xl font-extrabold text-slate-900 dark:text-white" numberOfLines={1}>
-                                    {user.name}
-                                </Text>
-                                <Text className="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-0.5" numberOfLines={1}>
-                                    {user.email || 'Welcome Back'}
-                                </Text>
+                    <View className="flex-row items-center">
+                        <View className="relative">
+                            <Image
+                                source={user && user.profilePic && !imgError ? { uri: user.profilePic } : require('../assets/user_avatar.png')}
+                                className="w-14 h-14 rounded-full border border-gray-100 dark:border-slate-800"
+                                style={{ width: 56, height: 56 }}
+                                onError={() => setImgError(true)}
+                            />
+                            <View className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-[#09090B]" />
+                        </View>
+                        <View className="ml-3 flex-1">
+                            <Text className="text-[16px] text-slate-900 dark:text-white" style={{ fontWeight: '800', fontFamily: 'Plus Jakarta Sans' }} numberOfLines={1}>
+                                {user.name}
+                            </Text>
+                            <Text className="text-[12px] text-slate-500 dark:text-slate-400" style={{ fontWeight: '400', fontFamily: 'Plus Jakarta Sans' }} numberOfLines={1}>
+                                {user.email || 'Member'}
+                            </Text>
+                            <View className="flex-row mt-1">
+                                <View className="bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-500/20">
+                                    <Text className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400" style={{ fontFamily: 'Plus Jakarta Sans' }}>● Online</Text>
+                                </View>
                             </View>
                         </View>
-                        
-                        {/* Close button relocated for a cleaner look */}
                         <TouchableOpacity
-                            className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center ml-2"
+                            className="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-800 items-center justify-center ml-2 border border-slate-100 dark:border-white/5"
+                            style={{ width: 32, height: 32, borderRadius: 10 }}
                             onPress={() => navigation.closeDrawer()}
                         >
-                            <Feather name="chevron-left" size={18} color={isDark ? "#94A3B8" : "#475569"} />
+                            <Icon name="back" size={16} color={isDark ? "#94A3B8" : "#475569"} />
                         </TouchableOpacity>
                     </View>
                 ) : (
                     <View className="flex-row items-center justify-between">
-                        <View className="flex-row items-center flex-1 pt-2">
+                        <View className="flex-row items-center flex-1">
                             <Image
                                 source={require('../assets/logo.png')}
                                 style={{ width: 38, height: 38, marginRight: 12 }}
                                 resizeMode="contain"
                             />
                             <View>
-                                <Text className="text-[22px] font-black text-[#0DA96E] tracking-tight">Swasthify</Text>
-                                <Text className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Healthcare</Text>
+                                <Text className="text-[20px] font-black text-[#0DA96E] tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>Swasthify</Text>
+                                <Text className="text-[10px] font-bold text-slate-400 uppercase tracking-widest" style={{ fontFamily: 'Plus Jakarta Sans' }}>Healthcare</Text>
                             </View>
                         </View>
                         <TouchableOpacity
-                            className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 items-center justify-center ml-2"
+                            className="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-800 items-center justify-center ml-2 border border-slate-100 dark:border-white/5"
+                            style={{ width: 32, height: 32, borderRadius: 10 }}
                             onPress={() => navigation.closeDrawer()}
                         >
-                            <Feather name="chevron-left" size={18} color={isDark ? "#94A3B8" : "#475569"} />
+                            <Icon name="back" size={16} color={isDark ? "#94A3B8" : "#475569"} />
                         </TouchableOpacity>
                     </View>
                 )}
@@ -142,36 +145,36 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             {/* Navigation Options */}
             <DrawerContentScrollView
                 {...props}
-                contentContainerStyle={{ paddingTop: 16 }}
-                showsVerticalScrollIndicator={true}
+                contentContainerStyle={{ paddingTop: 0 }}
+                showsVerticalScrollIndicator={false}
             >
-                <View className="px-2">
+                <View className="px-1.5">
                     <DrawerItemList {...props} />
                 </View>
             </DrawerContentScrollView>
 
             {/* Premium Footer Settings Section */}
-            <View className="px-5 pt-4 pb-8 bg-white dark:bg-[#111827] border-t border-gray-200/50 dark:border-white/5 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+            <View className="px-[18px] pt-2 pb-8 bg-white dark:bg-[#09090B]">
                 
-                {/* Theme Toggle Component */}
-                <View className="flex-row items-center justify-between py-3 mb-4 rounded-2xl bg-slate-50 dark:bg-[#0F172A] px-4 border border-slate-100 dark:border-white/5">
-                    <View className="flex-row items-center">
-                        <View className="w-8 h-8 rounded-full bg-white dark:bg-slate-800 items-center justify-center shadow-sm">
-                            <Feather name={isDark ? "moon" : "sun"} size={16} color={isDark ? "#94A3B8" : "#F59E0B"} />
+                {/* Theme Toggle Card */}
+                <View className="flex-row items-center justify-between p-[10px] mb-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5">
+                    <View className="flex-row items-center flex-1">
+                        <View className="w-9 h-9 rounded-lg bg-white dark:bg-slate-800 items-center justify-center shadow-sm">
+                            <Icon name="sun" size={18} color={isDark ? "#94A3B8" : "#F59E0B"} />
                         </View>
-                        <Text className="text-[14px] font-bold text-slate-700 dark:text-slate-300 ml-3">
-                            {isDark ? 'Dark Theme' : 'Light Theme'}
+                        <Text className="text-[13px] font-bold text-slate-800 dark:text-slate-200 ml-3" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+                            {isDark ? 'Dark theme' : 'Light theme'}
                         </Text>
                     </View>
 
                     <Pressable onPress={toggleTheme} hitSlop={10}>
                         <Animated.View style={[styles.customTrack, trackAnimatedStyle]}>
-                            <Animated.View style={[styles.customThumb, thumbAnimatedStyle]}>
+                            <Animated.View style={[styles.customThumb, thumbAnimatedStyle, { backgroundColor: isDark ? '#1E293B' : '#FFFFFF' }]}>
                                 <Animated.View style={[styles.iconContainer, sunAnimatedStyle]}>
-                                    <Feather name="sun" size={12} color="#F59E0B" />
+                                    <Icon name="sun" size={10} color="#F59E0B" />
                                 </Animated.View>
                                 <Animated.View style={[styles.iconContainer, moonAnimatedStyle, StyleSheet.absoluteFill]}>
-                                    <Feather name="moon" size={12} color="#0DA96E" />
+                                    <Icon name="moon" size={10} color="#0DA96E" />
                                 </Animated.View>
                             </Animated.View>
                         </Animated.View>
@@ -180,19 +183,32 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
                 {/* Log In/Out Primary Button */}
                 <TouchableOpacity
-                    className={`flex-row items-center justify-center py-3.5 rounded-xl border ${user ? 'border-red-100 bg-red-50 dark:border-red-900/30 dark:bg-red-900/10' : 'bg-[#0DA96E] border-[#0DA96E]'}`}
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 44,
+                        borderRadius: 12,
+                        backgroundColor: user ? '#FEF2F2' : '#E6F6EF',
+                    }}
                     onPress={handleAuthAction}
                     activeOpacity={0.8}
                 >
-                    <Feather name={user ? "log-out" : "log-in"} size={18} color={user ? '#EF4444' : '#FFFFFF'} className="mr-2" />
-                    <Text className={`font-bold text-[15px] ml-2 ${user ? 'text-red-500' : 'text-white'}`}>
-                        {user ? 'Log Out' : 'Sign In or Register'}
+                    <Icon name={user ? "logout" : "log-in"} size={18} color={user ? '#DC2626' : '#0DA96E'} />
+                    <Text style={{ 
+                        fontWeight: '800', 
+                        fontSize: 14, 
+                        marginLeft: 8, 
+                        color: user ? '#DC2626' : '#0DA96E',
+                        fontFamily: 'Plus Jakarta Sans'
+                    }}>
+                        {user ? 'Log out' : 'Sign in'}
                     </Text>
                 </TouchableOpacity>
 
                 {/* Footer Subtext */}
-                <View className="items-center mt-5">
-                    <Text className="text-[10px] font-semibold text-slate-400">Swasthify v1.0.0</Text>
+                <View className="items-center mt-3">
+                    <Text className="text-[11px] font-bold text-slate-400 dark:text-slate-500" style={{ fontFamily: 'Plus Jakarta Sans' }}>Swasthify v1.0.0</Text>
                 </View>
             </View>
         </SafeAreaView>
