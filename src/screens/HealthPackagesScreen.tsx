@@ -53,7 +53,7 @@ const HealthPackagesScreen = () => {
     const isDark = colorScheme === 'dark';
 
     return (
-        <SafeAreaView edges={['bottom']} className="flex-1 bg-zinc-50 dark:bg-zinc-950">
+        <SafeAreaView edges={['top', 'left', 'right', 'bottom']} className="flex-1 bg-zinc-50 dark:bg-zinc-950">
             <ScrollView showsVerticalScrollIndicator={false}>
                 {/* 1. Hero Section */}
                 <View className="px-6 pt-10 pb-12 items-center bg-white dark:bg-zinc-900 rounded-b-[3.5rem] shadow-sm">

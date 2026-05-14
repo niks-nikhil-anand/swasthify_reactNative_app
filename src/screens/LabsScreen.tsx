@@ -5,13 +5,13 @@ import {
     FlatList,
     TextInput,
     TouchableOpacity,
-    SafeAreaView,
     ScrollView,
     ActivityIndicator,
     StyleSheet,
     StatusBar,
     Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Feather from 'react-native-vector-icons/Feather';
 import { useColorScheme } from 'nativewind';
@@ -238,7 +238,7 @@ const LabsScreen = () => {
     };
 
     return (
-        <SafeAreaView style={[styles.container, isDark && styles.containerDark]}>
+        <SafeAreaView style={[styles.container, isDark && styles.containerDark]} edges={['top', 'left', 'right']}>
             <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={isDark ? "#09090b" : "#FFFFFF"} />
             <FlatList
                 data={campaigns}
