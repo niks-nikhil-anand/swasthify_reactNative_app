@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, Alert, useColorScheme } from 'react-native';
 import { ShieldCheck, Clock, RotateCcw } from 'lucide-react-native';
+import auth from '@react-native-firebase/auth';
 import { RootDrawerParamList } from '../navigation/types';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { AuthWrapper } from '../components/auth/AuthWrapper';
@@ -18,8 +19,9 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
     const isDarkMode = useColorScheme() === 'dark';
     const { login } = useAuth();
     
-    // Get the phone passed from OTPLoginScreen e.g. "+91 9876543210"
-    const { phone } = route.params || {};
+    // Get the phone and confirmation object passed from OTPLoginScreen
+    const { phone, confirmation: initialConfirmation } = route.params || {};
+    const [confirmation, setConfirmation] = useState(initialConfirmation);
     
     // Strip "+91 " prefix and spaces → clean 10-digit number for the API
     const cleanMobile = (phone || '').replace(/^\+91\s*/, '').replace(/\s/g, '');
@@ -91,18 +93,48 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
 
         setIsLoading(true);
         try {
-            const response = await authService.verifyOtp({
-                mobile: cleanMobile,
-                otp: finalOtp,
-                role: 'PATIENT',
-            });
+            if (!confirmation) {
+                throw new Error('No confirmation object found. Please try sending OTP again.');
+            }
 
-            if (response.token && response.user) {
-                await login(response.token, response.user);
+            // Verify with Firebase
+            const userCredential = await confirmation.confirm(finalOtp);
+            
+            if (userCredential.user) {
+                // If successful, we get the ID token
+                const token = await userCredential.user.getIdToken();
+                
+                // Sync with backend to get the local session/user info
+                try {
+                    const response = await authService.verifyOtp({
+                        mobile: cleanMobile,
+                        otp: finalOtp,
+                        role: 'PATIENT',
+                        firebaseToken: token
+                    });
+
+                    if (response.token && response.user) {
+                        await login(response.token, response.user);
+                    } else {
+                        // Fallback if backend doesn't return user yet
+                        await login(token, {
+                            id: userCredential.user.uid,
+                            email: userCredential.user.email || '',
+                            name: userCredential.user.displayName || 'User',
+                            mobile: cleanMobile,
+                        });
+                    }
+                } catch (apiError) {
+                    // Even if API fails, we proceed with Firebase session for now
+                    await login(token, {
+                        id: userCredential.user.uid,
+                        email: userCredential.user.email || '',
+                        name: userCredential.user.displayName || 'User',
+                        mobile: cleanMobile,
+                    });
+                }
+                
                 navigation.navigate('Home');
-            } else {
-                Alert.alert('Error', 'Invalid response from server. Please try again.');
-                setOtp(['', '', '', '', '', '']);
             }
         } catch (error: any) {
             Alert.alert('Verification Failed', error.toString());
@@ -115,13 +147,18 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
     // ── Resend OTP ────────────────────────────────────────────────────────────
     const handleResend = async () => {
         if (!canResend) return;
+        setIsLoading(true);
         try {
-            await authService.sendOtp({ mobile: cleanMobile, role: 'PATIENT' });
+            const phoneNumber = `+91${cleanMobile}`;
+            const newConfirmation = await auth().signInWithPhoneNumber(phoneNumber);
+            setConfirmation(newConfirmation);
             setOtp(['', '', '', '', '', '']);
             setResendTimer(RESEND_TIMEOUT);
             setCanResend(false);
         } catch (error: any) {
             Alert.alert('Error', error.toString());
+        } finally {
+            setIsLoading(false);
         }
     };
 

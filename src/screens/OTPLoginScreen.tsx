@@ -15,6 +15,7 @@ import { Phone, ArrowRight } from 'lucide-react-native';
 
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
+import auth from '@react-native-firebase/auth';
 
 type OTPLoginScreenProps = {
     navigation: DrawerNavigationProp<RootDrawerParamList, 'OTPLogin'>;
@@ -36,8 +37,12 @@ const OTPLoginScreen = ({ navigation }: OTPLoginScreenProps) => {
 
         setIsLoading(true);
         try {
-            await authService.sendOtp({ mobile: phone, role: 'PATIENT' });
-            navigation.navigate('Otp', { phone: `+91 ${phone}` });
+            const phoneNumber = `+91${phone}`;
+            const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+            navigation.navigate('Otp', { 
+                phone: `+91 ${phone}`,
+                confirmation: confirmation 
+            });
         } catch (error: any) {
             Alert.alert('Error', error.toString());
         } finally {
