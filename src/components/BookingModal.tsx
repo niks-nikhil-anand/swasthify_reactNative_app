@@ -19,6 +19,8 @@ import { appointmentService } from '../services/appointmentService';
 
 const { width, height } = Dimensions.get('window');
 const BRAND_GREEN = '#22c55e';
+const BRAND_RED = '#ef4444';
+
 
 interface BookingModalProps {
     visible: boolean;
@@ -36,6 +38,8 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
     const [isSuccess, setIsSuccess] = useState(false);
     const [step, setStep] = useState<'slot' | 'review'>('slot');
     const [platformFee, setPlatformFee] = useState<PlatformFee | null>(null);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
 
     React.useEffect(() => {
         const fetchFee = async () => {
@@ -187,18 +191,21 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
                 // Empty error {} — typically live key on emulator, or Razorpay SDK issue
                 const hasNoDetails = !error?.code && !error?.description && !error?.reason;
                 if (hasNoDetails) {
-                    Alert.alert(
-                        'Payment Unavailable',
-                        'Unable to open payment gateway. If you\'re testing on an emulator, please use a Razorpay test key (rzp_test_...). On a real device with a live key, contact support.'
-                    );
+                    setErrorMsg('Unable to open payment gateway. If you\'re testing on an emulator, please use a Razorpay test key (rzp_test_...).');
                     return;
                 }
 
-                Alert.alert(
-                    'Payment Failed',
-                    error?.description || error?.reason || error?.error?.description || 'Something went wrong with payment.'
-                );
+                let message = error?.description || error?.reason || error?.error?.description;
+                if (!message || message === 'undefined') {
+                    if (error?.code === 'BAD_REQUEST_ERROR' || error?.error?.code === 'BAD_REQUEST_ERROR') {
+                        message = 'The payment request was invalid. This can happen if the order details are incorrect.';
+                    } else {
+                        message = 'Something went wrong with the payment gateway. Please try again.';
+                    }
+                }
+                setErrorMsg(message);
             });
+
 
         } catch (error: any) {
             setLoadingStep('idle');
@@ -236,6 +243,44 @@ const BookingModal: React.FC<BookingModalProps> = ({ visible, onClose, campaign 
             </Modal>
         );
     }
+
+    if (errorMsg) {
+        return (
+            <Modal visible={visible} animationType="slide" transparent>
+                <View style={[styles.modalOverlay, isDark && styles.modalOverlayDark]}>
+                    <View style={[styles.successContainer, isDark && styles.successContainerDark]}>
+                        <View style={[styles.successIcon, { backgroundColor: BRAND_RED }]}>
+                            <Feather name="x" size={40} color="white" />
+                        </View>
+                        <Text style={[styles.successTitle, isDark && styles.textWhite]}>Payment Failed</Text>
+                        <Text style={[styles.successSubtitle, isDark && styles.textZinc400]}>
+                            {errorMsg}
+                        </Text>
+                        <View style={[styles.successDetails, isDark && styles.successDetailsDark, { paddingVertical: 15 }]}>
+                            <Text style={[styles.successDetailText, isDark && styles.textZinc300, { textAlign: 'center' }]}>
+                                Don't worry, if any amount was deducted, it will be refunded automatically within 5-7 business days.
+                            </Text>
+                        </View>
+                        <View style={{ width: '100%', gap: 12 }}>
+                            <TouchableOpacity
+                                style={styles.doneButton}
+                                onPress={() => setErrorMsg(null)}
+                            >
+                                <Text style={styles.doneButtonText}>Try Again</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.doneButton, { backgroundColor: 'transparent', borderWidth: 1, borderColor: isDark ? '#27272a' : '#E5E7EB' }]}
+                                onPress={onClose}
+                            >
+                                <Text style={[styles.doneButtonText, { color: isDark ? 'white' : '#111827' }]}>Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        );
+    }
+
 
     return (
         <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
