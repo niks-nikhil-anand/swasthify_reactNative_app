@@ -135,30 +135,22 @@ const PricingScreen = () => {
             <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
             
             <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
-                {/* Header */}
-                <View className="px-6 py-6 bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-900">
-                    <View className="flex-row items-center justify-between">
-                        <View>
-                            <Text className="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-[0.3em] mb-1">
-                                Pricing Plans
-                            </Text>
-                            <Text className="text-3xl font-black text-zinc-900 dark:text-white">
-                                Transparent Care.
-                            </Text>
-                        </View>
-                        <TouchableOpacity 
-                            onPress={() => navigation.openDrawer()}
-                            className="w-12 h-12 bg-white dark:bg-zinc-900 rounded-2xl items-center justify-center shadow-sm border border-zinc-100 dark:border-zinc-800"
-                        >
-                            <Feather name="menu" size={20} color={isDark ? '#FFFFFF' : '#18181B'} />
-                        </TouchableOpacity>
+                {/* 1. Sticky Header */}
+                <View className="px-6 py-6 bg-zinc-50/90 dark:bg-zinc-950/90 border-b border-zinc-100 dark:border-zinc-900">
+                    <View>
+                        <Text className="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-[0.3em] mb-1">
+                            Pricing Plans
+                        </Text>
+                        <Text className="text-3xl font-black text-zinc-900 dark:text-white">
+                            Transparent Care.
+                        </Text>
                     </View>
                 </View>
 
-                {/* Hero / Value Prop */}
-                <View className="px-6 pt-10 pb-12">
-                    <Text className="text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed">
-                        Healthcare should be simple, accessible, and affordable. We've eliminated hidden costs so you can focus on what matters—your well-being.
+                {/* 2. Hero / Value Prop */}
+                <View className="px-6 pt-10 pb-8">
+                    <Text className="text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
+                        Healthcare should be simple and accessible. We've eliminated hidden costs so you can focus on what matters—your well-being.
                     </Text>
                 </View>
 
