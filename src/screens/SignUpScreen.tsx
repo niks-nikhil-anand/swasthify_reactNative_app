@@ -179,8 +179,8 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
                 </TouchableOpacity>
 
                 {/* Footer */}
-                <View className="flex-row justify-center mt-12">
-                    <Text className="text-sm text-slate-500 dark:text-slate-300">Don't have an account? </Text>
+                <View className="flex-row justify-center mt-8 mb-4">
+                    <Text className="text-sm text-slate-500 dark:text-slate-300">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
                         <Text className="text-sm font-bold text-primary">Sign In</Text>
                     </TouchableOpacity>

@@ -9,6 +9,7 @@ import {
     Platform,
     ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ActionSheetIOS } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import { cn } from '../../lib/utils';
@@ -46,17 +47,19 @@ export function AuthWrapper({
     const { signInWithGoogle, isLoading: isGoogleLoading } = useGoogleAuth({ role, redirectTo });
 
     return (
-        <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            className="flex-1 bg-white dark:bg-slate-950"
-        >
-            <ScrollView
-                contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
-                keyboardShouldPersistTaps="handled"
-                className="px-6 py-8"
+        <SafeAreaView className="flex-1 bg-white dark:bg-slate-950" edges={['top', 'left', 'right']}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                className="flex-1"
             >
-                <View className={cn("w-full max-w-md mx-auto", className)}>
-                    <View className="px-2 py-4">
+                <ScrollView
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    keyboardShouldPersistTaps="handled"
+                    className="px-6"
+                    showsVerticalScrollIndicator={false}
+                >
+                    <View className={cn("w-full max-w-md mx-auto pt-6 pb-10", className)}>
+                        <View className="px-2">
                         {/* Logo and Header */}
                         <View className="items-start mb-6">
                             <View className="h-24 w-24 items-center justify-center mb-6 bg-transparent">
@@ -70,7 +73,7 @@ export function AuthWrapper({
                                 {title}
                             </Text>
                             {description && (
-                                <Text className="text-base text-slate-500 dark:text-slate-400 mt-2 leading-6">
+                                <Text className="text-base text-slate-500 dark:text-slate-300 mt-2 leading-6">
                                     {description}
                                 </Text>
                             )}
@@ -82,6 +85,7 @@ export function AuthWrapper({
                     </View>
                 </View>
             </ScrollView>
-        </KeyboardAvoidingView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
     );
 }
