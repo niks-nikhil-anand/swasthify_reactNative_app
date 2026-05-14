@@ -4,6 +4,9 @@ import { ShieldCheck, Clock } from 'lucide-react-native';
 import { RootDrawerParamList } from '../navigation/types';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { AuthWrapper } from '../components/auth/AuthWrapper';
+import { useAuth } from '../context/AuthContext';
+import { authService } from '../services/authService';
+import { ActivityIndicator, Alert } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -13,11 +16,31 @@ type OtpScreenProps = {
 };
 
 const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
+    const { login } = useAuth();
     const { phone } = route.params || { phone: '+91 98765 43210' };
     const [otp, setOtp] = useState(['4', '8', '3', '2', '', '']);
+    const [isLoading, setIsLoading] = useState(false);
     const activeIndex = 4;
 
     const keypad = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫'];
+
+    const handleVerify = async () => {
+        setIsLoading(true);
+        try {
+            const response = await authService.verifyOtp({ phone, otp: otp.join('') });
+            
+            if (response.token && response.user) {
+                await login(response.token, response.user);
+                navigation.navigate('Home');
+            } else {
+                Alert.alert('Error', 'Invalid response from server');
+            }
+        } catch (error: any) {
+            Alert.alert('Verification Failed', error.toString());
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return (
         <AuthWrapper
@@ -45,8 +68,16 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
                     </Text>
                 </View>
 
-                <TouchableOpacity className="bg-primary h-14 rounded-[20px] items-center justify-center mt-8 shadow-lg shadow-primary/20">
-                    <Text className="text-white text-lg font-bold">Verify & continue</Text>
+                <TouchableOpacity 
+                    onPress={handleVerify}
+                    disabled={isLoading}
+                    className="bg-primary h-14 rounded-[20px] items-center justify-center mt-8 shadow-lg shadow-primary/20"
+                >
+                    {isLoading ? (
+                        <ActivityIndicator color="white" size="small" />
+                    ) : (
+                        <Text className="text-white text-lg font-bold">Verify & continue</Text>
+                    )}
                 </TouchableOpacity>
 
                 <View className="flex-row bg-[#E6F6EF] dark:bg-emerald-950/20 p-4 rounded-2xl mt-6 items-start">

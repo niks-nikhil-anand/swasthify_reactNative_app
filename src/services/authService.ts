@@ -35,5 +35,14 @@ export const authService = {
         } catch (error: any) {
             throw error.response?.data?.message || 'Failed to fetch user data';
         }
+    },
+
+    verifyOtp: async (data: any) => {
+        try {
+            const response = await apiClient.post('/api/auth/verify-otp', data);
+            return response.data;
+        } catch (error: any) {
+            throw error.response?.data?.error || error.response?.data?.message || 'Verification failed';
+        }
     }
 };
