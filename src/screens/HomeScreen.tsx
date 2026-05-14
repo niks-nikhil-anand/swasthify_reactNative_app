@@ -1,5 +1,6 @@
 import React from 'react';
-import { SafeAreaView, ScrollView, View, Text, TouchableOpacity, Image } from 'react-native';
+import { ScrollView, View, Text, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Menu, Bell } from 'lucide-react-native';
 import { useAuth } from '../context/AuthContext';
 import { useColorScheme } from 'nativewind';
@@ -28,9 +29,9 @@ const HomeScreen = ({ navigation }: Props) => {
     const isDark = colorScheme === 'dark';
 
     return (
-        <SafeAreaView className="flex-1 bg-white dark:bg-[#09090B]">
+        <SafeAreaView className="flex-1 bg-white dark:bg-[#09090B]" edges={['top', 'left', 'right']}>
             {/* Top bar Header */}
-            <View className="flex-row items-center px-5 py-3 gap-x-4">
+            <View className="flex-row items-center px-5 py-4 gap-x-4">
                 <TouchableOpacity 
                     onPress={() => navigation.openDrawer()}
                     className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-900 items-center justify-center border border-slate-100 dark:border-slate-800"

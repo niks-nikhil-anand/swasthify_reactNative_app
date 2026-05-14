@@ -3,7 +3,6 @@ import {
     View,
     Text,
     StyleSheet,
-    SafeAreaView,
     ScrollView,
     Image,
     TouchableOpacity,
@@ -15,6 +14,7 @@ import {
     Alert,
     ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import Feather from 'react-native-vector-icons/Feather';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -327,7 +327,7 @@ const ProfileScreen = ({ navigation }: Props) => {
     };
 
     return (
-        <SafeAreaView style={[styles.container, isDark && styles.bgBackground]}>
+        <SafeAreaView style={[styles.container, isDark && styles.bgBackground]} edges={['top', 'left', 'right']}>
             <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={isDark ? "#020817" : "#FFFFFF"} />
             <ScrollView showsVerticalScrollIndicator={false}>
                 {/* Header Profile Section */}
