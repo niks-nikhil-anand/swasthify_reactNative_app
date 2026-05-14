@@ -147,7 +147,7 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
                             {showPassword ? <EyeOff size={20} color="#94A3B8" /> : <Eye size={20} color="#94A3B8" />}
                         </TouchableOpacity>
                     </View>
-                    <Text className="text-[12px] text-slate-500 mt-1.5">Use 8+ chars with letters, numbers & a symbol.</Text>
+                    <Text className="text-[12px] text-slate-500 dark:text-slate-400 mt-1.5">Use 8+ chars with letters, numbers & a symbol.</Text>
                 </View>
 
                 {/* Terms */}
@@ -159,7 +159,7 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
                     <View className={`w-5 h-5 rounded-md border-[1.5px] items-center justify-center mr-2.5 mt-0.5 ${agreed ? 'bg-primary border-primary' : 'border-slate-100 dark:border-slate-800'}`}>
                         {agreed && <Check size={14} color="#FFFFFF" />}
                     </View>
-                    <Text className="flex-1 text-[13px] text-slate-500 leading-5">
+                    <Text className="flex-1 text-[13px] text-slate-500 dark:text-slate-400 leading-5">
                         I agree to the <Text className="text-primary font-bold">Terms</Text> and <Text className="text-primary font-bold">Privacy Policy</Text>.
                     </Text>
                 </TouchableOpacity>
@@ -179,8 +179,8 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
                 </TouchableOpacity>
 
                 {/* Footer */}
-                <View className="flex-row justify-center mt-5">
-                    <Text className="text-sm text-slate-500">Already have an account? </Text>
+                <View className="flex-row justify-center mt-8 mb-4">
+                    <Text className="text-sm text-slate-500 dark:text-slate-400">Already have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
                         <Text className="text-sm font-bold text-primary">Sign In</Text>
                     </TouchableOpacity>

@@ -37,7 +37,7 @@ const ForgotPasswordScreen = ({ navigation }: ForgotPasswordScreenProps) => {
                 </TouchableOpacity>
 
                 <View className="flex-row justify-center mt-6">
-                    <Text className="text-sm text-slate-500">Remembered it? </Text>
+                    <Text className="text-sm text-slate-500 dark:text-slate-400">Remembered it? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
                         <Text className="text-sm font-bold text-primary">Back to Sign In</Text>
                     </TouchableOpacity>

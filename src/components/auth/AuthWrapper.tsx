@@ -48,7 +48,7 @@ export function AuthWrapper({
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            className="flex-1 bg-white"
+            className="flex-1 bg-white dark:bg-slate-950"
         >
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1, justifyContent: 'center' }}
@@ -66,11 +66,11 @@ export function AuthWrapper({
                                     resizeMode="contain"
                                 />
                             </View>
-                            <Text style={{ fontSize: 36, fontWeight: '900', color: '#0F172A', letterSpacing: -0.5 }}>
+                            <Text className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">
                                 {title}
                             </Text>
                             {description && (
-                                <Text style={{ fontSize: 16, color: '#64748B', marginTop: 6, lineHeight: 24 }}>
+                                <Text className="text-base text-slate-500 dark:text-slate-400 mt-2 leading-6">
                                     {description}
                                 </Text>
                             )}

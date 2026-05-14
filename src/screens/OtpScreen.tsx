@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Alert, useColorScheme } from 'react-native';
 import { ShieldCheck, Clock, RotateCcw } from 'lucide-react-native';
 import { RootDrawerParamList } from '../navigation/types';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
@@ -15,6 +15,7 @@ type OtpScreenProps = {
 const RESEND_TIMEOUT = 30; // seconds
 
 const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
+    const isDarkMode = useColorScheme() === 'dark';
     const { login } = useAuth();
     
     // Get the phone passed from OTPLoginScreen e.g. "+91 9876543210"
@@ -155,18 +156,18 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
                 {/* Resend Timer */}
                 <View className="flex-row items-center justify-between mt-6">
                     <View className="flex-row items-center">
-                        <Clock size={15} color="#64748B" />
+                        <Clock size={15} color={isDarkMode ? '#94A3B8' : '#64748B'} />
                         {canResend ? (
-                            <Text className="text-sm text-slate-500 ml-2">OTP expired</Text>
+                            <Text className="text-sm text-slate-500 dark:text-slate-400 ml-2">OTP expired</Text>
                         ) : (
-                            <Text className="text-sm text-slate-500 ml-2">
+                            <Text className="text-sm text-slate-500 dark:text-slate-400 ml-2">
                                 Resend code in <Text className="text-slate-900 dark:text-white font-bold">{formatTimer(resendTimer)}</Text>
                             </Text>
                         )}
                     </View>
                     {canResend && (
                         <TouchableOpacity onPress={handleResend} className="flex-row items-center">
-                            <RotateCcw size={14} color="#0EA968" />
+                            <RotateCcw size={14} color="#10B981" />
                             <Text className="text-sm font-bold text-primary ml-1">Resend</Text>
                         </TouchableOpacity>
                     )}
@@ -188,9 +189,9 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
                 </TouchableOpacity>
 
                 {/* Security Notice */}
-                <View className="flex-row bg-[#E6F6EF] dark:bg-emerald-950/20 p-4 rounded-2xl mt-6 items-start">
-                    <ShieldCheck size={20} color="#0EA968" />
-                    <Text className="flex-1 text-[13px] text-emerald-800 dark:text-emerald-200 ml-3 leading-5">
+                <View className="flex-row bg-[#E6F6EF] dark:bg-emerald-950/30 p-4 rounded-2xl mt-6 items-start">
+                    <ShieldCheck size={20} color="#10B981" />
+                    <Text className="flex-1 text-[13px] text-emerald-800 dark:text-emerald-300 ml-3 leading-5">
                         Never share your OTP. Swasthify will never ask for it on call.
                     </Text>
                 </View>
@@ -203,7 +204,7 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
                             onPress={() => handleKeyPress(key)}
                             disabled={isLoading || key === ''}
                             activeOpacity={key === '' ? 1 : 0.4}
-                            className="w-1/3 h-14 items-center justify-center"
+                            className="w-1/3 h-16 items-center justify-center rounded-2xl active:bg-slate-100 dark:active:bg-slate-800"
                         >
                             <Text className={`text-2xl font-bold ${key === '' ? '' : 'text-slate-900 dark:text-white'}`}>
                                 {key}

@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     Alert,
+    useColorScheme,
 } from 'react-native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../navigation/types';
@@ -20,6 +21,7 @@ type OTPLoginScreenProps = {
 };
 
 const OTPLoginScreen = ({ navigation }: OTPLoginScreenProps) => {
+    const isDarkMode = useColorScheme() === 'dark';
     const [phone, setPhone] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -54,13 +56,13 @@ const OTPLoginScreen = ({ navigation }: OTPLoginScreenProps) => {
                     <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Mobile Number</Text>
                     <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
                         <View className="mr-3 flex-row items-center">
-                            <Phone size={20} color="#94A3B8" />
+                            <Phone size={20} color={isDarkMode ? '#CBD5E1' : '#94A3B8'} />
                             <Text className="text-base text-slate-900 dark:text-white ml-2 mr-1">+91</Text>
                             <View className="w-[1px] h-6 bg-slate-200 dark:bg-slate-700 mx-2" />
                         </View>
                         <TextInput
                             placeholder="98765 43210"
-                            placeholderTextColor="#94A3B8"
+                            placeholderTextColor={isDarkMode ? '#475569' : '#94A3B8'}
                             value={phone}
                             onChangeText={setPhone}
                             className="flex-1 text-base text-slate-900 dark:text-white"
@@ -98,7 +100,7 @@ const OTPLoginScreen = ({ navigation }: OTPLoginScreenProps) => {
 
                 {/* Footer */}
                 <View className="flex-row justify-center mt-12">
-                    <Text className="text-sm text-slate-500">Don't have an account? </Text>
+                    <Text className="text-sm text-slate-500 dark:text-slate-400">Don't have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
                         <Text className="text-sm font-bold text-primary">Sign Up</Text>
                     </TouchableOpacity>

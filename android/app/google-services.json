@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "179805229877",
+    "project_id": "swastify-bdace",
+    "storage_bucket": "swastify-bdace.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:179805229877:android:1184a0fc0172e2da56f27c",
+        "android_client_info": {
+          "package_name": "com.swasthify.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "179805229877-rvo5iqgd5aen7t0ijks3km7cnnjpsfm8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBF-GAjz97PtW3dbs4eDM3a-mAMh3LfOpM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "179805229877-rvo5iqgd5aen7t0ijks3km7cnnjpsfm8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
