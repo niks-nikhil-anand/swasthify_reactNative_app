@@ -34,7 +34,7 @@ const OTPLoginScreen = ({ navigation }: OTPLoginScreenProps) => {
 
         setIsLoading(true);
         try {
-            await authService.sendOtp({ phone });
+            await authService.sendOtp({ mobile: phone, role: 'PATIENT' });
             navigation.navigate('Otp', { phone: `+91 ${phone}` });
         } catch (error: any) {
             Alert.alert('Error', error.toString());
