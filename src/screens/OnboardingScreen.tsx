@@ -9,8 +9,8 @@ import {
     StyleSheet,
     Animated,
     StatusBar,
-    SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import { RootDrawerParamList } from '../navigation/types';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
@@ -149,7 +149,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-            <SafeAreaView style={styles.safeArea}>
+            <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
                 <View style={styles.topHeader}>
                     <TouchableOpacity onPress={handleSkip}>
                         <Text style={styles.skipText}>Skip</Text>
