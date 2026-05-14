@@ -22,6 +22,7 @@ import PackageDetailScreen from '../screens/PackageDetailScreen';
 import OtpScreen from '../screens/OtpScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import HealthPackagesScreen from '../screens/HealthPackagesScreen';
+import OTPLoginScreen from '../screens/OTPLoginScreen';
 import { RootDrawerParamList } from './types';
 import { Image, TouchableOpacity, View, ActivityIndicator, Text } from 'react-native';
 import Icon from '../components/Icon';
@@ -355,6 +356,15 @@ const AppNavigator = () => {
                 component={ForgotPasswordScreen}
                 options={{
                     title: 'Forgot Password',
+                    headerShown: false,
+                    drawerItemStyle: { display: 'none' },
+                }}
+            />
+            <Drawer.Screen
+                name="OTPLogin"
+                component={OTPLoginScreen}
+                options={{
+                    title: 'Login with OTP',
                     headerShown: false,
                     drawerItemStyle: { display: 'none' },
                 }}

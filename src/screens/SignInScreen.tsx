@@ -125,6 +125,14 @@ const SignInScreen = ({ navigation }: SignInScreenProps) => {
                     )}
                 </TouchableOpacity>
 
+                {/* OTP Login Link */}
+                <TouchableOpacity 
+                    onPress={() => navigation.navigate('OTPLogin')}
+                    className="mt-6 items-center"
+                >
+                    <Text className="text-sm font-bold text-primary">Login with Mobile OTP</Text>
+                </TouchableOpacity>
+
                 {/* Footer */}
                 <View className="flex-row justify-center mt-10">
                     <Text className="text-sm text-slate-500">Don't have an account? </Text>

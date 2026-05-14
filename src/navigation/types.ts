@@ -7,6 +7,7 @@ export type RootDrawerParamList = {
     SignUp: undefined;
     Otp: { phone: string };
     ForgotPassword: undefined;
+    OTPLogin: undefined;
     About: undefined;
     Contact: undefined;
     Pricing: undefined;
