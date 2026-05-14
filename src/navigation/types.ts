@@ -18,6 +18,7 @@ export type RootDrawerParamList = {
     Profile: undefined;
     CampaignDetail: { id: string };
     Specialities: undefined;
+    HealthPackages: undefined;
     PackageDetail: {
         id: string;
         title: string;
