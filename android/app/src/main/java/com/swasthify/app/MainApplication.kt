@@ -1,4 +1,4 @@
-package com.Swasthifyapp
+package com.swasthify.app
 
 import android.app.Application
 import com.facebook.react.PackageList

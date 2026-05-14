@@ -28,6 +28,63 @@
         }
       }
     },
+    "@react-native-firebase/app": {
+      "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-firebase/app",
+      "name": "@react-native-firebase/app",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-firebase/app/RNFBApp.podspec",
+          "version": "24.0.0",
+          "configurations": [],
+          "scriptPhases": [
+            {
+              "name": "[RNFB] Core Configuration",
+              "path": "./ios_config.sh",
+              "execution_position": "after_compile",
+              "input_files": [
+                "$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)"
+              ]
+            }
+          ]
+        },
+        "android": {
+          "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-firebase/app/android",
+          "packageImportPath": "import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;",
+          "packageInstance": "new ReactNativeFirebaseAppPackage()",
+          "buildTypes": [],
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-firebase/app/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
+    "@react-native-firebase/auth": {
+      "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-firebase/auth",
+      "name": "@react-native-firebase/auth",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-firebase/auth/RNFBAuth.podspec",
+          "version": "24.0.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-firebase/auth/android",
+          "packageImportPath": "import io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage;",
+          "packageInstance": "new ReactNativeFirebaseAuthPackage()",
+          "buildTypes": [],
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/@react-native-firebase/auth/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-document-picker": {
       "root": "/Users/nikhilanand/Desktop/SwastifyApp/node_modules/react-native-document-picker",
       "name": "react-native-document-picker",
@@ -546,8 +603,7 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
-          "default": "vscode"
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
         },
         {
           "name": "--binary-path <string>",
@@ -714,8 +770,7 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
-          "default": "vscode"
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
         },
         {
           "name": "--appId <string>",
@@ -801,8 +856,8 @@
     "android": {
       "sourceDir": "/Users/nikhilanand/Desktop/SwastifyApp/android",
       "appName": "app",
-      "packageName": "com.Swasthifyapp",
-      "applicationId": "com.Swasthifyapp",
+      "packageName": "com.swasthifyapp",
+      "applicationId": "com.swasthifyapp",
       "mainActivity": ".MainActivity",
       "assets": []
     }

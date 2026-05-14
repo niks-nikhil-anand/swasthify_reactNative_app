@@ -76,9 +76,9 @@ android {
     ndkVersion rootProject.ext.ndkVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.Swasthifyapp"
+    namespace "com.swasthify.app"
     defaultConfig {
-        applicationId "com.Swasthifyapp"
+        applicationId "com.swasthify.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

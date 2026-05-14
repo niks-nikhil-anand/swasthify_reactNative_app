@@ -1,4 +1,4 @@
-package com.Swasthifyapp
+package com.swasthify.app
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
