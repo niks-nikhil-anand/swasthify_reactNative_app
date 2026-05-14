@@ -13,6 +13,7 @@ import {
     Linking,
     Image,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Feather from 'react-native-vector-icons/Feather';
 import DocumentPicker from 'react-native-document-picker';
 import { useColorScheme } from 'nativewind';
@@ -154,9 +155,10 @@ const HealthRecordsScreen = () => {
     const isDark = colorScheme === 'dark';
 
     return (
-        <View className="flex-1 bg-zinc-50 dark:bg-zinc-950">
+        <SafeAreaView className="flex-1 bg-zinc-50 dark:bg-zinc-950" edges={['top', 'left', 'right']}>
             <ScrollView
                 className="flex-1 px-4 pt-4"
+                showsVerticalScrollIndicator={false}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[BRAND_GREEN]} />}
             >
                 {/* Storage Status Bar */}
@@ -411,7 +413,7 @@ const HealthRecordsScreen = () => {
                     )}
                 </View>
             </Modal>
-        </View>
+        </SafeAreaView>
     );
 };
 
