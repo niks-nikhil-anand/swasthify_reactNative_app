@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
     View,
     Text,
     TouchableOpacity,
     ScrollView,
-    Dimensions,
     StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,115 +14,135 @@ import Feather from 'react-native-vector-icons/Feather';
 import { useColorScheme } from 'nativewind';
 import Footer from '../components/Footer';
 
-const { width } = Dimensions.get('window');
-
 type NavigationProp = DrawerNavigationProp<RootDrawerParamList>;
 
-const services = [
+const pricingPlans = [
     {
-        id: '1',
-        title: 'Quick Connect',
+        title: 'General Consultation',
+        description: 'Connect with certified general physicians for common ailments.',
         price: '199',
-        duration: 'per session',
-        description: 'Instant consultation for primary care and common health concerns.',
-        features: [
-            '15 min video call',
-            'Digital prescription',
-            '24/7 availability',
-            'General Physician'
-        ],
-        icon: 'zap',
-        color: '#3B82F6', // Blue
-        popular: false
+        features: ['24/7 Availability', 'Instant Connections', 'Digital Prescriptions', 'Follow-up Reminders'],
+        icon: 'user-check',
+        popular: false,
     },
     {
-        id: '2',
-        title: 'Specialist Care',
+        title: 'Specialist Consultation',
+        description: 'Expert advice from top-tier specialists across all departments.',
         price: '499',
-        duration: 'per session',
-        description: 'Deep dive consultations with board-certified specialists.',
-        features: [
-            '30 min video call',
-            'Detailed health plan',
-            'Specialist referral',
-            'Priority queueing'
-        ],
+        features: ['Vetted Specialists', 'Video/Audio Consultation', 'Detailed Health Reports', 'Secure Data Sharing'],
         icon: 'shield',
-        color: '#10B981', // Emerald
-        popular: true
+        popular: true,
     },
     {
-        id: '3',
-        title: 'Diagnostics',
+        title: 'Lab & Diagnostics',
+        description: 'Book essential tests and diagnostics at your convenience.',
         price: '99',
-        duration: 'starting at',
-        description: 'Quality lab tests with free home sample collection.',
-        features: [
-            'Home collection',
-            'Certified labs',
-            'Digital reports',
-            'Dr. Consultation'
-        ],
+        features: ['Home Sample Collection', 'Digital Test Results', 'Comparative Analysis', 'Accredited Labs'],
         icon: 'activity',
-        color: '#F59E0B', // Amber
-        popular: false
-    }
+        popular: false,
+    },
 ];
 
-const PricingCard = ({ item, isDark, navigation }: { item: typeof services[0], isDark: boolean, navigation: any }) => {
-    return (
-        <View 
-            className={`w-full rounded-[3rem] p-8 mb-6 border ${
-                item.popular 
-                    ? 'bg-zinc-900 dark:bg-emerald-600 border-zinc-900 dark:border-emerald-600 shadow-2xl shadow-emerald-500/20' 
-                    : 'bg-white dark:bg-zinc-900 border-zinc-100 dark:border-zinc-800'
+const testimonials = [
+    {
+        quote: 'Swasthify has completely transformed how we manage our clinic. The patient records and appointment features are a lifesaver.',
+        name: 'Dr. Sharma',
+        role: 'General Physician, Mumbai',
+    },
+    {
+        quote: 'The Pro plan is incredible value. Being able to access lab reports and send prescriptions digitally has delighted our patients.',
+        name: 'Dr. Priya Patel',
+        role: 'Pediatrician, Bangalore',
+    },
+    {
+        quote: 'We switched from a legacy system to Swasthify Enterprise. The migration was smooth and the support team is top-notch.',
+        name: 'City Care Hospital',
+        role: 'Administration Dept, Delhi',
+    },
+];
+
+const faqs = [
+    'Can I switch plans later?',
+    'Is there a free trial?',
+    'What payment methods do you accept?',
+    'Is my data secure?',
+    'Do you offer discounts for non-profits?',
+];
+
+const PricingCard = ({ plan, navigation }: { plan: typeof pricingPlans[0]; navigation: NavigationProp }) => (
+    <View
+        className={`rounded-2xl p-6 mb-5 border shadow-sm ${
+            plan.popular
+                ? 'bg-[#0DA96E] border-[#0DA96E]'
+                : 'bg-white dark:bg-zinc-900 border-[#D9F3E8] dark:border-zinc-800'
+        }`}
+    >
+        {plan.popular && (
+            <View className="self-start bg-white/20 px-3 py-1 rounded-full mb-4">
+                <Text className="text-[10px] font-bold text-white uppercase tracking-wider">Best Value</Text>
+            </View>
+        )}
+
+        <View
+            className={`w-12 h-12 rounded-2xl items-center justify-center mb-5 ${
+                plan.popular ? 'bg-white/15' : 'bg-[#0DA96E]/10'
             }`}
         >
-            {item.popular && (
-                <View className="absolute top-8 right-8 bg-emerald-500 dark:bg-white/20 px-3 py-1 rounded-full">
-                    <Text className="text-[10px] font-black text-white uppercase tracking-widest">Most Popular</Text>
-                </View>
-            )}
-
-            <View className={`w-14 h-14 rounded-3xl items-center justify-center mb-6 ${
-                item.popular ? 'bg-white/10' : 'bg-zinc-50 dark:bg-zinc-800'
-            }`}>
-                <Feather name={item.icon} size={24} color={item.popular ? '#FFFFFF' : item.color} />
-            </View>
-
-            <Text className={`text-2xl font-black mb-2 ${item.popular ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>
-                {item.title}
-            </Text>
-            <Text className={`text-sm leading-relaxed mb-8 ${item.popular ? 'text-emerald-50/70' : 'text-zinc-500 dark:text-zinc-400'}`}>
-                {item.description}
-            </Text>
-
-            <View className="flex-row items-baseline mb-8">
-                <Text className={`text-4xl font-black ${item.popular ? 'text-white' : 'text-zinc-900 dark:text-white'}`}>
-                    ₹{item.price}
-                </Text>
-                <Text className={`ml-2 text-sm font-bold ${item.popular ? 'text-emerald-50/50' : 'text-zinc-400'}`}>
-                    / {item.duration}
-                </Text>
-            </View>
-
-            <View className="mb-2 gap-y-4">
-                {item.features.map((feature, i) => (
-                    <View key={i} className="flex-row items-center">
-                        <View className={`w-5 h-5 rounded-full items-center justify-center mr-3 ${
-                            item.popular ? 'bg-white/20' : 'bg-emerald-50 dark:bg-emerald-900/20'
-                        }`}>
-                            <Feather name="check" size={12} color={item.popular ? '#FFFFFF' : '#10B981'} />
-                        </View>
-                        <Text className={`text-sm font-semibold ${item.popular ? 'text-emerald-50' : 'text-zinc-600 dark:text-zinc-300'}`}>
-                            {feature}
-                        </Text>
-                    </View>
-                ))}
-            </View>
+            <Feather name={plan.icon} size={22} color={plan.popular ? '#FFFFFF' : '#0DA96E'} />
         </View>
-    );
-};
+
+        <Text className={`text-xl font-bold mb-2 ${plan.popular ? 'text-white' : 'text-gray-900 dark:text-white'}`}>
+            {plan.title}
+        </Text>
+        <Text className={`text-sm leading-6 mb-6 ${plan.popular ? 'text-white/80' : 'text-gray-500 dark:text-zinc-400'}`}>
+            {plan.description}
+        </Text>
+
+        <Text className={`text-xs font-semibold uppercase tracking-wider mb-1 ${plan.popular ? 'text-white/70' : 'text-gray-400'}`}>
+            Starting from
+        </Text>
+        <View className="flex-row items-baseline mb-6">
+            <Text className={`text-4xl font-bold ${plan.popular ? 'text-white' : 'text-gray-900 dark:text-white'}`}>
+                ₹{plan.price}
+            </Text>
+        </View>
+
+        <View className="gap-y-3 mb-6">
+            {plan.features.map((feature) => (
+                <View key={feature} className="flex-row items-center">
+                    <View className={`w-5 h-5 rounded-full items-center justify-center mr-3 ${plan.popular ? 'bg-white/20' : 'bg-[#0DA96E]/10'}`}>
+                        <Feather name="check" size={12} color={plan.popular ? '#FFFFFF' : '#0DA96E'} />
+                    </View>
+                    <Text className={`text-sm font-medium ${plan.popular ? 'text-white' : 'text-gray-700 dark:text-zinc-300'}`}>
+                        {feature}
+                    </Text>
+                </View>
+            ))}
+        </View>
+
+        <TouchableOpacity
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate(plan.title === 'Lab & Diagnostics' ? 'Labs' : 'Doctors')}
+            className={`h-11 rounded-xl items-center justify-center ${
+                plan.popular ? 'bg-white' : 'bg-[#0DA96E]'
+            }`}
+        >
+            <Text className={`font-bold text-sm ${plan.popular ? 'text-[#0DA96E]' : 'text-white'}`}>Book Now</Text>
+        </TouchableOpacity>
+    </View>
+);
+
+const SectionHeader = ({ eyebrow, title, body }: { eyebrow?: string; title: string; body?: string }) => (
+    <View className="items-center mb-8 px-4">
+        {eyebrow && (
+            <View className="px-4 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-[#CDEFE2] dark:border-zinc-800 mb-4">
+                <Text className="text-[#0DA96E] dark:text-[#10B981] font-semibold text-xs uppercase tracking-wider">{eyebrow}</Text>
+            </View>
+        )}
+        <Text className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-3">{title}</Text>
+        {body && <Text className="text-base text-gray-500 dark:text-zinc-400 text-center leading-6">{body}</Text>}
+    </View>
+);
 
 const PricingScreen = () => {
     const navigation = useNavigation<NavigationProp>();
@@ -131,85 +150,92 @@ const PricingScreen = () => {
     const isDark = colorScheme === 'dark';
 
     return (
-        <SafeAreaView edges={['top']} className="flex-1 bg-zinc-50 dark:bg-zinc-950">
+        <SafeAreaView edges={['top']} className="flex-1 bg-white dark:bg-zinc-950">
             <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
-            
-            <ScrollView showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
-                {/* 1. Sticky Header */}
-                <View className="px-6 py-6 bg-zinc-50/90 dark:bg-zinc-950/90 border-b border-zinc-100 dark:border-zinc-900">
-                    <View>
-                        <Text className="text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-[0.3em] mb-1">
-                            Pricing Plans
+
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <View className="relative w-full py-16 overflow-hidden bg-[#F7FBF9] dark:bg-zinc-950 border-b border-[#D9F3E8] dark:border-zinc-900">
+                    <View className="px-4 items-center">
+                        <View className="px-4 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-[#CDEFE2] dark:border-zinc-800 mb-6">
+                            <Text className="text-[#0DA96E] dark:text-[#10B981] font-semibold text-xs uppercase tracking-wider">
+                                Patient-First Pricing
+                            </Text>
+                        </View>
+                        <Text className="text-4xl font-bold tracking-tight mb-6 text-center text-gray-900 dark:text-white leading-tight">
+                            Affordable care,{'\n'}
+                            <Text className="text-[#0DA96E]">zero hidden costs</Text>
                         </Text>
-                        <Text className="text-3xl font-black text-zinc-900 dark:text-white">
-                            Transparent Care.
+                        <Text className="text-base text-gray-600 dark:text-zinc-400 text-center leading-7 max-w-lg">
+                            Transparent pricing for every service. Know exactly what you pay before you book. No surprises, just quality care.
                         </Text>
                     </View>
                 </View>
 
-                {/* 2. Hero / Value Prop */}
-                <View className="px-6 pt-10 pb-8">
-                    <Text className="text-lg text-zinc-500 dark:text-zinc-400 leading-relaxed font-medium">
-                        Healthcare should be simple and accessible. We've eliminated hidden costs so you can focus on what matters—your well-being.
-                    </Text>
-                </View>
-
-                {/* Pricing List */}
-                <View className="px-6">
-                    {services.map(service => (
-                        <PricingCard 
-                            key={service.id} 
-                            item={service} 
-                            isDark={isDark} 
-                            navigation={navigation}
-                        />
+                <View className="py-12 px-4 bg-white dark:bg-zinc-950">
+                    {pricingPlans.map((plan) => (
+                        <PricingCard key={plan.title} plan={plan} navigation={navigation} />
                     ))}
                 </View>
 
-                {/* Trust Section */}
-                <View className="px-8 py-16 items-center">
-                    <View className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/20 rounded-full items-center justify-center mb-6">
-                        <Feather name="shield" size={28} color="#10B981" />
-                    </View>
-                    <Text className="text-xl font-black text-zinc-900 dark:text-white text-center mb-4">
-                        Secure & Transparent
-                    </Text>
-                    <Text className="text-sm text-zinc-500 dark:text-zinc-400 text-center leading-relaxed px-4">
-                        All payments are processed securely through Razorpay. You'll receive a detailed digital invoice for every transaction.
-                    </Text>
-                    
-                    <View className="flex-row mt-10 gap-x-8">
-                        <View className="items-center">
-                            <Text className="text-2xl font-black text-zinc-900 dark:text-white">50k+</Text>
-                            <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Users</Text>
-                        </View>
-                        <View className="items-center">
-                            <Text className="text-2xl font-black text-zinc-900 dark:text-white">4.9/5</Text>
-                            <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Rating</Text>
-                        </View>
-                        <View className="items-center">
-                            <Text className="text-2xl font-black text-zinc-900 dark:text-white">100%</Text>
-                            <Text className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mt-1">Secure</Text>
-                        </View>
+                <View className="py-14 bg-[#F7FBF9] dark:bg-zinc-950 border-y border-[#D9F3E8] dark:border-zinc-900">
+                    <SectionHeader
+                        title="Trusted by Healthcare Professionals"
+                        body="Doctors, clinics, and care teams use Swasthify to make healthcare easier to manage."
+                    />
+                    <View className="px-4 gap-y-4">
+                        {testimonials.map((item) => (
+                            <View key={item.name} className="bg-white dark:bg-zinc-900 rounded-2xl border border-[#D9F3E8] dark:border-zinc-800 p-5 shadow-sm">
+                                <Text className="text-base text-gray-700 dark:text-zinc-300 leading-7 mb-5">"{item.quote}"</Text>
+                                <Text className="text-base font-bold text-gray-900 dark:text-white">{item.name}</Text>
+                                <Text className="text-sm text-gray-500 dark:text-zinc-400 mt-1">{item.role}</Text>
+                            </View>
+                        ))}
                     </View>
                 </View>
 
-                {/* Support CTA */}
-                <View className="mx-6 mb-12 p-10 bg-white dark:bg-zinc-900 rounded-[3rem] border border-zinc-100 dark:border-zinc-800 shadow-sm items-center">
-                    <Text className="text-xl font-black text-zinc-900 dark:text-white text-center mb-2">
-                        Still have questions?
-                    </Text>
-                    <Text className="text-sm text-zinc-500 dark:text-zinc-400 text-center mb-8">
-                        Our support team is here to help you 24/7 with any billing or service queries.
-                    </Text>
-                    <TouchableOpacity 
-                        onPress={() => navigation.navigate('Contact')}
-                        className="bg-zinc-50 dark:bg-zinc-800 px-8 py-4 rounded-2xl border border-zinc-200 dark:border-zinc-700"
-                    >
-                        <Text className="text-zinc-900 dark:text-white font-black uppercase tracking-widest text-xs">
-                            Contact Support
+                <View className="py-14 bg-white dark:bg-zinc-950">
+                    <SectionHeader
+                        title="Frequently Asked Questions"
+                        body="Got questions? We have answers. Find everything you need to know about Swasthify."
+                    />
+                    <View className="px-4 gap-y-3">
+                        {faqs.map((faq) => (
+                            <View key={faq} className="bg-white dark:bg-zinc-900 rounded-2xl border border-[#D9F3E8] dark:border-zinc-800 p-4 flex-row items-center justify-between">
+                                <Text className="text-base font-semibold text-gray-900 dark:text-white flex-1 pr-3">{faq}</Text>
+                                <Feather name="chevron-down" size={20} color="#0DA96E" />
+                            </View>
+                        ))}
+                    </View>
+                </View>
+
+                <View className="px-4 pb-10">
+                    <View className="bg-[#0DA96E]/5 dark:bg-[#0DA96E]/10 rounded-2xl border border-[#0DA96E]/10 dark:border-[#0DA96E]/20 p-8 items-center">
+                        <Text className="text-sm font-semibold text-[#0DA96E] uppercase tracking-wider mb-3">
+                            Transform your health journey
                         </Text>
-                    </TouchableOpacity>
+                        <Text className="text-2xl font-bold text-center mb-3 text-gray-900 dark:text-white">
+                            Ready to find your doctor?
+                        </Text>
+                        <Text className="text-sm text-gray-500 dark:text-zinc-400 text-center leading-6 mb-6">
+                            Join thousands of patients who trust Swasthify for quality healthcare at transparent prices.
+                        </Text>
+                        <View className="flex-row items-center">
+                            <TouchableOpacity
+                                activeOpacity={0.85}
+                                onPress={() => navigation.navigate('Doctors')}
+                                className="bg-[#0DA96E] px-5 py-3 rounded-lg mr-3 shadow-md"
+                            >
+                                <Text className="text-white font-semibold text-sm">Find a Doctor</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={() => navigation.navigate('Contact')}
+                                className="border border-gray-300 dark:border-zinc-700 px-5 py-3 rounded-lg"
+                            >
+                                <Text className="text-gray-900 dark:text-zinc-200 font-semibold text-sm">Contact Support</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
 
                 <Footer />
