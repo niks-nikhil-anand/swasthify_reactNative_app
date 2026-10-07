@@ -21,6 +21,7 @@ export interface Campaign {
         latitude?: number;
         longitude?: number;
     };
+    distanceKm?: number;
     startDate?: string;
     endDate?: string;
     schedule?: Array<{
@@ -93,6 +94,31 @@ export interface PlatformFee {
     entityType: 'DOCTOR' | 'LAB';
 }
 
+export interface AvailabilitySlot {
+    startMinutes: number;
+    endMinutes: number;
+    label: string;
+    status: 'AVAILABLE' | 'BOOKED';
+}
+
+export type AvailabilityReason =
+    | 'OUTSIDE_CAMPAIGN'
+    | 'OUTSIDE_CAMPAIGN_SCHEDULE'
+    | 'DOCTOR_ON_LEAVE'
+    | 'NO_DOCTOR_AVAILABILITY'
+    | 'NO_CAMPAIGN_SCHEDULE'
+    | 'NO_FUTURE_SLOTS'
+    | 'NO_SLOTS'
+    | null;
+
+export interface CampaignAvailability {
+    date: string;
+    timeZone?: string;
+    available: boolean;
+    reason: AvailabilityReason;
+    slots: AvailabilitySlot[];
+}
+
 export const publicService = {
     getCampaigns: async (params: {
         source: 'doctor' | 'lab';
@@ -101,14 +127,28 @@ export const publicService = {
         search?: string;
         specialization?: string;
         sortBy?: string;
+        lat?: number;
+        lng?: number;
+        radiusKm?: number;
     }): Promise<Campaign[]> => {
         try {
-            const { source, limit = 10, page = 1, search, specialization, sortBy } = params;
+            const { source, limit = 10, page = 1, search, specialization, sortBy, lat, lng, radiusKm } = params;
             let url = `/api/public/campaigns?source=${source}&limit=${limit}&page=${page}`;
 
-            if (search) url += `&search=${encodeURIComponent(search)}`;
+            if (search) {
+                url += `&query=${encodeURIComponent(search)}`;
+                url += `&search=${encodeURIComponent(search)}`;
+            }
             if (specialization) url += `&specialization=${encodeURIComponent(specialization)}`;
-            if (sortBy) url += `&sortBy=${sortBy}`;
+            if (sortBy) {
+                const normalizedSort = sortBy === 'featured' ? 'recommended' : sortBy;
+                url += `&sort=${normalizedSort}`;
+                url += `&sortBy=${sortBy}`;
+            }
+            if (lat !== undefined && lng !== undefined) {
+                url += `&lat=${encodeURIComponent(String(lat))}&lng=${encodeURIComponent(String(lng))}`;
+                if (radiusKm !== undefined) url += `&radiusKm=${encodeURIComponent(String(radiusKm))}`;
+            }
 
             const response = await apiClient.get(url);
             const result = response.data;
@@ -163,5 +203,17 @@ export const publicService = {
             console.error('Error fetching platform fee:', error);
             return null;
         }
-    }
+    },
+
+    getCampaignAvailability: async (campaignId: string, date: string): Promise<CampaignAvailability> => {
+        try {
+            const response = await apiClient.get(
+                `/api/public/campaigns/${campaignId}/availability?date=${encodeURIComponent(date)}`
+            );
+            return response.data;
+        } catch (error: any) {
+            console.error(`Error fetching campaign availability for ${campaignId}:`, error?.response?.data || error);
+            throw error.response?.data?.error || error.response?.data?.message || 'Unable to load appointment availability';
+        }
+    },
 };
