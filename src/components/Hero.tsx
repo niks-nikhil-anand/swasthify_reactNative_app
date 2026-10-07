@@ -24,18 +24,18 @@ interface Slide {
 
 const slides: Slide[] = [
     {
-        id: '1',
-        image: require('../../public/images/hero_banner_1.png'),
+        id: 'doctor-booking',
+        image: require('../../public/images/hero_doctor_booking.png'),
         accentColor: '#0DA96E',
     },
     {
-        id: '2',
-        image: require('../../public/images/hero_banner_2.jpg'),
-        accentColor: '#7C3AED',
+        id: 'nearby-doctors',
+        image: require('../../public/images/hero_doctor_nearby.png'),
+        accentColor: '#0F766E',
     },
     {
-        id: '3',
-        image: require('../../public/images/hero_banner_3.jpg'),
+        id: 'appointment-confirmed',
+        image: require('../../public/images/hero_doctor_confirmed.png'),
         accentColor: '#2563EB',
     },
 ];

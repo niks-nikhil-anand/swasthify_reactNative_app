@@ -47,15 +47,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const flattened = { ...userData };
         if (userData.patient) {
             const patient = userData.patient;
-            // Map backend fields to frontend User interface if they differ
-            flattened.dateOfBirth = patient.dateOfBirth || patient.dob;
-            flattened.chronicDiseases = patient.chronicDiseases || patient.diseases || patient.chronicDisease;
+            Object.assign(flattened, patient);
+
+            // Normalize backend variants after merging patient fields so refreshes
+            // do not wipe locally edited values because of shape differences.
+            flattened.phone = flattened.phone || flattened.mobile || patient.phone || patient.mobile;
+            flattened.mobile = flattened.mobile || flattened.phone;
+            flattened.dateOfBirth = patient.dateOfBirth || patient.dob || flattened.dateOfBirth || flattened.dob;
+            flattened.chronicDiseases = patient.chronicDiseases || patient.diseases || patient.chronicDisease || flattened.chronicDiseases;
             flattened.height = patient.height ? Number(patient.height) : undefined;
             flattened.weight = patient.weight ? Number(patient.weight) : undefined;
 
-            Object.assign(flattened, patient);
             delete flattened.patient;
         }
+
+        if (flattened.mobile && !flattened.phone) flattened.phone = flattened.mobile;
+        if (flattened.phone && !flattened.mobile) flattened.mobile = flattened.phone;
+        if (flattened.height) flattened.height = Number(flattened.height);
+        if (flattened.weight) flattened.weight = Number(flattened.weight);
+
         return flattened as User;
     };
 
@@ -154,10 +164,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             const response = await apiClient.get('/api/auth/me');
             if (response.data && response.data.user) {
                 const flattenedUser = flattenUserData(response.data.user);
-                await updateUser(flattenedUser);
+                await AsyncStorage.setItem('auth_user', JSON.stringify(flattenedUser));
+                setUser(flattenedUser);
             }
         } catch (error) {
             console.error('Failed to refresh user data:', error);
+            throw error;
         }
     };
 

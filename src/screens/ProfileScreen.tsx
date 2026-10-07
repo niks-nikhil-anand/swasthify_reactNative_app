@@ -26,7 +26,7 @@ import { RootDrawerParamList } from '../navigation/types';
 type Props = DrawerScreenProps<RootDrawerParamList, 'Profile'>;
 
 const ProfileScreen = ({ navigation }: Props) => {
-    const { user, logout, updateUser, refreshUser } = useAuth();
+    const { user, logout, refreshUser } = useAuth();
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';
     const [phoneModalVisible, setPhoneModalVisible] = useState(false);
@@ -42,7 +42,7 @@ const ProfileScreen = ({ navigation }: Props) => {
     }, [user?.profilePic]);
 
     // Form states
-    const [newPhone, setNewPhone] = useState(user?.phone || '');
+    const [newPhone, setNewPhone] = useState((user?.phone || user?.mobile || '').replace('+91', ''));
     const [newName, setNewName] = useState(user?.name || '');
     const [newEmail, setNewEmail] = useState(user?.email || '');
     const [passwords, setPasswords] = useState({
@@ -66,6 +66,30 @@ const ProfileScreen = ({ navigation }: Props) => {
     const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'];
     const genders = ['Male', 'Female', 'Other'];
     const notificationOptions = ['Enabled', 'Disabled'];
+    const userPhone = user.phone || user.mobile || '';
+    const formattedPhone = userPhone ? userPhone.replace(/^(\+91)(\d{5})(\d{5})$/, '$1 $2 $3') : 'Add phone number';
+    const profileCompletionItems = [
+        user.name,
+        user.email,
+        userPhone,
+        user.dateOfBirth,
+        user.gender,
+        user.bloodGroup,
+        user.height,
+        user.weight,
+        user.emergencyContactName,
+        user.emergencyContactPhone,
+    ];
+    const completedProfileItems = profileCompletionItems.filter(Boolean).length;
+    const profileCompletion = Math.round((completedProfileItems / profileCompletionItems.length) * 100);
+
+    const digitsOnly = (value: string) => value.replace(/\D/g, '');
+    const titleCase = (value?: string) => {
+        if (!value) return '';
+        return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+    };
+
+    const getEmptyLabel = (label: string) => `Add ${label.toLowerCase()}`;
 
     const formatDateOfBirth = (value?: string) => {
         if (!value) return 'Not set';
@@ -149,15 +173,16 @@ const ProfileScreen = ({ navigation }: Props) => {
     };
 
     const handleUpdatePhone = async () => {
-        if (newPhone.length !== 10 || isNaN(Number(newPhone))) {
+        const cleanPhone = digitsOnly(newPhone).slice(-10);
+        if (cleanPhone.length !== 10) {
             Alert.alert("Error", "Phone number must be exactly 10 digits");
             return;
         }
 
         setIsSubmitting(true);
         try {
-            await userService.updatePhone(newPhone);
-            await updateUser({ phone: newPhone });
+            await userService.updatePhone(cleanPhone);
+            await refreshUser();
             Alert.alert("Success", "Phone number updated successfully");
             setPhoneModalVisible(false);
         } catch (err: any) {
@@ -180,8 +205,8 @@ const ProfileScreen = ({ navigation }: Props) => {
 
         setIsSubmitting(true);
         try {
-            await userService.updateName(newName);
-            await updateUser({ name: newName });
+            await userService.updateName(newName.trim());
+            await refreshUser();
             Alert.alert("Success", "Name updated successfully");
             setNameModalVisible(false);
         } catch (err: any) {
@@ -199,8 +224,8 @@ const ProfileScreen = ({ navigation }: Props) => {
 
         setIsSubmitting(true);
         try {
-            await userService.updateEmail(newEmail);
-            await updateUser({ email: newEmail });
+            await userService.updateEmail(newEmail.trim());
+            await refreshUser();
             Alert.alert("Success", "Email address updated successfully");
             setEmailModalVisible(false);
         } catch (err: any) {
@@ -253,13 +278,12 @@ const ProfileScreen = ({ navigation }: Props) => {
 
         // Custom handling for specific fields
         if (field === 'phone' || field === 'emergencyContactPhone') {
-            if (!value.startsWith('+91')) {
-                finalValue = '+91' + value;
-            }
-            if (finalValue.length !== 13) {
+            const cleanPhone = digitsOnly(String(value)).slice(-10);
+            if (cleanPhone.length !== 10) {
                 Alert.alert("Error", "Please enter a valid 10-digit mobile number");
                 return;
             }
+            finalValue = `+91${cleanPhone}`;
         }
 
         if (field === 'gender') {
@@ -268,8 +292,16 @@ const ProfileScreen = ({ navigation }: Props) => {
 
         if (field === 'height' || field === 'weight') {
             finalValue = Number(value);
-            if (isNaN(finalValue)) {
+            if (isNaN(finalValue) || finalValue <= 0) {
                 Alert.alert("Error", "Please enter a valid numeric value");
+                return;
+            }
+        }
+
+        if (field === 'dateOfBirth') {
+            const parsedDate = new Date(finalValue);
+            if (Number.isNaN(parsedDate.getTime()) || parsedDate > new Date()) {
+                Alert.alert("Error", "Please enter a valid date of birth");
                 return;
             }
         }
@@ -282,7 +314,7 @@ const ProfileScreen = ({ navigation }: Props) => {
         setIsSubmitting(true);
         try {
             await userService.updateProfile({ [payloadField]: finalValue });
-            await updateUser({ [field]: finalValue });
+            await refreshUser();
             Alert.alert("Success", "Profile updated successfully");
             setEditModalVisible(false);
         } catch (err: any) {
@@ -314,7 +346,9 @@ const ProfileScreen = ({ navigation }: Props) => {
 
             setDobParts({ day, month, year });
         } else if (type === 'PHONE') {
-            setEditingValue(currentValue.replace('+91', '') || '');
+            setEditingValue(digitsOnly(currentValue).slice(-10) || '');
+        } else if (type === 'SELECT' && field === 'gender') {
+            setEditingValue(titleCase(currentValue));
         } else {
             setEditingValue(currentValue?.toString() || '');
         }
@@ -322,7 +356,7 @@ const ProfileScreen = ({ navigation }: Props) => {
         setEditModalVisible(true);
     };
 
-    const ProfileItem = ({ icon, title, value, color = "#4B5563", onPress }: { icon: string, title: string, value: string, color?: string, onPress?: () => void }) => {
+    const ProfileItem = ({ icon, title, value, color = "#4B5563", onPress, empty }: { icon: string, title: string, value: string, color?: string, onPress?: () => void, empty?: boolean }) => {
         const Content = (
             <View style={styles.itemContainer}>
                 <View style={[styles.iconWrapper, { backgroundColor: color + '10' }]}>
@@ -330,7 +364,7 @@ const ProfileScreen = ({ navigation }: Props) => {
                 </View>
                 <View style={styles.itemContent}>
                     <Text style={[styles.itemTitle, isDark && styles.textGray400]}>{title}</Text>
-                    <Text style={[styles.itemValue, isDark && styles.textWhite]}>{value}</Text>
+                    <Text style={[styles.itemValue, empty && styles.itemValueEmpty, isDark && styles.textWhite, empty && isDark && styles.textGray400]}>{value}</Text>
                 </View>
                 <Feather name="chevron-right" size={20} color={isDark ? "#4B5563" : "#CBD5E1"} />
             </View>
@@ -350,9 +384,10 @@ const ProfileScreen = ({ navigation }: Props) => {
     return (
         <SafeAreaView style={[styles.container, isDark && styles.bgBackground]} edges={['top', 'left', 'right']}>
             <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={isDark ? "#020817" : "#FFFFFF"} />
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
                 {/* Header Profile Section */}
                 <View style={[styles.header, isDark && styles.headerDark]}>
+                    <View style={styles.headerGlow} />
                     <View style={styles.avatarContainer}>
                         {isUploading ? (
                             <View style={[styles.avatar, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#F1F5F9' }]}>
@@ -373,8 +408,17 @@ const ProfileScreen = ({ navigation }: Props) => {
                             <Feather name="camera" size={16} color="#FFFFFF" />
                         </TouchableOpacity>
                     </View>
-                    <Text style={[styles.userName, isDark && styles.textWhite]}>{user.name}</Text>
-                    <Text style={[styles.userRole, isDark && styles.textGray400]}>Account</Text>
+                    <Text style={[styles.userName, isDark && styles.textWhite]} numberOfLines={1}>{user.name || 'Swasthify User'}</Text>
+                    <Text style={[styles.userRole, isDark && styles.textGray400]}>{user.email || formattedPhone}</Text>
+                    <View style={[styles.completionCard, isDark && styles.completionCardDark]}>
+                        <View style={styles.completionHeader}>
+                            <Text style={[styles.completionTitle, isDark && styles.textGray400]}>Profile strength</Text>
+                            <Text style={styles.completionPercent}>{profileCompletion}%</Text>
+                        </View>
+                        <View style={[styles.progressTrack, isDark && styles.progressTrackDark]}>
+                            <View style={[styles.progressFill, { width: `${profileCompletion}%` }]} />
+                        </View>
+                    </View>
                 </View>
 
                 {/* Account Information */}
@@ -384,7 +428,8 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="user"
                             title="Full Name"
-                            value={user.name}
+                            value={user.name || getEmptyLabel('name')}
+                            empty={!user.name}
                             color="#0DA96E"
                             onPress={() => {
                                 setNewName(user.name || '');
@@ -395,7 +440,8 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="mail"
                             title="Email Address"
-                            value={user.email}
+                            value={user.email || getEmptyLabel('email')}
+                            empty={!user.email}
                             color="#3B82F6"
                             onPress={() => {
                                 setNewEmail(user.email || '');
@@ -406,10 +452,11 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="phone"
                             title="Phone Number"
-                            value={user.phone || "Not provided"}
+                            value={formattedPhone}
+                            empty={!userPhone}
                             color="#F59E0B"
                             onPress={() => {
-                                setNewPhone(user.phone?.replace('+91', '') || '');
+                                setNewPhone(digitsOnly(userPhone).slice(-10));
                                 setPhoneModalVisible(true);
                             }}
                         />
@@ -423,23 +470,26 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="calendar"
                             title="Date of Birth"
-                            value={formatDateOfBirth(user.dateOfBirth)}
+                            value={user.dateOfBirth ? formatDateOfBirth(user.dateOfBirth) : getEmptyLabel('date of birth')}
+                            empty={!user.dateOfBirth}
                             color="#8B5CF6"
                             onPress={() => openEditModal('dateOfBirth', 'Date of Birth', getDateInputValue(user.dateOfBirth), 'DATE')}
                         />
-                        <View style={styles.divider} />
+                        <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
                             icon="users"
                             title="Gender"
-                            value={user.gender || "Not set"}
+                            value={user.gender ? titleCase(user.gender) : getEmptyLabel('gender')}
+                            empty={!user.gender}
                             color="#EC4899"
                             onPress={() => openEditModal('gender', 'Gender', user.gender || '', 'SELECT')}
                         />
-                        <View style={styles.divider} />
+                        <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
                             icon="droplet"
                             title="Blood Group"
-                            value={user.bloodGroup || "Not set"}
+                            value={user.bloodGroup || getEmptyLabel('blood group')}
+                            empty={!user.bloodGroup}
                             color="#EF4444"
                             onPress={() => openEditModal('bloodGroup', 'Blood Group', user.bloodGroup || '', 'SELECT')}
                         />
@@ -453,7 +503,8 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="maximize-2"
                             title="Height"
-                            value={user.height ? `${user.height} ft.` : "Not set"}
+                            value={user.height ? `${user.height} ft.` : getEmptyLabel('height')}
+                            empty={!user.height}
                             color="#10B981"
                             onPress={() => openEditModal('height', 'Height', user.height?.toString() || '')}
                         />
@@ -461,7 +512,8 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="activity"
                             title="Weight"
-                            value={user.weight ? `${user.weight} kg` : "Not set"}
+                            value={user.weight ? `${user.weight} kg` : getEmptyLabel('weight')}
+                            empty={!user.weight}
                             color="#3B82F6"
                             onPress={() => openEditModal('weight', 'Weight', user.weight?.toString() || '')}
                         />
@@ -469,7 +521,8 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="alert-circle"
                             title="Allergies"
-                            value={user.allergies || "None"}
+                            value={user.allergies || "Add allergies if any"}
+                            empty={!user.allergies}
                             color="#F59E0B"
                             onPress={() => openEditModal('allergies', 'Allergies', user.allergies || '')}
                         />
@@ -477,7 +530,8 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="frown"
                             title="Diseases"
-                            value={user.chronicDiseases || "None"}
+                            value={user.chronicDiseases || "Add chronic conditions if any"}
+                            empty={!user.chronicDiseases}
                             color="#6366F1"
                             onPress={() => openEditModal('chronicDiseases', 'Diseases', user.chronicDiseases || '')}
                         />
@@ -491,7 +545,8 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="user"
                             title="Contact Name"
-                            value={user.emergencyContactName || "Not set"}
+                            value={user.emergencyContactName || getEmptyLabel('emergency contact')}
+                            empty={!user.emergencyContactName}
                             color="#EF4444"
                             onPress={() => openEditModal('emergencyContactName', 'Emergency Name', user.emergencyContactName || '')}
                         />
@@ -499,7 +554,8 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="phone"
                             title="Contact Phone"
-                            value={user.emergencyContactPhone || "Not set"}
+                            value={user.emergencyContactPhone ? user.emergencyContactPhone.replace(/^(\+91)(\d{5})(\d{5})$/, '$1 $2 $3') : getEmptyLabel('emergency phone')}
+                            empty={!user.emergencyContactPhone}
                             color="#0DA96E"
                             onPress={() => openEditModal('emergencyContactPhone', 'Emergency Phone', user.emergencyContactPhone || '', 'PHONE')}
                         />
@@ -552,38 +608,40 @@ const ProfileScreen = ({ navigation }: Props) => {
                 <View style={styles.modalOverlay}>
                     <KeyboardAvoidingView
                         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                        style={styles.modalContent}
                     >
-                        <View style={styles.modalHeader}>
-                            <Text style={[styles.modalTitle, isDark && styles.textWhite]}>Update Phone Number</Text>
-                            <TouchableOpacity onPress={() => setPhoneModalVisible(false)}>
-                                <Feather name="x" size={24} color={isDark ? "#94A3B8" : "#64748B"} />
+                        <View style={[styles.modalContent, isDark && styles.modalContentDark]}>
+                            <View style={styles.modalHeader}>
+                                <Text style={[styles.modalTitle, isDark && styles.textWhite]}>Update Phone Number</Text>
+                                <TouchableOpacity onPress={() => setPhoneModalVisible(false)}>
+                                    <Feather name="x" size={24} color={isDark ? "#94A3B8" : "#64748B"} />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.inputGroup}>
+                                <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Mobile Number</Text>
+                                <TextInput
+                                    style={[styles.input, isDark && styles.inputDark]}
+                                    value={newPhone}
+                                    onChangeText={(value) => setNewPhone(digitsOnly(value).slice(0, 10))}
+                                    keyboardType="phone-pad"
+                                    placeholder="Enter mobile number"
+                                    placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
+                                    maxLength={10}
+                                />
+                            </View>
+
+                            <TouchableOpacity
+                                style={styles.modalButton}
+                                onPress={handleUpdatePhone}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <ActivityIndicator color="#FFFFFF" />
+                                ) : (
+                                    <Text style={styles.modalButtonText}>Update Number</Text>
+                                )}
                             </TouchableOpacity>
                         </View>
-
-                        <View style={styles.inputGroup}>
-                            <Text style={[styles.inputLabel, isDark && styles.textGray400]}>Mobile Number</Text>
-                            <TextInput
-                                style={[styles.input, isDark && styles.inputDark]}
-                                value={newPhone}
-                                onChangeText={setNewPhone}
-                                keyboardType="phone-pad"
-                                placeholder="Enter mobile number"
-                                placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
-                            />
-                        </View>
-
-                        <TouchableOpacity
-                            style={styles.modalButton}
-                            onPress={handleUpdatePhone}
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? (
-                                <ActivityIndicator color="#FFFFFF" />
-                            ) : (
-                                <Text style={styles.modalButtonText}>Update Number</Text>
-                            )}
-                        </TouchableOpacity>
                     </KeyboardAvoidingView>
                 </View>
             </Modal>
@@ -796,7 +854,7 @@ const ProfileScreen = ({ navigation }: Props) => {
                                         <TextInput
                                             style={[styles.input, isDark && styles.inputDark, { flex: 1, borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }]}
                                             value={editingValue}
-                                            onChangeText={setEditingValue}
+                                            onChangeText={(value) => setEditingValue(digitsOnly(value).slice(0, 10))}
                                             placeholder="10 digit number"
                                             placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
                                             keyboardType="phone-pad"
@@ -876,7 +934,7 @@ const ProfileScreen = ({ navigation }: Props) => {
                                         const formattedDate = `${dobParts.year}-${dobParts.month.padStart(2, '0')}-${dobParts.day.padStart(2, '0')}`;
                                         handleUpdateProfile('dateOfBirth', formattedDate);
                                     } else if (modalType === 'PHONE') {
-                                        handleUpdateProfile('phone', editingValue);
+                                        editingField && handleUpdateProfile(editingField, editingValue);
                                     } else {
                                         editingField && handleUpdateProfile(editingField, editingValue);
                                     }
@@ -904,17 +962,32 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F8FAFC',
     },
+    scrollContent: {
+        paddingBottom: 8,
+    },
     header: {
         alignItems: 'center',
-        paddingVertical: 40,
+        paddingTop: 34,
+        paddingBottom: 28,
+        paddingHorizontal: 20,
         backgroundColor: '#FFFFFF',
         borderBottomLeftRadius: 32,
         borderBottomRightRadius: 32,
+        overflow: 'hidden',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.05,
         shadowRadius: 10,
         elevation: 2,
+    },
+    headerGlow: {
+        position: 'absolute',
+        top: -90,
+        width: 220,
+        height: 220,
+        borderRadius: 110,
+        backgroundColor: '#DDF8ED',
+        opacity: 0.85,
     },
     avatarContainer: {
         position: 'relative',
@@ -945,29 +1018,77 @@ const styles = StyleSheet.create({
         fontWeight: '800',
         color: '#1E293B',
         marginBottom: 4,
+        maxWidth: '92%',
     },
     userRole: {
-        fontSize: 14,
+        fontSize: 13,
         color: '#64748B',
-        fontWeight: '600',
-        textTransform: 'uppercase',
-        letterSpacing: 1,
+        fontWeight: '700',
+        maxWidth: '92%',
+    },
+    completionCard: {
+        width: '100%',
+        backgroundColor: '#F8FAFC',
+        borderRadius: 18,
+        padding: 14,
+        marginTop: 20,
+        borderWidth: 1,
+        borderColor: '#E8F5EF',
+    },
+    completionCardDark: {
+        backgroundColor: '#0F172A',
+        borderColor: '#1F2937',
+    },
+    completionHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 10,
+    },
+    completionTitle: {
+        fontSize: 13,
+        fontWeight: '800',
+        color: '#334155',
+    },
+    completionPercent: {
+        fontSize: 13,
+        fontWeight: '900',
+        color: BRAND_GREEN,
+    },
+    progressTrack: {
+        height: 8,
+        borderRadius: 999,
+        backgroundColor: '#E2E8F0',
+        overflow: 'hidden',
+    },
+    progressTrackDark: {
+        backgroundColor: '#1F2937',
+    },
+    progressFill: {
+        height: '100%',
+        borderRadius: 999,
+        backgroundColor: BRAND_GREEN,
     },
     section: {
         paddingHorizontal: 20,
-        marginTop: 32,
+        marginTop: 24,
     },
     sectionTitle: {
-        fontSize: 16,
-        fontWeight: '700',
+        fontSize: 13,
+        fontWeight: '900',
         color: '#64748B',
         marginBottom: 12,
         marginLeft: 4,
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
     },
     card: {
         backgroundColor: '#FFFFFF',
-        borderRadius: 20,
-        padding: 16,
+        borderRadius: 18,
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        borderWidth: 1,
+        borderColor: '#EEF2F7',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.03,
@@ -977,7 +1098,7 @@ const styles = StyleSheet.create({
     itemContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 12,
+        paddingVertical: 14,
     },
     iconWrapper: {
         width: 40,
@@ -993,12 +1114,16 @@ const styles = StyleSheet.create({
     itemTitle: {
         fontSize: 12,
         color: '#94A3B8',
-        fontWeight: '600',
-        marginBottom: 2,
+        fontWeight: '800',
+        marginBottom: 3,
     },
     itemValue: {
         fontSize: 15,
         color: '#1E293B',
+        fontWeight: '800',
+    },
+    itemValueEmpty: {
+        color: '#94A3B8',
         fontWeight: '700',
     },
     divider: {
@@ -1044,6 +1169,8 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 32,
         padding: 24,
         paddingBottom: Platform.OS === 'ios' ? 40 : 24,
+        borderTopWidth: 1,
+        borderColor: '#EEF2F7',
     },
     modalHeader: {
         flexDirection: 'row',
@@ -1069,14 +1196,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#F8FAFC',
         borderWidth: 1,
         borderColor: '#E2E8F0',
-        borderRadius: 12,
-        padding: 12,
+        borderRadius: 14,
+        padding: 14,
         fontSize: 16,
         color: '#1E293B',
     },
     modalButton: {
         backgroundColor: BRAND_GREEN,
-        borderRadius: 12,
+        borderRadius: 16,
         paddingVertical: 16,
         alignItems: 'center',
         marginTop: 8,
