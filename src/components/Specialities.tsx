@@ -22,22 +22,22 @@ const SpecialityCard = ({ speciality, onPress }: { speciality: Speciality, onPre
 
     return (
         <TouchableOpacity
-            className="bg-white dark:bg-slate-800 p-2.5 rounded-[24px] border border-gray-100 dark:border-slate-700 shadow-sm w-full items-center"
-            style={{ elevation: 2 }}
+            className="bg-white dark:bg-slate-900 p-4 rounded-[24px] border border-gray-100 dark:border-slate-800 shadow-sm w-full items-center"
+            style={{ elevation: 3 }}
             onPress={onPress}
-            activeOpacity={0.7}
+            activeOpacity={0.82}
         >
-            <View className={`w-16 h-16 rounded-full mb-3 overflow-hidden items-center justify-center ${speciality.color} dark:bg-opacity-20 border border-gray-100 dark:border-slate-700`}>
+            <View className={`w-20 h-20 rounded-full mb-3.5 overflow-hidden items-center justify-center ${speciality.color} dark:bg-opacity-20 border border-gray-100 dark:border-slate-700`}>
                 <Image
                     source={{ uri: imageUri }}
                     className="w-full h-full rounded-full"
                     resizeMode="cover"
                 />
             </View>
-            <Text className="text-[10px] font-extrabold text-[#111827] dark:text-white text-center mb-1" numberOfLines={2}>
+            <Text className="text-[12px] font-extrabold text-[#111827] dark:text-white text-center mb-1.5 leading-4" numberOfLines={2}>
                 {speciality.title}
             </Text>
-            <Text className="text-[#6B7280] dark:text-gray-400 text-[8px] text-center">
+            <Text className="text-[#6B7280] dark:text-gray-400 text-[10px] text-center">
                 starts from <Text className="font-bold text-[#111827] dark:text-[#48C496]">{speciality.price}</Text>
             </Text>
         </TouchableOpacity>
@@ -66,32 +66,34 @@ const Specialities = () => {
 
     return (
         <View className="py-10 bg-white dark:bg-zinc-950">
-            <View className="px-4 mb-8">
-                <View className="flex-row flex-wrap items-center mb-2">
-                    <Text className="section-heading dark:text-white">Wide Range of </Text>
-                    <View className="bg-[#D1F2E2] dark:bg-[#064E3B] px-2 py-0.5 rounded-md">
-                        <Text className="section-heading-highlight dark:text-[#48C496]">Medical Specialities</Text>
+            <View className="px-5 mb-7">
+                <View className="flex-row items-start justify-between gap-x-3 mb-3">
+                    <View className="flex-1">
+                        <Text className="section-heading dark:text-white">Wide Range of</Text>
+                        <View className="self-start bg-[#D1F2E2] dark:bg-[#064E3B] px-2.5 py-1 rounded-lg mt-1">
+                            <Text className="section-heading-highlight dark:text-[#48C496]">Medical Specialities</Text>
+                        </View>
                     </View>
+                    <TouchableOpacity
+                        className="border border-gray-100 dark:border-slate-700 py-2 px-3.5 rounded-xl bg-white dark:bg-slate-900"
+                        onPress={() => navigation.navigate('Specialities')}
+                    >
+                        <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold text-[11px]">See All {'>'}</Text>
+                    </TouchableOpacity>
                 </View>
                 <Text className="section-description dark:text-gray-400 mb-3">
                     Access top-tier healthcare across 25+ specialities. Expert doctors, seamless digital consultations.
                 </Text>
-                <TouchableOpacity
-                    className="self-end border border-gray-100 dark:border-slate-700 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800"
-                    onPress={() => navigation.navigate('Specialities')}
-                >
-                    <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold text-[10px]">See All {'>'}</Text>
-                </TouchableOpacity>
             </View>
 
-            <View className="flex-row flex-wrap px-2">
+            <View className="flex-row flex-wrap px-3">
                 {loading ? (
                     <View className="w-full py-10 items-center justify-center">
                         <ActivityIndicator size="small" color="#0DA96E" />
                     </View>
                 ) : (
                     specialities.map((item, index) => (
-                        <View key={item.id ?? index} className="w-1/3 p-1.5">
+                        <View key={item.id ?? index} className="w-1/2 p-2">
                             <SpecialityCard
                                 speciality={item}
                                 onPress={() => navigation.navigate('Doctors', { specialization: item.title })}
