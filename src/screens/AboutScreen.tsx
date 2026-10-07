@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     Linking,
 } from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
 import Footer from '../components/Footer';
 import BookAppointmentCTA from '../components/BookAppointmentCTA';
 import LabTestCTA from '../components/LabTestCTA';
@@ -16,25 +17,18 @@ import SocialLinks from '../components/SocialLinks';
  *  HERO SECTION
  * ═══════════════════════════════════════════════════ */
 const HeroSection = () => (
-    <View className="relative w-full py-16 overflow-hidden bg-[#0DA96E]/5 dark:bg-[#0DA96E]/10">
-        {/* Decorative circles */}
-        <View className="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-[#0DA96E]/10 rounded-full opacity-60" />
-        <View className="absolute top-0 right-0 w-[200px] h-[200px] bg-[#00C68A]/10 rounded-full opacity-50" />
-
+    <View className="relative w-full py-16 overflow-hidden bg-[#F7FBF9] dark:bg-zinc-950 border-b border-[#D9F3E8] dark:border-zinc-900">
         <View className="px-4 items-center relative z-10">
-            {/* Badge */}
-            <View className="px-4 py-1.5 rounded-full bg-[#0DA96E]/10 mb-6">
-                <Text className="text-[#0DA96E] dark:text-[#10B981] font-medium text-sm">Our Story</Text>
+            <View className="px-4 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-[#CDEFE2] dark:border-zinc-800 mb-6">
+                <Text className="text-[#0DA96E] dark:text-[#10B981] font-semibold text-xs uppercase tracking-wider">Our Story</Text>
             </View>
 
-            {/* Title */}
-            <Text className="text-3xl font-bold tracking-tight mb-6 text-center text-gray-900 dark:text-white">
+            <Text className="text-4xl font-bold tracking-tight mb-6 text-center text-gray-900 dark:text-white leading-tight">
                 Revolutionizing{' '}
                 <Text className="text-[#0DA96E]">Healthcare Access</Text>
             </Text>
 
-            {/* Subtitle */}
-            <Text className="text-base text-gray-500 dark:text-zinc-400 text-center leading-relaxed max-w-lg">
+            <Text className="text-base text-gray-600 dark:text-zinc-400 text-center leading-7 max-w-lg">
                 At Swasthify, we believe quality healthcare should be accessible to everyone, everywhere. We're bridging the gap between patients and providers with technology.
             </Text>
         </View>
@@ -54,9 +48,9 @@ const missionPoints = [
 const MissionVisionSection = () => (
     <View className="py-12 bg-white dark:bg-zinc-950">
         <View className="px-4">
-            {/* Badge */}
             <View className="flex-row items-center self-start px-4 py-1.5 rounded-full border border-[#0DA96E]/20 bg-[#0DA96E]/5 mb-6">
-                <Text className="text-sm text-[#0DA96E]">❤️  Our Mission</Text>
+                <Feather name="heart" size={13} color="#0DA96E" />
+                <Text className="text-sm text-[#0DA96E] font-semibold ml-2">Our Mission</Text>
             </View>
 
             {/* Title */}
@@ -75,10 +69,10 @@ const MissionVisionSection = () => (
                 {missionPoints.map((item, i) => (
                     <View
                         key={i}
-                        className="w-[48%] flex-row items-center gap-3 p-3 rounded-lg bg-gray-100/30 dark:bg-zinc-900/50 border border-gray-300/50 dark:border-zinc-800"
+                        className="w-[48%] flex-row items-center gap-3 p-3 rounded-xl bg-[#F7FBF9] dark:bg-zinc-900/50 border border-[#D9F3E8] dark:border-zinc-800"
                     >
                         <View className="w-8 h-8 rounded-full bg-[#0DA96E]/10 items-center justify-center">
-                            <Text className="text-[#0DA96E] text-xs">✓</Text>
+                            <Feather name="check" size={14} color="#0DA96E" />
                         </View>
                         <Text className="font-medium text-gray-900 dark:text-zinc-200 text-sm flex-1">{item}</Text>
                     </View>
@@ -86,9 +80,9 @@ const MissionVisionSection = () => (
             </View>
 
             {/* Stats Card */}
-            <View className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-gray-300/50 dark:border-zinc-800 p-6 flex-row items-center gap-4">
-                <View className="w-14 h-14 rounded-full bg-[#0DA96E]/10 items-center justify-center">
-                    <Text className="text-2xl">🏆</Text>
+            <View className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-[#D9F3E8] dark:border-zinc-800 p-6 flex-row items-center gap-4">
+                <View className="w-14 h-14 rounded-2xl bg-[#0DA96E]/10 items-center justify-center">
+                    <Feather name="award" size={24} color="#0DA96E" />
                 </View>
                 <View>
                     <Text className="font-bold text-3xl text-[#0DA96E]">50k+</Text>
@@ -103,15 +97,10 @@ const MissionVisionSection = () => (
  *  FOUNDER SECTION
  * ═══════════════════════════════════════════════════ */
 const FounderSection = () => (
-    <View className="py-12 bg-white dark:bg-zinc-950 overflow-hidden relative">
-        {/* Background decorations */}
-        <View className="absolute top-0 right-0 w-[300px] h-[300px] bg-emerald-500/5 rounded-full opacity-60" />
-        <View className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#0DA96E]/5 rounded-full opacity-60" />
-
+    <View className="py-12 bg-[#F7FBF9] dark:bg-zinc-950 overflow-hidden relative">
         <View className="px-4 relative z-10">
-            {/* Badge */}
-            <View className="self-start px-4 py-1.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-6">
-                <Text className="text-sm font-medium text-emerald-700 dark:text-emerald-400">Meet the Founder</Text>
+            <View className="self-start px-4 py-1.5 rounded-full bg-white dark:bg-zinc-900 border border-[#CDEFE2] dark:border-zinc-800 mb-6">
+                <Text className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Meet the Founder</Text>
             </View>
 
             {/* Title */}
@@ -144,11 +133,10 @@ const FounderSection = () => (
             </View>
 
             {/* Award Card */}
-            <View className="bg-white dark:bg-zinc-900 p-6 rounded-3xl shadow-xl border border-emerald-100 dark:border-zinc-800 overflow-hidden relative mb-4">
-                <View className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-[80px]" />
+            <View className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm border border-emerald-100 dark:border-zinc-800 overflow-hidden relative mb-4">
                 <View className="relative z-10">
                     <View className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl items-center justify-center mb-4">
-                        <Text className="text-2xl">🏆</Text>
+                        <Feather name="award" size={22} color="#0DA96E" />
                     </View>
                     <Text className="text-xl font-bold text-gray-900 dark:text-white mb-1">Awarded</Text>
                     <Text className="text-lg font-semibold text-emerald-600 dark:text-emerald-400 mb-2">Startup Winner 2025</Text>
@@ -157,8 +145,7 @@ const FounderSection = () => (
             </View>
 
             {/* Tea Mount Card */}
-            <View className="bg-white dark:bg-zinc-900 p-6 rounded-3xl shadow-xl border border-emerald-100 dark:border-zinc-800 overflow-hidden relative">
-                <View className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-[80px]" />
+            <View className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm border border-emerald-100 dark:border-zinc-800 overflow-hidden relative">
                 <View className="relative z-10">
                     <View className="w-12 h-12 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl items-center justify-center mb-4">
                         <Text className="text-xl font-bold text-emerald-600 dark:text-emerald-400">TM</Text>
@@ -181,21 +168,21 @@ const FounderSection = () => (
  * ═══════════════════════════════════════════════════ */
 const valuesData = [
     {
-        emoji: '👥',
+        icon: 'users',
         title: 'Patient First',
         desc: 'Every feature we build starts with the patient\'s needs in mind. We prioritize user experience and accessibility above all.',
         color: 'text-blue-500',
         bg: 'bg-blue-500/10',
     },
     {
-        emoji: '🛡️',
+        icon: 'shield',
         title: 'Trust & Safety',
         desc: 'We adhere to the highest standards of data privacy and medical ethics. Your health data is secure with us.',
         color: 'text-green-500',
         bg: 'bg-green-500/10',
     },
     {
-        emoji: '❤️',
+        icon: 'heart',
         title: 'Empathy',
         desc: 'We understand that healthcare is personal. We treat every interaction with compassion, care, and understanding.',
         color: 'text-red-500',
@@ -204,7 +191,7 @@ const valuesData = [
 ];
 
 const ValuesSection = () => (
-    <View className="py-16 bg-gray-100/30 dark:bg-zinc-900/10 relative overflow-hidden">
+    <View className="py-16 bg-white dark:bg-zinc-950 relative overflow-hidden">
         {/* Top/Bottom borders */}
         <View className="absolute top-0 left-0 w-full h-px bg-gray-300/50 dark:bg-zinc-800" />
         <View className="absolute bottom-0 left-0 w-full h-px bg-gray-300/50 dark:bg-zinc-800" />
@@ -229,7 +216,7 @@ const ValuesSection = () => (
                         className="bg-white dark:bg-zinc-900 rounded-xl border border-gray-300/50 dark:border-zinc-800 shadow-sm p-6"
                     >
                         <View className={`w-12 h-12 rounded-2xl ${value.bg} items-center justify-center mb-4`}>
-                            <Text className="text-2xl">{value.emoji}</Text>
+                            <Feather name={value.icon} size={22} color="#0DA96E" />
                         </View>
                         <Text className="text-xl font-bold mb-2 text-gray-900 dark:text-white">{value.title}</Text>
                         <Text className="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">{value.desc}</Text>
@@ -244,12 +231,13 @@ const ValuesSection = () => (
  *  LOCATION SECTION
  * ═══════════════════════════════════════════════════ */
 const LocationSection = () => (
-    <View className="py-12 bg-white dark:bg-zinc-950 relative overflow-hidden">
+    <View className="py-12 bg-[#F7FBF9] dark:bg-zinc-950 relative overflow-hidden">
         <View className="px-4">
             {/* Header */}
             <View className="items-center mb-10">
                 <View className="flex-row items-center px-4 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-900/30 bg-emerald-50 dark:bg-emerald-950 shadow-sm mb-6">
-                    <Text className="text-sm text-emerald-700 dark:text-emerald-400">📍  Our Presence</Text>
+                    <Feather name="map-pin" size={13} color="#047857" />
+                    <Text className="text-sm text-emerald-700 dark:text-emerald-400 font-semibold ml-2">Our Presence</Text>
                 </View>
                 <Text className="text-3xl font-bold mb-4 text-center text-gray-900 dark:text-white">
                     Where to Find Us
@@ -260,12 +248,12 @@ const LocationSection = () => (
             </View>
 
             {/* Location Card */}
-            <View className="bg-white/80 dark:bg-zinc-900/80 rounded-xl border border-gray-300/50 dark:border-zinc-800 shadow-2xl overflow-hidden">
+            <View className="bg-white/90 dark:bg-zinc-900/80 rounded-2xl border border-[#D9F3E8] dark:border-zinc-800 shadow-sm overflow-hidden">
                 <View className="p-6">
                     {/* Office Info */}
                     <View className="items-center mb-6">
                         <View className="w-16 h-16 rounded-2xl bg-emerald-100 dark:bg-emerald-900/30 items-center justify-center mb-4">
-                            <Text className="text-3xl">📍</Text>
+                            <Feather name="map-pin" size={28} color="#0DA96E" />
                         </View>
                         <Text className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Registered Office</Text>
                         <Text className="text-gray-500 dark:text-zinc-400">Headquarters & Operations</Text>
