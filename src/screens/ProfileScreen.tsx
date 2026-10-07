@@ -67,17 +67,38 @@ const ProfileScreen = ({ navigation }: Props) => {
     const genders = ['Male', 'Female', 'Other'];
     const notificationOptions = ['Enabled', 'Disabled'];
 
-    const [emergencyName, setEmergencyName] = useState(user.emergencyContactName || '');
-    const [emergencyPhone, setEmergencyPhone] = useState(user.emergencyContactPhone || '');
+    const formatDateOfBirth = (value?: string) => {
+        if (!value) return 'Not set';
+
+        const parsedDate = new Date(value);
+        if (Number.isNaN(parsedDate.getTime())) return value;
+
+        return parsedDate.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+        });
+    };
+
+    const getDateInputValue = (value?: string) => {
+        if (!value) return '';
+
+        const parsedDate = new Date(value);
+        if (!Number.isNaN(parsedDate.getTime())) {
+            return parsedDate.toISOString().split('T')[0];
+        }
+
+        return value;
+    };
 
     const handleLogout = async () => {
         try {
             await logout();
-            navigation.navigate('SignIn');
+            navigation.navigate('OTPLogin');
         } catch (error) {
             console.error('Logout failed:', error);
             // Ensure navigation happens even if API fails
-            navigation.navigate('SignIn');
+            navigation.navigate('OTPLogin');
         }
     };
 
@@ -365,7 +386,10 @@ const ProfileScreen = ({ navigation }: Props) => {
                             title="Full Name"
                             value={user.name}
                             color="#0DA96E"
-                            onPress={() => setNameModalVisible(true)}
+                            onPress={() => {
+                                setNewName(user.name || '');
+                                setNameModalVisible(true);
+                            }}
                         />
                         <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
@@ -373,7 +397,10 @@ const ProfileScreen = ({ navigation }: Props) => {
                             title="Email Address"
                             value={user.email}
                             color="#3B82F6"
-                            onPress={() => setEmailModalVisible(true)}
+                            onPress={() => {
+                                setNewEmail(user.email || '');
+                                setEmailModalVisible(true);
+                            }}
                         />
                         <View style={[styles.divider, isDark && styles.dividerDark]} />
                         <ProfileItem
@@ -381,7 +408,10 @@ const ProfileScreen = ({ navigation }: Props) => {
                             title="Phone Number"
                             value={user.phone || "Not provided"}
                             color="#F59E0B"
-                            onPress={() => openEditModal('phone', 'Phone Number', user.phone || '', 'PHONE')}
+                            onPress={() => {
+                                setNewPhone(user.phone?.replace('+91', '') || '');
+                                setPhoneModalVisible(true);
+                            }}
                         />
                     </View>
                 </View>
@@ -393,9 +423,9 @@ const ProfileScreen = ({ navigation }: Props) => {
                         <ProfileItem
                             icon="calendar"
                             title="Date of Birth"
-                            value={user.dateOfBirth || "Not set"}
+                            value={formatDateOfBirth(user.dateOfBirth)}
                             color="#8B5CF6"
-                            onPress={() => openEditModal('dateOfBirth', 'Date of Birth', user.dateOfBirth || '', 'DATE')}
+                            onPress={() => openEditModal('dateOfBirth', 'Date of Birth', getDateInputValue(user.dateOfBirth), 'DATE')}
                         />
                         <View style={styles.divider} />
                         <ProfileItem
@@ -751,7 +781,7 @@ const ProfileScreen = ({ navigation }: Props) => {
                                         placeholder={`Enter ${editingTitle.toLowerCase()}`}
                                         placeholderTextColor={isDark ? "#64748B" : "#94A3B8"}
                                         keyboardType={editingField === 'height' || editingField === 'weight' ? 'decimal-pad' : 'default'}
-                                        multiline={editingField === 'allergies' || editingField === 'diseases'}
+                                        multiline={editingField === 'allergies' || editingField === 'chronicDiseases'}
                                     />
                                 </View>
                             )}
