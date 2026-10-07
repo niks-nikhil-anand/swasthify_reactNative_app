@@ -1,37 +1,82 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, Dimensions } from 'react-native';
-import { useColorScheme } from 'nativewind';
+import { DeviceEventEmitter, View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { publicService, Campaign } from '../services/publicService';
 import CampaignCard from './CampaignCard';
-import CampaignSkeleton, { CampaignSectionSkeleton } from './CampaignSkeleton';
+import { CampaignSectionSkeleton } from './CampaignSkeleton';
 import Feather from 'react-native-vector-icons/Feather';
+import {
+    DOCTOR_LOCATION_CHANGED_EVENT,
+    locationService,
+    PATNA_LOCATION,
+    SavedLocation,
+} from '../services/locationService';
 
-const PAGE_SIZE = 4;
+const HOME_DOCTOR_LIMIT = 5;
 
 const DoctorSection = () => {
     const navigation = useNavigation<any>();
-    const { colorScheme } = useColorScheme();
-    const isDark = colorScheme === 'dark';
     const [campaigns, setCampaigns] = useState<Campaign[]>([]);
     const [loading, setLoading] = useState(true);
-    const [page, setPage] = useState(1);
 
-    const totalPages = Math.ceil(campaigns.length / PAGE_SIZE);
-    const visibleCampaigns = campaigns.slice(0, page * PAGE_SIZE);
+    const fetchDoctors = async (location: SavedLocation, fallbackToPatna = true) => {
+        setLoading(true);
+        try {
+            const data = await publicService.getCampaigns({
+                source: 'doctor',
+                limit: HOME_DOCTOR_LIMIT,
+                lat: location.latitude,
+                lng: location.longitude,
+                radiusKm: 25,
+            });
+
+            if (fallbackToPatna && location.source === 'device' && data.length === 0) {
+                const patna = await locationService.savePatnaFallback();
+                await fetchDoctors(patna, false);
+                return;
+            }
+
+            setCampaigns(data);
+        } catch (error) {
+            console.log('Error in DoctorSection:', error);
+            if (fallbackToPatna && location.source === 'device') {
+                const patna = await locationService.savePatnaFallback();
+                await fetchDoctors(patna, false);
+                return;
+            }
+            setCampaigns([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchDoctors = async () => {
-            try {
-                const data = await publicService.getCampaigns({ source: 'doctor', limit: 4 });
-                setCampaigns(data);
-            } catch (error) {
-                console.log('Error in DoctorSection:', error);
-            } finally {
-                setLoading(false);
+        let mounted = true;
+
+        const loadDoctors = async () => {
+            const stored = await locationService.getSavedLocation();
+            const initialLocation = stored || PATNA_LOCATION;
+            if (!stored) {
+                await locationService.saveLocation(initialLocation);
             }
+
+            if (!mounted) return;
+            await fetchDoctors(initialLocation, initialLocation.source === 'device');
         };
-        fetchDoctors();
+
+        const subscription = DeviceEventEmitter.addListener(
+            DOCTOR_LOCATION_CHANGED_EVENT,
+            (location: SavedLocation) => {
+                fetchDoctors(location, location.source === 'device');
+            }
+        );
+
+        loadDoctors();
+
+        return () => {
+            mounted = false;
+            subscription.remove();
+        };
     }, []);
 
     if (loading) {
@@ -59,8 +104,8 @@ const DoctorSection = () => {
     }
 
     return (
-        <View className="py-16 bg-transparent">
-            <View className="px-4 mb-12">
+        <View className="pt-8 pb-12 bg-transparent">
+            <View className="px-4 mb-8">
                 <Text className="section-heading dark:text-white leading-[1.1] mb-2">
                     Book an Appointment for{' '}
                     <Text className="section-heading-highlight bg-emerald-100 dark:bg-emerald-900/30 px-3 rounded-xl overflow-hidden">
@@ -70,13 +115,10 @@ const DoctorSection = () => {
                 <Text className="section-description dark:text-gray-400 mt-2">
                     Find experienced doctors across all specialties for personalized in-person care.
                 </Text>
-                <TouchableOpacity className="self-end border border-gray-100 dark:border-slate-700 py-1.5 px-3 rounded-lg bg-white dark:bg-slate-800">
-                    <Text className="text-[#0DA96E] dark:text-[#48C496] font-bold text-[10px]">See All {'>'}</Text>
-                </TouchableOpacity>
             </View>
 
             <FlatList
-                data={visibleCampaigns}
+                data={campaigns.slice(0, HOME_DOCTOR_LIMIT)}
                 renderItem={({ item }) => (
                     <CampaignCard
                         campaign={item}
@@ -89,35 +131,16 @@ const DoctorSection = () => {
                 contentContainerStyle={{ paddingHorizontal: 20 }}
             />
 
-            {/* Pagination dots */}
-            {totalPages > 1 && (
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16, gap: 6 }}>
-                    {Array.from({ length: totalPages }).map((_, i) => (
-                        <TouchableOpacity key={i} onPress={() => setPage(i + 1)}>
-                            <View style={{
-                                width: i + 1 === page ? 22 : 7,
-                                height: 7,
-                                borderRadius: 10,
-                                backgroundColor: i + 1 === page ? '#0DA96E' : (isDark ? '#4B5563' : '#D1D5DB'),
-                            }} />
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            )}
-
-            {/* Show More button */}
-            {page * PAGE_SIZE < campaigns.length && (
-                <View className="mt-6 items-center">
-                    <TouchableOpacity
-                        onPress={() => setPage(p => p + 1)}
-                        className="border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-full px-10 py-3.5 flex-row items-center"
-                        style={{ elevation: 2 }}
-                    >
-                        <Text className="text-[#111827] dark:text-white font-bold text-xs uppercase tracking-widest mr-2">Show More Doctors</Text>
-                        <Feather name="chevron-down" size={14} color="#0DA96E" />
-                    </TouchableOpacity>
-                </View>
-            )}
+            <View className="mt-4 items-center">
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Doctors')}
+                    className="bg-zinc-900 dark:bg-emerald-600 rounded-full px-8 py-4 flex-row items-center"
+                    style={{ elevation: 2 }}
+                >
+                    <Text className="text-white font-black text-xs uppercase tracking-widest mr-2">See All Doctors</Text>
+                    <Feather name="arrow-right" size={15} color="#FFFFFF" />
+                </TouchableOpacity>
+            </View>
 
 
         </View>
