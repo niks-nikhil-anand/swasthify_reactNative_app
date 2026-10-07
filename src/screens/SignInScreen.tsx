@@ -2,18 +2,17 @@ import React, { useState } from 'react';
 import {
     View,
     Text,
-    TextInput,
     TouchableOpacity,
-    ActivityIndicator,
     Alert,
 } from 'react-native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../navigation/types';
 import { AuthWrapper } from '../components/auth/AuthWrapper';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
+import { Eye, EyeOff, Lock, Mail, MessageCircle, ShieldCheck } from 'lucide-react-native';
 
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
+import { AuthNotice, AuthPrimaryButton, AuthTextField } from '../components/auth/AuthFormControls';
 
 type SignInScreenProps = {
     navigation: DrawerNavigationProp<RootDrawerParamList, 'SignIn'>;
@@ -26,17 +25,30 @@ const SignInScreen = ({ navigation }: SignInScreenProps) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [focusedField, setFocusedField] = useState<'email' | 'password' | null>(null);
+    const [touched, setTouched] = useState({ email: false, password: false });
     const [isLoading, setIsLoading] = useState(false);
 
+    const trimmedEmail = email.trim();
+    const emailError = trimmedEmail.length === 0
+        ? 'Enter your email address.'
+        : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)
+            ? ''
+            : 'Enter a valid email address.';
+    const passwordError = password.length === 0 ? 'Enter your password.' : '';
+    const canSubmit = !emailError && !passwordError;
+
     const handleSignIn = async () => {
-        if (!email || !password) {
-            return Alert.alert('Error', 'Please enter both email and password');
+        setTouched({ email: true, password: true });
+
+        if (!canSubmit) {
+            return;
         }
 
         setIsLoading(true);
         try {
             const response = await authService.login({
-                email,
+                email: trimmedEmail,
                 password,
                 role: 'PATIENT',
             });
@@ -57,84 +69,91 @@ const SignInScreen = ({ navigation }: SignInScreenProps) => {
     return (
         <AuthWrapper
             title="Welcome back"
-            description="Sign in to continue your healthcare journey."
+            description="Sign in with your email to manage appointments, reports, and care updates."
         >
-            <View className="w-full">
-                {/* Email Field */}
-                <View className="mb-5">
-                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Email address</Text>
-                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
-                        <View className="mr-3">
-                            <Mail size={20} color="#94A3B8" />
-                        </View>
-                        <TextInput
-                            placeholder="ayan@gmail.com"
-                            placeholderTextColor="#94A3B8"
-                            value={email}
-                            onChangeText={setEmail}
-                            className="flex-1 text-base text-slate-900 dark:text-white"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            editable={!isLoading}
-                        />
-                    </View>
-                </View>
+            <View className="w-full gap-y-5">
+                <AuthTextField
+                    label="Email address"
+                    icon={Mail}
+                    placeholder="you@example.com"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    editable={!isLoading}
+                    focused={focusedField === 'email'}
+                    touched={touched.email}
+                    error={emailError}
+                    onFocus={() => setFocusedField('email')}
+                    onBlur={() => {
+                        setFocusedField(null);
+                        setTouched((prev) => ({ ...prev, email: true }));
+                    }}
+                />
 
-                {/* Password Field */}
-                <View className="mb-5">
+                <View>
                     <View className="flex-row justify-between items-center mb-2">
                         <Text className="text-sm font-bold text-slate-900 dark:text-white">Password</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} disabled={isLoading}>
                             <Text className="text-[13px] font-bold text-primary">Forgot?</Text>
                         </TouchableOpacity>
                     </View>
-                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
-                        <View className="mr-3">
-                            <Lock size={20} color="#94A3B8" />
-                        </View>
-                        <TextInput
-                            placeholder="••••••••"
-                            placeholderTextColor="#94A3B8"
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry={!showPassword}
-                            className="flex-1 text-base text-slate-900 dark:text-white pr-12"
-                            editable={!isLoading}
-                        />
-                        <TouchableOpacity
+                    <AuthTextField
+                        label=""
+                        icon={Lock}
+                        placeholder="Password"
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry={!showPassword}
+                        editable={!isLoading}
+                        focused={focusedField === 'password'}
+                        touched={touched.password}
+                        error={passwordError}
+                        onFocus={() => setFocusedField('password')}
+                        onBlur={() => {
+                            setFocusedField(null);
+                            setTouched((prev) => ({ ...prev, password: true }));
+                        }}
+                        className="pr-12"
+                        right={(
+                            <TouchableOpacity
                             onPress={() => setShowPassword(!showPassword)}
                             className="absolute right-4"
                             disabled={isLoading}
                         >
                             {showPassword ? <EyeOff size={20} color="#94A3B8" /> : <Eye size={20} color="#94A3B8" />}
                         </TouchableOpacity>
-                    </View>
+                        )}
+                    />
                 </View>
 
-                {/* Sign In Button */}
-                <TouchableOpacity
-                    activeOpacity={0.8}
+                <AuthPrimaryButton
+                    label="Sign In"
+                    loadingLabel="Signing in"
                     onPress={handleSignIn}
-                    disabled={isLoading}
-                    className="bg-primary h-14 rounded-[20px] items-center justify-center mt-2.5 shadow-lg shadow-primary/20"
-                >
-                    {isLoading ? (
-                        <ActivityIndicator color="white" size="small" />
-                    ) : (
-                        <Text className="text-white text-lg font-bold">Sign In</Text>
-                    )}
-                </TouchableOpacity>
+                    isLoading={isLoading}
+                    disabled={!canSubmit}
+                    className="mt-1"
+                />
 
-                {/* OTP Login Link */}
+                <AuthNotice
+                    icon={ShieldCheck}
+                    text="We protect your login session and never share personal health information without consent."
+                />
+
                 <TouchableOpacity 
                     onPress={() => navigation.navigate('OTPLogin')}
-                    className="mt-6 items-center"
+                    className="items-center"
+                    disabled={isLoading}
                 >
-                    <Text className="text-sm font-bold text-primary">Login with Mobile OTP</Text>
+                    <View className="flex-row items-center">
+                        <MessageCircle size={16} color="#10B981" />
+                        <Text className="text-sm font-bold text-primary ml-2">Login with Mobile OTP</Text>
+                    </View>
                 </TouchableOpacity>
 
-                {/* Footer */}
-                <View className="flex-row justify-center mt-10">
+                <View className="flex-row justify-center pt-1">
                     <Text className="text-sm text-slate-600 dark:text-slate-200">Don't have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
                         <Text className="text-sm font-bold text-primary">Sign Up</Text>
