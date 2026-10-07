@@ -36,6 +36,19 @@ const SORT_OPTIONS = [
     { label: 'Price (High-Low)', value: 'price_desc' },
 ];
 
+const SWASTHIFY_POINTS = [
+    'Trusted healthcare discovery for doctors, labs, and preventive care.',
+    'Simple appointment booking with clear service information.',
+    'Digital-first health records that stay accessible when you need them.',
+    'Curated care journeys designed for everyday health needs.',
+    'Location-aware discovery to help find relevant care nearby.',
+    'Transparent package and campaign details before booking.',
+    'Patient-friendly profile management for personal and health information.',
+    'Secure authentication and protected account access.',
+    'Helpful AI assistant support across the care experience.',
+    'Built to make healthcare easier, faster, and more understandable.',
+];
+
 const LabsScreen = () => {
     const { colorScheme } = useColorScheme();
     const isDark = colorScheme === 'dark';
@@ -107,9 +120,34 @@ const LabsScreen = () => {
         }
     };
 
+    const renderComingSoonBanner = () => (
+        <View style={[styles.comingSoonBanner, isDark && styles.comingSoonBannerDark]}>
+            <View style={styles.bannerTopRow}>
+                <View style={[styles.bannerIconWrap, isDark && styles.bannerIconWrapDark]}>
+                    <Feather name="clock" size={22} color="#D97706" />
+                </View>
+                <View style={styles.bannerTextWrap}>
+                    <View style={[styles.comingSoonPill, isDark && styles.comingSoonPillDark]}>
+                        <Text style={[styles.comingSoonPillText, isDark && styles.comingSoonPillTextDark]}>
+                            Coming soon
+                        </Text>
+                    </View>
+                    <Text style={[styles.bannerTitle, isDark && styles.textWhite]}>
+                        Lab tests are almost ready
+                    </Text>
+                    <Text style={[styles.bannerDescription, isDark && styles.textZinc400]}>
+                        We are preparing trusted diagnostics, easy test discovery, and digital reports so you can book lab care with confidence.
+                    </Text>
+                </View>
+            </View>
+            <View style={styles.bannerAccent} />
+        </View>
+    );
+
     const renderHeader = () => (
         <>
             <View style={styles.headerContainer}>
+                {renderComingSoonBanner()}
                 <View style={styles.searchContainer}>
                     <View style={[styles.searchInputWrapper, isDark && styles.searchInputWrapperDark]}>
                         <Feather name="search" size={20} color={isDark ? "#94A3B8" : "#6B7280"} />
@@ -240,6 +278,35 @@ const LabsScreen = () => {
     return (
         <SafeAreaView style={[styles.container, isDark && styles.containerDark]} edges={['top', 'left', 'right']}>
             <StatusBar barStyle={isDark ? "light-content" : "dark-content"} backgroundColor={isDark ? "#09090b" : "#FFFFFF"} />
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.comingSoonPageContent}
+            >
+                {renderComingSoonBanner()}
+
+                <View style={[styles.pointsCard, isDark && styles.pointsCardDark]}>
+                    <Text style={[styles.pointsEyebrow, isDark && styles.textZinc400]}>Why Swasthify</Text>
+                    <Text style={[styles.pointsTitle, isDark && styles.textWhite]}>
+                        Built for simple, connected healthcare
+                    </Text>
+                    <Text style={[styles.pointsDescription, isDark && styles.textZinc400]}>
+                        While lab bookings are being prepared, here is what Swasthify is designed to bring into one care experience.
+                    </Text>
+
+                    <View style={styles.pointsList}>
+                        {SWASTHIFY_POINTS.map((point, index) => (
+                            <View key={point} style={styles.pointItem}>
+                                <View style={styles.pointNumber}>
+                                    <Text style={styles.pointNumberText}>{index + 1}</Text>
+                                </View>
+                                <Text style={[styles.pointText, isDark && styles.textZinc400]}>{point}</Text>
+                            </View>
+                        ))}
+                    </View>
+                </View>
+            </ScrollView>
+
+            {/* Search, filters, results, and empty-state UI are intentionally hidden until lab bookings launch.
             <FlatList
                 data={campaigns}
                 renderItem={({ item }) => (
@@ -260,6 +327,7 @@ const LabsScreen = () => {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.listContent}
             />
+            */}
         </SafeAreaView>
     );
 };
@@ -277,10 +345,163 @@ const styles = StyleSheet.create({
     listContent: {
         paddingBottom: 40,
     },
+    comingSoonPageContent: {
+        paddingHorizontal: 20,
+        paddingTop: 18,
+        paddingBottom: 40,
+    },
     headerContainer: {
         paddingHorizontal: 20,
         paddingTop: 16,
         paddingBottom: 8,
+    },
+    comingSoonBanner: {
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: '#D9F3E8',
+        borderRadius: 28,
+        marginBottom: 18,
+        overflow: 'hidden',
+        shadowColor: '#0F172A',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.06,
+        shadowRadius: 18,
+        elevation: 3,
+    },
+    comingSoonBannerDark: {
+        backgroundColor: '#18181b',
+        borderColor: '#27272a',
+    },
+    bannerTopRow: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        padding: 18,
+    },
+    bannerIconWrap: {
+        width: 52,
+        height: 52,
+        borderRadius: 18,
+        backgroundColor: '#FFFBEB',
+        borderWidth: 1,
+        borderColor: '#FDE68A',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 14,
+    },
+    bannerIconWrapDark: {
+        backgroundColor: 'rgba(245, 158, 11, 0.12)',
+        borderColor: 'rgba(245, 158, 11, 0.22)',
+    },
+    bannerTextWrap: {
+        flex: 1,
+    },
+    comingSoonPill: {
+        alignSelf: 'flex-start',
+        paddingHorizontal: 12,
+        paddingVertical: 5,
+        borderRadius: 999,
+        backgroundColor: '#FFFBEB',
+        borderWidth: 1,
+        borderColor: '#FDE68A',
+        marginBottom: 10,
+    },
+    comingSoonPillDark: {
+        backgroundColor: 'rgba(245, 158, 11, 0.12)',
+        borderColor: 'rgba(245, 158, 11, 0.22)',
+    },
+    comingSoonPillText: {
+        color: '#D97706',
+        fontSize: 10,
+        fontWeight: '900',
+        textTransform: 'uppercase',
+        letterSpacing: 0.8,
+    },
+    comingSoonPillTextDark: {
+        color: '#FCD34D',
+    },
+    bannerTitle: {
+        color: '#111827',
+        fontSize: 21,
+        fontWeight: '800',
+        marginBottom: 8,
+        lineHeight: 27,
+    },
+    bannerDescription: {
+        color: '#64748B',
+        fontSize: 13,
+        fontWeight: '500',
+        lineHeight: 21,
+    },
+    bannerAccent: {
+        height: 6,
+        backgroundColor: '#0DA96E',
+    },
+    pointsCard: {
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: '#D9F3E8',
+        borderRadius: 28,
+        padding: 20,
+        shadowColor: '#0F172A',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.05,
+        shadowRadius: 16,
+        elevation: 2,
+    },
+    pointsCardDark: {
+        backgroundColor: '#18181b',
+        borderColor: '#27272a',
+    },
+    pointsEyebrow: {
+        color: '#0DA96E',
+        fontSize: 11,
+        fontWeight: '900',
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+        marginBottom: 8,
+    },
+    pointsTitle: {
+        color: '#111827',
+        fontSize: 23,
+        fontWeight: '800',
+        lineHeight: 30,
+        marginBottom: 8,
+    },
+    pointsDescription: {
+        color: '#64748B',
+        fontSize: 14,
+        fontWeight: '500',
+        lineHeight: 22,
+        marginBottom: 18,
+    },
+    pointsList: {
+        gap: 12,
+    },
+    pointItem: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+    },
+    pointNumber: {
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        backgroundColor: '#0DA96E',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
+        marginTop: 1,
+    },
+    pointNumberText: {
+        color: '#FFFFFF',
+        fontSize: 12,
+        fontWeight: '900',
+    },
+    pointText: {
+        flex: 1,
+        color: '#334155',
+        fontSize: 14,
+        fontWeight: '600',
+        lineHeight: 21,
     },
     searchContainer: {
         flexDirection: 'row',
