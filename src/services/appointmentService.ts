@@ -1,5 +1,12 @@
 import apiClient from '../api/apiClient';
 
+const getApiErrorMessage = (error: any, fallback: string) => (
+    error?.response?.data?.error ||
+    error?.response?.data?.message ||
+    error?.message ||
+    fallback
+);
+
 export interface ReserveAppointmentPayload {
     type: 'DOCTOR' | 'LAB';
     organizerId: string;
@@ -28,7 +35,7 @@ export const appointmentService = {
             return raw.data || raw.appointment || raw.result || raw;
         } catch (error: any) {
             console.error('Error reserving appointment:', error?.response?.data || error);
-            throw error.response?.data?.message || 'Failed to reserve appointment';
+            throw getApiErrorMessage(error, 'Failed to reserve appointment');
         }
     },
 
@@ -43,7 +50,7 @@ export const appointmentService = {
             return response.data.data || response.data;
         } catch (error: any) {
             console.error('Error creating Razorpay order:', error);
-            throw error.response?.data?.message || 'Failed to create payment order';
+            throw getApiErrorMessage(error, 'Failed to create payment order');
         }
     },
 
@@ -56,7 +63,7 @@ export const appointmentService = {
             return response.data;
         } catch (error: any) {
             console.error('Error verifying payment:', error);
-            throw error.response?.data?.message || 'Payment verification failed';
+            throw getApiErrorMessage(error, 'Payment verification failed');
         }
     },
 
@@ -69,7 +76,7 @@ export const appointmentService = {
             return response.data;
         } catch (error: any) {
             console.error('Error fetching patient appointments:', error);
-            throw error.response?.data?.message || 'Failed to fetch appointments';
+            throw getApiErrorMessage(error, 'Failed to fetch appointments');
         }
     },
 
@@ -85,7 +92,7 @@ export const appointmentService = {
             return response.data;
         } catch (error: any) {
             console.error('Error cancelling appointment:', error);
-            throw error.response?.data?.message || 'Failed to cancel appointment';
+            throw getApiErrorMessage(error, 'Failed to cancel appointment');
         }
     },
 };
