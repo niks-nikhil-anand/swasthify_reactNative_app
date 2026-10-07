@@ -33,11 +33,10 @@ export const userService = {
 
     updateName: async (name: string) => {
         try {
-            // Note: End-point not specified in the prompt but implied by requirements
-            const response = await apiClient.patch('/api/me/update-name', { name });
+            const response = await apiClient.patch('/api/me/profile', { name });
             return response.data;
         } catch (error: any) {
-            throw error.response?.data?.message || 'Failed to update name';
+            throw error.response?.data?.error || error.response?.data?.message || 'Failed to update name';
         }
     },
 
