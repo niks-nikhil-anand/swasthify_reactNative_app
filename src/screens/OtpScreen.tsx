@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, Alert, useColorScheme } from 'react-native';
-import { ShieldCheck, Clock, RotateCcw } from 'lucide-react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Alert, useColorScheme, useWindowDimensions } from 'react-native';
+import { ShieldCheck, Clock, RotateCcw, Delete } from 'lucide-react-native';
 import auth from '@react-native-firebase/auth';
 import { RootDrawerParamList } from '../navigation/types';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
@@ -17,6 +17,7 @@ const RESEND_TIMEOUT = 30; // seconds
 
 const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
     const isDarkMode = useColorScheme() === 'dark';
+    const { width } = useWindowDimensions();
     const { login } = useAuth();
     
     // Get the phone and confirmation object passed from OTPLoginScreen
@@ -35,6 +36,7 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
     // Derived values
     const activeIndex = otp.findIndex(d => d === '');  // first empty slot
     const isComplete = otp.every(d => d !== '');        // all 6 filled
+    const slotSize = Math.min(72, Math.max(48, (width - 96) / 6));
 
     const keypad = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', '⌫'];
 
@@ -122,6 +124,7 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
                             email: userCredential.user.email || '',
                             name: userCredential.user.displayName || 'User',
                             mobile: cleanMobile,
+                            role: 'PATIENT',
                         });
                     }
                 } catch (apiError) {
@@ -131,6 +134,7 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
                         email: userCredential.user.email || '',
                         name: userCredential.user.displayName || 'User',
                         mobile: cleanMobile,
+                        role: 'PATIENT',
                     });
                 }
                 
@@ -170,20 +174,25 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
             <View className="w-full">
 
                 {/* OTP Boxes */}
-                <View className="flex-row justify-between mt-2">
+                <View className="flex-row justify-between mt-3">
                     {otp.map((digit, i) => {
                         const isActive = i === activeIndex;
                         const isFilled = digit !== '';
                         return (
                             <View
                                 key={i}
-                                className={`w-[44px] h-16 rounded-2xl border-[1.5px] items-center justify-center bg-white dark:bg-slate-900 ${isFilled || isActive ? 'border-primary' : 'border-slate-100 dark:border-slate-800'}`}
-                                style={isActive ? { shadowColor: '#0EA968', shadowOffset: { width: 0, height: 0 }, shadowOpacity: 0.15, shadowRadius: 8, elevation: 3 } : {}}
+                                className={`rounded-[18px] border-[1.5px] items-center justify-center bg-white dark:bg-slate-900 ${isFilled || isActive ? 'border-primary' : 'border-slate-100 dark:border-slate-800'}`}
+                                style={[
+                                    { width: slotSize, height: 64 },
+                                    isActive
+                                        ? { shadowColor: '#0DA96E', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.16, shadowRadius: 10, elevation: 4 }
+                                        : { shadowColor: '#0F172A', shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.04, shadowRadius: 8, elevation: 1 },
+                                ]}
                             >
                                 <Text className="text-2xl font-extrabold text-slate-900 dark:text-white">{digit}</Text>
                                 {/* Blinking cursor on active empty box */}
                                 {isActive && !isFilled && (
-                                    <View className="w-[2px] h-7 bg-primary absolute" />
+                                    <View className="w-[2.5px] h-8 bg-primary rounded-full absolute" />
                                 )}
                             </View>
                         );
@@ -191,21 +200,21 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
                 </View>
 
                 {/* Resend Timer */}
-                <View className="flex-row items-center justify-between mt-6">
+                <View className="flex-row items-center justify-between mt-7">
                     <View className="flex-row items-center">
-                        <Clock size={15} color={isDarkMode ? '#94A3B8' : '#64748B'} />
+                        <Clock size={18} color={isDarkMode ? '#94A3B8' : '#64748B'} strokeWidth={2.2} />
                         {canResend ? (
-                            <Text className="text-sm text-slate-500 dark:text-slate-400 ml-2">OTP expired</Text>
+                            <Text className="text-base font-semibold text-slate-500 dark:text-slate-400 ml-2.5">OTP expired</Text>
                         ) : (
-                            <Text className="text-sm text-slate-500 dark:text-slate-400 ml-2">
+                            <Text className="text-base font-semibold text-slate-500 dark:text-slate-400 ml-2.5">
                                 Resend code in <Text className="text-slate-900 dark:text-white font-bold">{formatTimer(resendTimer)}</Text>
                             </Text>
                         )}
                     </View>
                     {canResend && (
-                        <TouchableOpacity onPress={handleResend} className="flex-row items-center">
-                            <RotateCcw size={14} color="#10B981" />
-                            <Text className="text-sm font-bold text-primary ml-1">Resend</Text>
+                        <TouchableOpacity onPress={handleResend} className="flex-row items-center px-2 py-1 rounded-full active:bg-emerald-50 dark:active:bg-emerald-950/40">
+                            <RotateCcw size={16} color="#0DA96E" strokeWidth={2.4} />
+                            <Text className="text-base font-bold text-primary ml-1.5">Resend</Text>
                         </TouchableOpacity>
                     )}
                 </View>
@@ -214,38 +223,43 @@ const OtpScreen = ({ navigation, route }: OtpScreenProps) => {
                 <TouchableOpacity
                     onPress={() => handleVerify()}
                     disabled={isLoading || !isComplete}
-                    className={`h-14 rounded-[20px] items-center justify-center mt-8 shadow-lg ${isComplete ? 'bg-primary shadow-primary/20' : 'bg-slate-200 dark:bg-slate-800'}`}
+                    activeOpacity={0.86}
+                    className={`h-16 rounded-[24px] items-center justify-center mt-8 shadow-lg ${isComplete ? 'bg-primary shadow-primary/25' : 'bg-[#E8EEF6] dark:bg-slate-800 shadow-transparent'}`}
                 >
                     {isLoading ? (
                         <ActivityIndicator color="white" size="small" />
                     ) : (
-                        <Text className={`text-lg font-bold ${isComplete ? 'text-white' : 'text-slate-400 dark:text-slate-500'}`}>
+                        <Text className={`text-lg font-extrabold ${isComplete ? 'text-white' : 'text-slate-400 dark:text-slate-500'}`}>
                             Verify &amp; continue
                         </Text>
                     )}
                 </TouchableOpacity>
 
                 {/* Security Notice */}
-                <View className="flex-row bg-[#E6F6EF] dark:bg-emerald-950/30 p-4 rounded-2xl mt-6 items-start">
-                    <ShieldCheck size={20} color="#10B981" />
-                    <Text className="flex-1 text-[13px] text-emerald-800 dark:text-emerald-300 ml-3 leading-5">
+                <View className="flex-row bg-[#E7F8F0] dark:bg-emerald-950/30 px-5 py-4 rounded-[18px] mt-6 items-start border border-emerald-100 dark:border-emerald-900/60">
+                    <ShieldCheck size={24} color="#10B981" strokeWidth={2.3} />
+                    <Text className="flex-1 text-[15px] font-extrabold text-emerald-800 dark:text-emerald-300 ml-3.5 leading-6">
                         Never share your OTP. Swasthify will never ask for it on call.
                     </Text>
                 </View>
 
                 {/* Numeric Keypad */}
-                <View className="flex-row flex-wrap mt-8">
+                <View className="flex-row flex-wrap mt-12">
                     {keypad.map((key, i) => (
                         <TouchableOpacity
                             key={i}
                             onPress={() => handleKeyPress(key)}
                             disabled={isLoading || key === ''}
-                            activeOpacity={key === '' ? 1 : 0.4}
-                            className="w-1/3 h-16 items-center justify-center rounded-2xl active:bg-slate-100 dark:active:bg-slate-800"
+                            activeOpacity={key === '' ? 1 : 0.45}
+                            className="w-1/3 h-[74px] items-center justify-center rounded-[22px] active:bg-slate-100 dark:active:bg-slate-800"
                         >
-                            <Text className={`text-2xl font-bold ${key === '' ? '' : 'text-slate-900 dark:text-white'}`}>
-                                {key}
-                            </Text>
+                            {key === '⌫' ? (
+                                <Delete size={30} color={isDarkMode ? '#F8FAFC' : '#0F172A'} strokeWidth={2.4} />
+                            ) : (
+                                <Text className={`text-3xl font-extrabold ${key === '' ? '' : 'text-slate-900 dark:text-white'}`}>
+                                    {key}
+                                </Text>
+                            )}
                         </TouchableOpacity>
                     ))}
                 </View>
