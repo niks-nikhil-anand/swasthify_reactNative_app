@@ -53,7 +53,7 @@ const AppNavigator = () => {
     const getInitialRoute = (): keyof RootDrawerParamList => {
         if (user) return 'Home';
         if (!hasSeenOnboarding) return 'Onboarding';
-        return 'SignIn';
+        return 'OTPLogin';
     };
 
 
@@ -104,20 +104,22 @@ const AppNavigator = () => {
                 drawerActiveBackgroundColor: isDark ? 'rgba(13, 169, 110, 0.12)' : '#E6F6EF',
                 drawerStyle: {
                     backgroundColor: isDark ? '#09090B' : '#FFFFFF',
-                    width: 296,
-                    borderTopRightRadius: 32,
-                    borderBottomRightRadius: 32,
+                    width: 306,
+                    borderTopRightRadius: 28,
+                    borderBottomRightRadius: 28,
+                    overflow: 'hidden',
                 },
                 drawerItemStyle: {
-                    borderRadius: 10,
-                    marginHorizontal: 12,
-                    marginVertical: 0,
-                    paddingVertical: 0,
+                    borderRadius: 16,
+                    marginHorizontal: 16,
+                    marginVertical: 4,
+                    height: 54,
+                    justifyContent: 'center',
                 },
                 drawerLabelStyle: {
                     fontSize: 14,
                     fontWeight: '600',
-                    marginLeft: -4,
+                    marginLeft: -8,
                     marginVertical: 0,
                     fontFamily: 'Plus Jakarta Sans',
                     lineHeight: 20,
@@ -266,9 +268,10 @@ const AppNavigator = () => {
                             style={{ 
                                 color, 
                                 fontFamily: 'Plus Jakarta Sans', 
-                                fontSize: 15, 
-                                marginLeft: 8,
-                                fontWeight: focused ? '800' : '600'
+                                fontSize: 14,
+                                marginLeft: -8,
+                                fontWeight: focused ? '700' : '600',
+                                lineHeight: 20,
                             }}
                         >
                             Appointments
