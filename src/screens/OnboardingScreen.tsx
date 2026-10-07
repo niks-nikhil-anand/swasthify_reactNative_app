@@ -66,7 +66,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
         await completeOnboarding();
         navigation.reset({
             index: 0,
-            routes: [{ name: 'SignIn' }],
+            routes: [{ name: 'OTPLogin' }],
         });
     };
 
@@ -196,7 +196,7 @@ const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }) => {
                     
                     <View style={styles.signInLink}>
                         <Text style={styles.memberText}>Already a member? </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('OTPLogin')}>
                             <Text style={styles.signInText}>Sign in</Text>
                         </TouchableOpacity>
                     </View>
