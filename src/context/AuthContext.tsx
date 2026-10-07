@@ -8,6 +8,7 @@ export interface User {
     email: string;
     role: string;
     phone?: string;
+    mobile?: string;
     dateOfBirth?: string; // Changed from dob
     gender?: string;
     bloodGroup?: string;
