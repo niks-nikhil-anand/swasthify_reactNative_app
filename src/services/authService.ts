@@ -6,7 +6,7 @@ export const authService = {
             const response = await apiClient.post('/api/auth/register', data);
             return response.data;
         } catch (error: any) {
-            throw error.response?.data?.message || 'Registration failed';
+            throw error.response?.data?.error || error.response?.data?.message || 'Registration failed';
         }
     },
 
@@ -43,6 +43,15 @@ export const authService = {
             return response.data;
         } catch (error: any) {
             throw error.response?.data?.error || error.response?.data?.message || 'Verification failed';
+        }
+    },
+
+    verifyMobileIdentityOtp: async (data: { idToken: string; role: string }) => {
+        try {
+            const response = await apiClient.post('/api/auth/identity-mobile-otp', data);
+            return response.data;
+        } catch (error: any) {
+            throw error.response?.data?.error || error.response?.data?.message || 'Mobile verification failed';
         }
     }
 };
