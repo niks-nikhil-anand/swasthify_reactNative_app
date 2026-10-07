@@ -2,26 +2,22 @@ import React, { useState } from 'react';
 import {
     View,
     Text,
-    TextInput,
     TouchableOpacity,
-    ActivityIndicator,
     Alert,
 } from 'react-native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { RootDrawerParamList } from '../navigation/types';
 import { AuthWrapper } from '../components/auth/AuthWrapper';
-import { User, Mail, Lock, Eye, EyeOff, Check } from 'lucide-react-native';
+import { Eye, EyeOff, Lock, Mail, Phone, ShieldCheck, User } from 'lucide-react-native';
 
-import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
+import { AuthCheckbox, AuthNotice, AuthPrimaryButton, AuthTextField } from '../components/auth/AuthFormControls';
 
 type SignUpScreenProps = {
     navigation: DrawerNavigationProp<RootDrawerParamList, 'SignUp'>;
 };
 
 const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
-    const { login } = useAuth();
-    
     // Form States
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -29,11 +25,44 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [agreed, setAgreed] = useState(true);
+    const [focusedField, setFocusedField] = useState<'name' | 'email' | 'phone' | 'password' | null>(null);
+    const [touched, setTouched] = useState({
+        name: false,
+        email: false,
+        phone: false,
+        password: false,
+    });
     const [isLoading, setIsLoading] = useState(false);
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const mobile = phone.replace(/\D/g, '').slice(0, 10);
+    const nameError = trimmedName.length === 0 ? 'Enter your full name.' : '';
+    const emailError = trimmedEmail.length === 0
+        ? 'Enter your email address.'
+        : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)
+            ? ''
+            : 'Enter a valid email address.';
+    const phoneError = mobile.length === 0
+        ? 'Enter your mobile number.'
+        : mobile.length !== 10
+            ? 'Mobile number must be 10 digits.'
+            : '';
+    const passwordError = password.length === 0
+        ? 'Create a password.'
+        : password.length < 8
+            ? 'Use at least 8 characters.'
+            : '';
+    const canSubmit = !nameError && !emailError && !phoneError && !passwordError && agreed;
+
     const handleSignUp = async () => {
-        if (!name || !email || !password || !phone) {
-            return Alert.alert('Error', 'Please fill in all fields');
+        setTouched({ name: true, email: true, phone: true, password: true });
+
+        if (!canSubmit) {
+            if (!agreed) {
+                return Alert.alert('Terms required', 'Please agree to the Terms and Privacy Policy.');
+            }
+            return;
         }
 
         if (!agreed) {
@@ -42,15 +71,17 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
 
         setIsLoading(true);
         try {
-            const response = await authService.register({
-                name,
-                email,
+            await authService.register({
+                name: trimmedName,
+                email: trimmedEmail,
+                mobile,
+                phone: mobile,
                 password,
                 role: 'PATIENT',
             });
 
             Alert.alert('Success', 'Account created! Please Sign In.', [
-                { text: 'OK', onPress: () => navigation.navigate('SignIn') }
+                { text: 'OK', onPress: () => navigation.navigate('OTPLogin') }
             ]);
         } catch (error: any) {
             Alert.alert('Registration Failed', error.toString());
@@ -62,127 +93,129 @@ const SignUpScreen = ({ navigation }: SignUpScreenProps) => {
     return (
         <AuthWrapper
             title="Create account"
-            description="Join Swasthify for the best healthcare experience."
+            description="Set up a secure patient account for appointments, records, and care updates."
         >
-            <View className="w-full">
-                {/* Full Name */}
-                <View className="mb-4">
-                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Full name</Text>
-                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
-                        <View className="mr-3">
-                            <User size={20} color="#94A3B8" />
-                        </View>
-                        <TextInput
-                            placeholder="Ayan Singh"
-                            placeholderTextColor="#94A3B8"
-                            value={name}
-                            onChangeText={setName}
-                            className="flex-1 text-base text-slate-900 dark:text-white"
-                            editable={!isLoading}
-                        />
-                    </View>
-                </View>
+            <View className="w-full gap-y-4">
+                <AuthTextField
+                    label="Full name"
+                    icon={User}
+                    placeholder="Ayan Singh"
+                    value={name}
+                    onChangeText={setName}
+                    editable={!isLoading}
+                    focused={focusedField === 'name'}
+                    touched={touched.name}
+                    error={nameError}
+                    onFocus={() => setFocusedField('name')}
+                    onBlur={() => {
+                        setFocusedField(null);
+                        setTouched((prev) => ({ ...prev, name: true }));
+                    }}
+                />
 
-                {/* Email */}
-                <View className="mb-4">
-                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Email</Text>
-                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
-                        <View className="mr-3">
-                            <Mail size={20} color="#94A3B8" />
-                        </View>
-                        <TextInput
-                            placeholder="ayan@gmail.com"
-                            placeholderTextColor="#94A3B8"
-                            value={email}
-                            onChangeText={setEmail}
-                            className="flex-1 text-base text-slate-900 dark:text-white"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            editable={!isLoading}
-                        />
-                    </View>
-                </View>
+                <AuthTextField
+                    label="Email"
+                    icon={Mail}
+                    placeholder="you@example.com"
+                    value={email}
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    editable={!isLoading}
+                    focused={focusedField === 'email'}
+                    touched={touched.email}
+                    error={emailError}
+                    onFocus={() => setFocusedField('email')}
+                    onBlur={() => {
+                        setFocusedField(null);
+                        setTouched((prev) => ({ ...prev, email: true }));
+                    }}
+                />
 
-                {/* Mobile */}
-                <View className="mb-4">
+                <View>
                     <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Mobile number</Text>
-                    <View className="flex-row">
-                        <View className="flex-row items-center justify-center h-14 w-[84px] bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl mr-2">
-                            <Text className="text-base font-bold text-slate-900 dark:text-white">🇮🇳 +91</Text>
+                    <View className="flex-row items-center">
+                        <View className="flex-row items-center justify-center h-14 w-[84px] bg-white dark:bg-slate-900 border-[1.5px] border-slate-200 dark:border-slate-800 rounded-2xl mr-2">
+                            <Text className="text-base font-bold text-slate-900 dark:text-white">+91</Text>
                         </View>
-                        <View className="flex-1 flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
-                            <TextInput
-                                placeholder="98765 43210"
-                                placeholderTextColor="#94A3B8"
-                                value={phone}
-                                onChangeText={setPhone}
-                                className="flex-1 text-base text-slate-900 dark:text-white"
-                                keyboardType="phone-pad"
-                                editable={!isLoading}
-                            />
-                        </View>
+                        <AuthTextField
+                            label=""
+                            icon={Phone}
+                            containerClassName="flex-1"
+                            placeholder="98765 43210"
+                            value={mobile}
+                            onChangeText={(value) => setPhone(value.replace(/\D/g, '').slice(0, 10))}
+                            keyboardType="phone-pad"
+                            maxLength={10}
+                            editable={!isLoading}
+                            focused={focusedField === 'phone'}
+                            touched={touched.phone}
+                            error={phoneError}
+                            onFocus={() => setFocusedField('phone')}
+                            onBlur={() => {
+                                setFocusedField(null);
+                                setTouched((prev) => ({ ...prev, phone: true }));
+                            }}
+                            className="min-w-0"
+                        />
                     </View>
                 </View>
 
-                {/* Password */}
-                <View className="mb-4">
-                    <Text className="text-sm font-bold text-slate-900 dark:text-white mb-2">Password</Text>
-                    <View className="flex-row items-center h-14 bg-white dark:bg-slate-900 border-[1.5px] border-slate-100 dark:border-slate-800 rounded-2xl px-4">
-                        <View className="mr-3">
-                            <Lock size={20} color="#94A3B8" />
-                        </View>
-                        <TextInput
-                            placeholder="••••••••"
-                            placeholderTextColor="#94A3B8"
-                            value={password}
-                            onChangeText={setPassword}
-                            secureTextEntry={!showPassword}
-                            className="flex-1 text-base text-slate-900 dark:text-white pr-12"
-                            editable={!isLoading}
-                        />
+                <AuthTextField
+                    label="Password"
+                    icon={Lock}
+                    placeholder="Create a password"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={!showPassword}
+                    editable={!isLoading}
+                    focused={focusedField === 'password'}
+                    touched={touched.password}
+                    error={passwordError}
+                    helperText="Use 8+ characters with letters and numbers."
+                    onFocus={() => setFocusedField('password')}
+                    onBlur={() => {
+                        setFocusedField(null);
+                        setTouched((prev) => ({ ...prev, password: true }));
+                    }}
+                    className="pr-12"
+                    right={(
                         <TouchableOpacity
                             onPress={() => setShowPassword(!showPassword)}
                             className="absolute right-4"
+                            disabled={isLoading}
                         >
                             {showPassword ? <EyeOff size={20} color="#94A3B8" /> : <Eye size={20} color="#94A3B8" />}
                         </TouchableOpacity>
-                    </View>
-                    <Text className="text-[12px] text-slate-500 dark:text-slate-400 mt-1.5">Use 8+ chars with letters, numbers & a symbol.</Text>
-                </View>
-
-                {/* Terms */}
-                <TouchableOpacity 
-                    className="flex-row items-start mt-1 mb-5"
-                    onPress={() => setAgreed(!agreed)}
-                    activeOpacity={0.7}
-                >
-                    <View className={`w-5 h-5 rounded-md border-[1.5px] items-center justify-center mr-2.5 mt-0.5 ${agreed ? 'bg-primary border-primary' : 'border-slate-100 dark:border-slate-800'}`}>
-                        {agreed && <Check size={14} color="#FFFFFF" />}
-                    </View>
-                    <Text className="flex-1 text-[13px] text-slate-500 dark:text-slate-400 leading-5">
-                        I agree to the <Text className="text-primary font-bold">Terms</Text> and <Text className="text-primary font-bold">Privacy Policy</Text>.
-                    </Text>
-                </TouchableOpacity>
-
-                {/* Submit Button */}
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={handleSignUp}
-                    disabled={isLoading}
-                    className="bg-primary h-14 rounded-[20px] items-center justify-center shadow-lg shadow-primary/20"
-                >
-                    {isLoading ? (
-                        <ActivityIndicator color="white" size="small" />
-                    ) : (
-                        <Text className="text-white text-lg font-bold">Create Account</Text>
                     )}
-                </TouchableOpacity>
+                />
 
-                {/* Footer */}
-                <View className="flex-row justify-center mt-8 mb-4">
+                <AuthCheckbox
+                    checked={agreed}
+                    onPress={() => setAgreed(!agreed)}
+                    disabled={isLoading}
+                >
+                    I agree to the <Text className="text-primary font-bold">Terms</Text> and <Text className="text-primary font-bold">Privacy Policy</Text>.
+                </AuthCheckbox>
+
+                <AuthPrimaryButton
+                    label="Create Account"
+                    loadingLabel="Creating"
+                    onPress={handleSignUp}
+                    isLoading={isLoading}
+                    disabled={!canSubmit}
+                />
+
+                <AuthNotice
+                    icon={ShieldCheck}
+                    text="Basic details only for signup. You can add health information later from your profile."
+                />
+
+                <View className="flex-row justify-center mt-2 mb-4">
                     <Text className="text-sm text-slate-600 dark:text-slate-200">Already have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-                        <Text className="text-sm font-bold text-primary">Sign In</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('OTPLogin')}>
+                        <Text className="text-sm font-bold text-primary">Login with OTP</Text>
                     </TouchableOpacity>
                 </View>
             </View>
