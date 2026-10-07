@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import {
     View,
     Text,
@@ -9,6 +9,7 @@ import {
     ActivityIndicator,
     StyleSheet,
     StatusBar,
+    Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
@@ -18,6 +19,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import { publicService, Campaign } from '../services/publicService';
 import CampaignCard from '../components/CampaignCard';
 import { CampaignListSkeleton } from '../components/CampaignSkeleton';
+import { locationService, PATNA_LOCATION, SavedLocation } from '../services/locationService';
 
 const SPECIALIZATIONS = [
     "All",
@@ -35,6 +37,7 @@ const SPECIALIZATIONS = [
 
 const SORT_OPTIONS = [
     { label: 'Featured', value: 'featured' },
+    { label: 'Nearest first', value: 'nearest' },
     { label: 'Experience (High-Low)', value: 'experience_desc' },
     { label: 'Price (Low-High)', value: 'price_asc' },
     { label: 'Price (High-Low)', value: 'price_desc' },
@@ -59,9 +62,13 @@ const DoctorsScreen = () => {
     const [selectedSpecialization, setSelectedSpecialization] = useState(initialSpecialization);
     const [sortBy, setSortBy] = useState('featured');
     const [showSortOptions, setShowSortOptions] = useState(false);
+    const [savedLocation, setSavedLocation] = useState<SavedLocation | null>(null);
+    const [locationLoading, setLocationLoading] = useState(false);
+    const latestRequestId = useRef(0);
 
     const fetchDoctors = useCallback(async (pageNum: number, isNewSearch: boolean = false) => {
         if (pageNum > 1 && !hasMore) return;
+        const requestId = ++latestRequestId.current;
 
         if (isNewSearch) {
             setLoading(true);
@@ -77,8 +84,22 @@ const DoctorsScreen = () => {
                 page: pageNum,
                 search: searchQuery,
                 specialization: selectedSpecialization === 'All' ? undefined : selectedSpecialization,
-                sortBy: sortBy === 'featured' ? undefined : sortBy,
+                sortBy: sortBy === 'featured' || sortBy === 'nearest' ? undefined : sortBy,
+                lat: savedLocation?.latitude,
+                lng: savedLocation?.longitude,
+                radiusKm: 25,
             });
+
+            if (requestId !== latestRequestId.current) {
+                return;
+            }
+
+            if (isNewSearch && savedLocation?.source === 'device' && data.length === 0) {
+                const patna = await locationService.savePatnaFallback();
+                setSavedLocation(patna);
+                Alert.alert('No nearby doctors', 'We could not find doctors near your current location, so we are showing Patna doctors.');
+                return;
+            }
 
             if (data.length < 10) {
                 setHasMore(false);
@@ -94,27 +115,45 @@ const DoctorsScreen = () => {
         } catch (error) {
             console.error('Error fetching doctors:', error);
         } finally {
-            setLoading(false);
-            setLoadingMore(false);
+            if (requestId === latestRequestId.current) {
+                setLoading(false);
+                setLoadingMore(false);
+            }
         }
-    }, [searchQuery, selectedSpecialization, sortBy, hasMore]);
+    }, [searchQuery, selectedSpecialization, sortBy, hasMore, savedLocation]);
 
     useEffect(() => {
-        fetchDoctors(1, true);
-    }, [selectedSpecialization, sortBy]);
+        const loadLocation = async () => {
+            const stored = await locationService.getSavedLocation();
+            setSavedLocation(stored || PATNA_LOCATION);
+        };
+
+        loadLocation();
+    }, []);
 
     useEffect(() => {
-        let shouldFetch = false;
+        if (savedLocation) {
+            fetchDoctors(1, true);
+        }
+    }, [selectedSpecialization, sortBy, savedLocation]);
 
+    useEffect(() => {
+        if (!savedLocation) return;
+
+        const debounce = setTimeout(() => {
+            fetchDoctors(1, true);
+        }, 300);
+
+        return () => clearTimeout(debounce);
+    }, [searchQuery, savedLocation]);
+
+    useEffect(() => {
         if (route.params?.query !== undefined && route.params.query !== searchQuery) {
             setSearchQuery(route.params.query);
-            shouldFetch = true;
         }
 
         if (route.params?.specialization !== undefined && route.params.specialization !== selectedSpecialization) {
             setSelectedSpecialization(route.params.specialization);
-        } else if (shouldFetch) {
-            fetchDoctors(1, true);
         }
     }, [route.params?.query, route.params?.specialization]);
 
@@ -132,6 +171,29 @@ const DoctorsScreen = () => {
 
     const handleSearchSubmit = () => {
         fetchDoctors(1, true);
+    };
+
+    const useCurrentLocation = async () => {
+        setLocationLoading(true);
+        try {
+            const location = await locationService.requestCurrentLocation();
+            await locationService.saveLocation(location);
+            setSavedLocation(location);
+            setSortBy('nearest');
+            setPage(1);
+        } catch (error: any) {
+            const patna = await locationService.savePatnaFallback();
+            setSavedLocation(patna);
+            locationService.showLocationError(error?.message);
+        } finally {
+            setLocationLoading(false);
+        }
+    };
+
+    const showPatnaDoctors = async () => {
+        const patna = await locationService.savePatnaFallback();
+        setSavedLocation(patna);
+        setPage(1);
     };
 
     const handleLoadMore = () => {
@@ -153,12 +215,18 @@ const DoctorsScreen = () => {
                             placeholder="Search doctors, clinics..."
                             placeholderTextColor={isDark ? "#64748b" : "#9CA3AF"}
                             value={searchQuery}
-                            onChangeText={setSearchQuery}
+                            onChangeText={(text) => {
+                                setSearchQuery(text);
+                                setPage(1);
+                            }}
                             onSubmitEditing={handleSearchSubmit}
                             returnKeyType="search"
                         />
                         {searchQuery.length > 0 && (
-                            <TouchableOpacity onPress={() => { setSearchQuery(''); fetchDoctors(1, true); }}>
+                            <TouchableOpacity onPress={() => {
+                                setSearchQuery('');
+                                setPage(1);
+                            }}>
                                 <Feather name="x" size={18} color={isDark ? "#94A3B8" : "#6B7280"} />
                             </TouchableOpacity>
                         )}
@@ -206,6 +274,30 @@ const DoctorsScreen = () => {
                         </View>
                     </View>
                 )}
+
+                <View style={[styles.locationCard, isDark && styles.locationCardDark]}>
+                    <View style={styles.locationTextWrap}>
+                        <Feather name="map-pin" size={16} color="#0DA96E" />
+                        <Text style={[styles.locationText, isDark && styles.textGray400]} numberOfLines={2}>
+                            {savedLocation?.source === 'device'
+                                ? 'Showing doctors near your current location'
+                                : 'Showing doctors in Patna'}
+                        </Text>
+                    </View>
+                    <TouchableOpacity
+                        onPress={savedLocation?.source === 'device' ? showPatnaDoctors : useCurrentLocation}
+                        disabled={locationLoading}
+                        style={styles.locationButton}
+                    >
+                        {locationLoading ? (
+                            <ActivityIndicator size="small" color="#0DA96E" />
+                        ) : (
+                            <Text style={styles.locationButtonText}>
+                                {savedLocation?.source === 'device' ? 'Show Patna' : 'Use my location'}
+                            </Text>
+                        )}
+                    </TouchableOpacity>
+                </View>
 
                 <View style={styles.resultsHeader}>
                     <Text style={[styles.resultsCount, isDark && styles.textWhite]}>
@@ -269,7 +361,7 @@ const DoctorsScreen = () => {
                         setSearchQuery('');
                         setSelectedSpecialization('All');
                         setSortBy('featured');
-                        fetchDoctors(1, true);
+                        setPage(1);
                     }}
                 >
                     <Text style={styles.resetButtonText}>Reset Filters</Text>
@@ -277,6 +369,20 @@ const DoctorsScreen = () => {
             </View>
         );
     };
+
+    const headerComponent = useMemo(
+        () => renderHeader(),
+        [
+            campaigns.length,
+            isDark,
+            locationLoading,
+            savedLocation?.source,
+            searchQuery,
+            selectedSpecialization,
+            showSortOptions,
+            sortBy,
+        ]
+    );
 
     return (
         <SafeAreaView style={[styles.container, isDark && styles.bgBackground]} edges={['top', 'left', 'right']}>
@@ -293,9 +399,10 @@ const DoctorsScreen = () => {
                     </View>
                 )}
                 keyExtractor={(item, index) => (item._id || item.id || index.toString())}
-                ListHeaderComponent={renderHeader}
+                ListHeaderComponent={headerComponent}
                 ListFooterComponent={renderFooter}
                 ListEmptyComponent={loading ? <CampaignListSkeleton /> : renderEmpty()}
+                keyboardShouldPersistTaps="handled"
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0.5}
                 showsVerticalScrollIndicator={false}
@@ -381,6 +488,50 @@ const styles = StyleSheet.create({
     resultsHeader: {
         marginTop: 8,
         marginBottom: 16,
+    },
+    locationCard: {
+        borderWidth: 1,
+        borderColor: '#D1F2E2',
+        backgroundColor: '#F0FDF7',
+        borderRadius: 18,
+        padding: 14,
+        marginBottom: 14,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 12,
+    },
+    locationCardDark: {
+        backgroundColor: 'rgba(6, 78, 59, 0.22)',
+        borderColor: 'rgba(16, 185, 129, 0.22)',
+    },
+    locationTextWrap: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    locationText: {
+        marginLeft: 8,
+        color: '#334155',
+        fontSize: 12,
+        fontWeight: '700',
+        flex: 1,
+    },
+    locationButton: {
+        minWidth: 104,
+        minHeight: 36,
+        borderRadius: 18,
+        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
+        borderColor: '#D1F2E2',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 12,
+    },
+    locationButtonText: {
+        color: '#0DA96E',
+        fontSize: 11,
+        fontWeight: '800',
     },
     resultsCount: {
         fontSize: 18,
