@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, Pressable } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image, SafeAreaView, Pressable, ScrollView } from 'react-native';
 import Animated, {
     useSharedValue,
     useAnimatedStyle,
@@ -10,13 +10,41 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useColorScheme } from 'nativewind';
 import {
-    DrawerContentScrollView,
-    DrawerItemList,
     DrawerContentComponentProps,
 } from '@react-navigation/drawer';
 import Icon from './Icon';
 
 import { useAuth } from '../context/AuthContext';
+
+const BRAND_GREEN = '#0DA96E';
+
+const drawerSections = [
+    {
+        title: 'Explore',
+        items: [
+            { route: 'Home', label: 'Home', icon: 'home' },
+            { route: 'Doctors', label: 'Doctors', icon: 'doctor' },
+            { route: 'Labs', label: 'Labs', icon: 'lab' },
+            { route: 'HealthPackages', label: 'Health packages', icon: 'pkg' },
+        ],
+    },
+    {
+        title: 'My Care',
+        items: [
+            { route: 'Profile', label: 'My Profile', icon: 'user' },
+            { route: 'Appointments', label: 'Appointments', icon: 'appointments' },
+            { route: 'HealthRecords', label: 'Health records', icon: 'doc' },
+        ],
+    },
+    {
+        title: 'Support',
+        items: [
+            { route: 'Pricing', label: 'Pricing', icon: 'wallet' },
+            { route: 'Contact', label: 'Contact', icon: 'mail' },
+            { route: 'About', label: 'About', icon: 'info' },
+        ],
+    },
+] as const;
 
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const { navigation } = props;
@@ -32,9 +60,9 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     const handleAuthAction = async () => {
         if (user) {
             await logout();
-            navigation.navigate('SignIn');
+            navigation.navigate('OTPLogin');
         } else {
-            navigation.navigate('SignIn');
+            navigation.navigate('OTPLogin');
         }
     };
 
@@ -82,58 +110,155 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
         return { opacity, transform: [{ scale }] };
     });
 
+    const activeRoute = props.state.routeNames[props.state.index];
+
+    const renderDrawerItem = (item: typeof drawerSections[number]['items'][number]) => {
+        const isActive = activeRoute === item.route;
+        const itemBackground = isActive
+            ? isDark ? 'rgba(13, 169, 110, 0.16)' : '#E6F6EF'
+            : 'transparent';
+        const iconBackground = isActive
+            ? isDark ? 'rgba(13, 169, 110, 0.2)' : '#D1F2E2'
+            : isDark ? 'rgba(15, 23, 42, 0.86)' : '#F8FAFC';
+        const labelColor = isActive
+            ? isDark ? '#48C496' : BRAND_GREEN
+            : isDark ? '#CBD5E1' : '#334155';
+
+        return (
+            <TouchableOpacity
+                key={item.route}
+                activeOpacity={0.82}
+                onPress={() => navigation.navigate(item.route as never)}
+                style={[
+                    styles.drawerItem,
+                    {
+                        backgroundColor: itemBackground,
+                        borderColor: isActive
+                            ? isDark ? 'rgba(72, 196, 150, 0.22)' : 'rgba(13, 169, 110, 0.18)'
+                            : 'transparent',
+                    },
+                ]}
+            >
+                {isActive && <View style={styles.activeIndicator} />}
+                <View
+                    style={[
+                        styles.drawerIconWrap,
+                        {
+                            backgroundColor: iconBackground,
+                            borderColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(226, 232, 240, 0.72)',
+                        },
+                    ]}
+                >
+                    <Icon name={item.icon as any} size={18} color={isActive ? BRAND_GREEN : (isDark ? '#94A3B8' : '#64748B')} />
+                </View>
+                <Text
+                    style={[
+                        styles.drawerLabel,
+                        {
+                            color: labelColor,
+                            fontWeight: isActive ? '800' : '600',
+                        },
+                    ]}
+                    numberOfLines={1}
+                >
+                    {item.label}
+                </Text>
+            </TouchableOpacity>
+        );
+    };
+
     return (
-        <SafeAreaView className="flex-1 bg-white dark:bg-[#09090B]">
-            {/* Premium Header Profile Section */}
-            <View className="px-[18px] pt-6 pb-[14px] border-b border-gray-100 dark:border-white/5 bg-white dark:bg-[#09090B]">
+        <SafeAreaView style={[styles.safeArea, { backgroundColor: isDark ? '#09090B' : '#FFFFFF' }]}>
+            <View
+                style={[
+                    styles.header,
+                    {
+                        backgroundColor: isDark ? '#09090B' : '#FFFFFF',
+                        borderBottomColor: isDark ? 'rgba(255,255,255,0.05)' : '#F1F5F9',
+                    },
+                ]}
+            >
                 {user ? (
-                    <View className="flex-row items-center">
-                        <View className="relative">
+                    <View
+                        style={[
+                            styles.userCard,
+                            {
+                                backgroundColor: isDark ? '#0F172A' : '#F8FAFC',
+                                borderColor: isDark ? 'rgba(255,255,255,0.05)' : '#F1F5F9',
+                            },
+                        ]}
+                    >
+                        <View style={styles.avatarWrap}>
                             <Image
                                 source={user && user.profilePic && !imgError ? { uri: user.profilePic } : require('../assets/user_avatar.png')}
-                                className="w-14 h-14 rounded-full border border-gray-100 dark:border-slate-800"
-                                style={{ width: 56, height: 56 }}
+                                style={[
+                                    styles.avatar,
+                                    { borderColor: isDark ? '#1E293B' : '#F1F5F9' },
+                                ]}
                                 onError={() => setImgError(true)}
                             />
-                            <View className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 rounded-full border-2 border-white dark:border-[#09090B]" />
+                            <View
+                                style={[
+                                    styles.statusDot,
+                                    { borderColor: isDark ? '#0F172A' : '#FFFFFF' },
+                                ]}
+                            />
                         </View>
-                        <View className="ml-3 flex-1">
-                            <Text className="text-[16px] text-slate-900 dark:text-white" style={{ fontWeight: '800', fontFamily: 'Plus Jakarta Sans' }} numberOfLines={1}>
+                        <View style={styles.userMeta}>
+                            <Text style={[styles.userName, { color: isDark ? '#FFFFFF' : '#0F172A' }]} numberOfLines={1}>
                                 {user.name}
                             </Text>
-                            <Text className="text-[12px] text-slate-500 dark:text-slate-400" style={{ fontWeight: '400', fontFamily: 'Plus Jakarta Sans' }} numberOfLines={1}>
+                            <Text style={[styles.userEmail, { color: isDark ? '#94A3B8' : '#64748B' }]} numberOfLines={1}>
                                 {user.email || 'Member'}
                             </Text>
-                            <View className="flex-row mt-1">
-                                <View className="bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-500/20">
-                                    <Text className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400" style={{ fontFamily: 'Plus Jakarta Sans' }}>● Online</Text>
+                            <View style={styles.onlineRow}>
+                                <View
+                                    style={[
+                                        styles.onlinePill,
+                                        {
+                                            backgroundColor: isDark ? 'rgba(16, 185, 129, 0.1)' : '#ECFDF5',
+                                            borderColor: isDark ? 'rgba(16, 185, 129, 0.22)' : '#D1FAE5',
+                                        },
+                                    ]}
+                                >
+                                    <Text style={styles.onlineText}>Online</Text>
                                 </View>
                             </View>
                         </View>
                         <TouchableOpacity
-                            className="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-800 items-center justify-center ml-2 border border-slate-100 dark:border-white/5"
-                            style={{ width: 32, height: 32, borderRadius: 10 }}
+                            style={[
+                                styles.closeButton,
+                                {
+                                    backgroundColor: isDark ? '#1E293B' : '#FFFFFF',
+                                    borderColor: isDark ? 'rgba(255,255,255,0.05)' : '#F1F5F9',
+                                },
+                            ]}
                             onPress={() => navigation.closeDrawer()}
                         >
                             <Icon name="back" size={16} color={isDark ? "#94A3B8" : "#475569"} />
                         </TouchableOpacity>
                     </View>
                 ) : (
-                    <View className="flex-row items-center justify-between">
-                        <View className="flex-row items-center flex-1">
+                    <View style={styles.guestHeader}>
+                        <View style={styles.brandRow}>
                             <Image
                                 source={require('../assets/logo.png')}
-                                style={{ width: 38, height: 38, marginRight: 12 }}
+                                style={styles.brandLogo}
                                 resizeMode="contain"
                             />
                             <View>
-                                <Text className="text-[20px] font-black text-[#0DA96E] tracking-tight" style={{ fontFamily: 'Plus Jakarta Sans' }}>Swasthify</Text>
-                                <Text className="text-[10px] font-bold text-slate-400 uppercase tracking-widest" style={{ fontFamily: 'Plus Jakarta Sans' }}>Healthcare</Text>
+                                <Text style={styles.brandName}>Swasthify</Text>
+                                <Text style={styles.brandSub}>Healthcare</Text>
                             </View>
                         </View>
                         <TouchableOpacity
-                            className="w-8 h-8 rounded-xl bg-slate-50 dark:bg-slate-800 items-center justify-center ml-2 border border-slate-100 dark:border-white/5"
-                            style={{ width: 32, height: 32, borderRadius: 10 }}
+                            style={[
+                                styles.guestCloseButton,
+                                {
+                                    backgroundColor: isDark ? '#1E293B' : '#F8FAFC',
+                                    borderColor: isDark ? 'rgba(255,255,255,0.05)' : '#F1F5F9',
+                                },
+                            ]}
                             onPress={() => navigation.closeDrawer()}
                         >
                             <Icon name="back" size={16} color={isDark ? "#94A3B8" : "#475569"} />
@@ -143,26 +268,57 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             </View>
 
             {/* Navigation Options */}
-            <DrawerContentScrollView
-                {...props}
-                contentContainerStyle={{ paddingTop: 0 }}
+            <ScrollView
+                contentContainerStyle={{ paddingTop: 16, paddingBottom: 16, backgroundColor: isDark ? '#09090B' : '#FFFFFF' }}
+                style={{ backgroundColor: isDark ? '#09090B' : '#FFFFFF' }}
                 showsVerticalScrollIndicator={false}
             >
-                <View className="px-1.5">
-                    <DrawerItemList {...props} />
-                </View>
-            </DrawerContentScrollView>
-
-            {/* Premium Footer Settings Section */}
-            <View className="px-[18px] pt-2 pb-8 bg-white dark:bg-[#09090B]">
-                
-                {/* Theme Toggle Card */}
-                <View className="flex-row items-center justify-between p-[10px] mb-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5">
-                    <View className="flex-row items-center flex-1">
-                        <View className="w-9 h-9 rounded-lg bg-white dark:bg-slate-800 items-center justify-center shadow-sm">
-                            <Icon name="sun" size={18} color={isDark ? "#94A3B8" : "#F59E0B"} />
+                <View style={[styles.navBody, { backgroundColor: isDark ? '#09090B' : '#FFFFFF' }]}>
+                    {drawerSections.map((section, sectionIndex) => (
+                        <View key={section.title} style={sectionIndex > 0 ? styles.drawerSectionSpaced : undefined}>
+                            <Text style={[styles.sectionLabel, { color: isDark ? '#64748B' : '#94A3B8' }]}>
+                                {section.title}
+                            </Text>
+                            <View style={styles.sectionItems}>
+                                {section.items.map(renderDrawerItem)}
+                            </View>
                         </View>
-                        <Text className="text-[13px] font-bold text-slate-800 dark:text-slate-200 ml-3" style={{ fontFamily: 'Plus Jakarta Sans' }}>
+                    ))}
+                </View>
+            </ScrollView>
+
+            <View
+                style={[
+                    styles.footer,
+                    {
+                        backgroundColor: isDark ? '#09090B' : '#FFFFFF',
+                        borderTopColor: isDark ? 'rgba(255,255,255,0.05)' : '#F1F5F9',
+                    },
+                ]}
+            >
+                
+                <View
+                    style={[
+                        styles.themeCard,
+                        {
+                            backgroundColor: isDark ? '#0F172A' : 'rgba(248, 250, 252, 0.7)',
+                            borderColor: isDark ? 'rgba(255,255,255,0.05)' : '#F1F5F9',
+                        },
+                    ]}
+                >
+                    <View style={styles.themeInfo}>
+                        <View
+                            style={[
+                                styles.themeIcon,
+                                {
+                                    backgroundColor: isDark ? '#1E293B' : '#FFFFFF',
+                                    borderColor: isDark ? 'rgba(255,255,255,0.05)' : '#F1F5F9',
+                                },
+                            ]}
+                        >
+                            <Icon name={isDark ? "moon" : "sun"} size={16} color={isDark ? "#94A3B8" : "#F59E0B"} />
+                        </View>
+                        <Text style={[styles.themeText, { color: isDark ? '#E2E8F0' : '#1E293B' }]}>
                             {isDark ? 'Dark theme' : 'Light theme'}
                         </Text>
                     </View>
@@ -187,9 +343,10 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        height: 44,
-                        borderRadius: 12,
-                        backgroundColor: user ? '#FEF2F2' : '#E6F6EF',
+                        height: 48,
+                        borderRadius: 16,
+                        backgroundColor: user ? '#FFF7F7' : '#F0FBF6',
+                        borderColor: user ? '#FEE2E2' : '#CDEFE2',
                     }}
                     onPress={handleAuthAction}
                     activeOpacity={0.8}
@@ -197,7 +354,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                     <Icon name={user ? "logout" : "log-in"} size={18} color={user ? '#DC2626' : '#0DA96E'} />
                     <Text style={{ 
                         fontWeight: '800', 
-                        fontSize: 14, 
+                        fontSize: 13,
                         marginLeft: 8, 
                         color: user ? '#DC2626' : '#0DA96E',
                         fontFamily: 'Plus Jakarta Sans'
@@ -207,8 +364,8 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                 </TouchableOpacity>
 
                 {/* Footer Subtext */}
-                <View className="items-center mt-3">
-                    <Text className="text-[11px] font-bold text-slate-400 dark:text-slate-500" style={{ fontFamily: 'Plus Jakarta Sans' }}>Swasthify v1.0.0</Text>
+                <View style={styles.versionWrap}>
+                    <Text style={[styles.versionText, { color: isDark ? '#64748B' : '#94A3B8' }]}>Swasthify v1.0.0</Text>
                 </View>
             </View>
         </SafeAreaView>
@@ -216,6 +373,218 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 };
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        overflow: 'hidden',
+    },
+    header: {
+        paddingHorizontal: 20,
+        paddingTop: 28,
+        paddingBottom: 20,
+        borderBottomWidth: 1,
+    },
+    userCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderRadius: 22,
+        borderWidth: 1,
+        padding: 14,
+    },
+    avatarWrap: {
+        position: 'relative',
+    },
+    avatar: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        borderWidth: 1,
+    },
+    statusDot: {
+        position: 'absolute',
+        right: 0,
+        bottom: 0,
+        width: 16,
+        height: 16,
+        borderRadius: 8,
+        borderWidth: 2,
+        backgroundColor: '#10B981',
+    },
+    userMeta: {
+        flex: 1,
+        marginLeft: 14,
+        paddingRight: 8,
+    },
+    userName: {
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 16,
+        fontWeight: '800',
+    },
+    userEmail: {
+        marginTop: 2,
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 12,
+        fontWeight: '400',
+    },
+    onlineRow: {
+        flexDirection: 'row',
+        marginTop: 6,
+    },
+    onlinePill: {
+        paddingHorizontal: 8,
+        paddingVertical: 2,
+        borderRadius: 999,
+        borderWidth: 1,
+    },
+    onlineText: {
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 10,
+        fontWeight: '700',
+        color: '#059669',
+    },
+    closeButton: {
+        width: 34,
+        height: 34,
+        borderRadius: 12,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    guestHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    brandRow: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    brandLogo: {
+        width: 38,
+        height: 38,
+        marginRight: 12,
+    },
+    brandName: {
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 20,
+        fontWeight: '900',
+        color: BRAND_GREEN,
+    },
+    brandSub: {
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 10,
+        fontWeight: '700',
+        letterSpacing: 1.5,
+        color: '#94A3B8',
+        textTransform: 'uppercase',
+    },
+    guestCloseButton: {
+        width: 32,
+        height: 32,
+        marginLeft: 8,
+        borderRadius: 10,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    navBody: {
+        paddingHorizontal: 16,
+    },
+    footer: {
+        paddingHorizontal: 20,
+        paddingTop: 16,
+        paddingBottom: 28,
+        borderTopWidth: 1,
+    },
+    themeCard: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 12,
+        paddingHorizontal: 14,
+        paddingVertical: 12,
+        borderRadius: 16,
+        borderWidth: 1,
+    },
+    themeInfo: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    themeIcon: {
+        width: 36,
+        height: 36,
+        borderRadius: 12,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    themeText: {
+        marginLeft: 12,
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 13,
+        fontWeight: '700',
+    },
+    versionWrap: {
+        alignItems: 'center',
+        marginTop: 12,
+    },
+    versionText: {
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 10,
+        fontWeight: '600',
+    },
+    sectionLabel: {
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 11,
+        fontWeight: '800',
+        letterSpacing: 0.7,
+        marginBottom: 8,
+        marginLeft: 8,
+        textTransform: 'uppercase',
+    },
+    sectionItems: {
+        gap: 6,
+    },
+    drawerSectionSpaced: {
+        marginTop: 20,
+    },
+    drawerItem: {
+        position: 'relative',
+        minHeight: 54,
+        borderRadius: 16,
+        borderWidth: 1,
+        paddingLeft: 12,
+        paddingRight: 14,
+        flexDirection: 'row',
+        alignItems: 'center',
+        overflow: 'hidden',
+    },
+    activeIndicator: {
+        position: 'absolute',
+        left: 0,
+        top: 14,
+        bottom: 14,
+        width: 4,
+        borderTopRightRadius: 4,
+        borderBottomRightRadius: 4,
+        backgroundColor: BRAND_GREEN,
+    },
+    drawerIconWrap: {
+        width: 36,
+        height: 36,
+        borderRadius: 12,
+        borderWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 12,
+    },
+    drawerLabel: {
+        flex: 1,
+        fontFamily: 'Plus Jakarta Sans',
+        fontSize: 14,
+        lineHeight: 20,
+    },
     customTrack: {
         width: 52,
         height: 30,
