@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/geolocation": "^3.4.0",
     "@react-native-firebase/app": "^24.0.0",
     "@react-native-firebase/auth": "^24.0.0",
     "@react-navigation/drawer": "^7.8.1",
@@ -40,6 +41,7 @@
     "@types/react": "^19.2.13",
     "@types/react-native-vector-icons": "^6.4.18",
     "metro-config": "^0.83.3",
+    "patch-package": "^8.0.0",
     "tailwindcss": "^3.4.19",
     "typescript": "^5.9.3"
   }
