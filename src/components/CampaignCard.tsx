@@ -13,12 +13,48 @@ interface CampaignCardProps {
     fullWidth?: boolean;
 }
 
+const formatDoctorName = (name?: string) => {
+    if (!name) return 'Doctor';
+    return name.toLowerCase().startsWith('dr') ? name : `Dr. ${name}`;
+};
+
+const getInitials = (name?: string) => {
+    if (!name) return 'DR';
+    return name
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(part => part[0]?.toUpperCase())
+        .join('') || 'DR';
+};
+
 const CampaignCard = ({ campaign, onPress, fullWidth = false }: CampaignCardProps) => {
     const navigation = useNavigation<any>();
 
     const discountedPrice = campaign.discountPercentage > 0
         ? Math.round(campaign.price - (campaign.price * campaign.discountPercentage) / 100)
         : campaign.price;
+    const distanceLabel = typeof campaign.distanceKm === 'number'
+        ? `${campaign.distanceKm < 1 ? `${Math.round(campaign.distanceKm * 1000)} m` : `${campaign.distanceKm.toFixed(1)} km`} away`
+        : null;
+    const isDoctor = !!campaign.doctor || campaign.source === 'doctor';
+    const isLab = !isDoctor && (!!campaign.lab || campaign.source === 'lab');
+    const providerName = isDoctor
+        ? formatDoctorName(campaign.doctor?.user?.name)
+        : campaign.lab?.user?.name || campaign.name || campaign.title || 'Healthcare Provider';
+    const campaignName = campaign.name || campaign.title || campaign.doctor?.clinicName || campaign.lab?.user?.name || 'Healthcare Service';
+    const providerImage = isDoctor
+        ? campaign.doctor?.profilePhoto
+        : campaign.lab?.profilePhoto;
+    const providerInitials = getInitials(isDoctor ? campaign.doctor?.user?.name : campaign.lab?.user?.name);
+    const primarySpecialization = isDoctor
+        ? campaign.doctor?.specializations?.[0]?.name || 'Healthcare Specialist'
+        : 'Certified Diagnostic Center';
+    const experienceLabel = isDoctor && campaign.doctor?.experienceYears
+        ? `${campaign.doctor.experienceYears}+ yrs`
+        : null;
+    const qualification = isDoctor ? campaign.doctor?.qualification : null;
+    const bioPreview = campaign.doctor?.bio || campaign.lab?.description || campaign.description;
 
     const handlePress = () => {
         if (onPress) {
@@ -63,8 +99,33 @@ const CampaignCard = ({ campaign, onPress, fullWidth = false }: CampaignCardProp
                     )}
                 </View>
 
-                <Text className="text-xl font-black text-zinc-900 dark:text-white leading-tight mb-3" numberOfLines={2}>
-                    {campaign.name || campaign.title}
+                {(isDoctor || isLab) && (
+                    <View className="flex-row items-center mb-3">
+                        <View className="w-12 h-12 rounded-2xl bg-[#0DA96E]/10 overflow-hidden items-center justify-center mr-3 border border-[#D9F3E8] dark:border-zinc-800">
+                            {providerImage ? (
+                                <Image source={{ uri: providerImage }} className="w-full h-full" resizeMode="cover" />
+                            ) : (
+                                <Text className="text-[#0DA96E] text-sm font-black">{providerInitials}</Text>
+                            )}
+                        </View>
+                        <View className="flex-1">
+                            <Text className="text-xl font-black text-zinc-900 dark:text-white leading-tight" numberOfLines={1}>
+                                {providerName}
+                            </Text>
+                            <Text className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5" numberOfLines={1}>
+                                {primarySpecialization}{experienceLabel ? ` • ${experienceLabel}` : ''}
+                            </Text>
+                            {qualification && (
+                                <Text className="text-[10px] font-bold text-zinc-400 mt-0.5" numberOfLines={1}>
+                                    {qualification}
+                                </Text>
+                            )}
+                        </View>
+                    </View>
+                )}
+
+                <Text className="text-sm font-black text-zinc-700 dark:text-zinc-200 uppercase tracking-wide mb-3" numberOfLines={2}>
+                    {campaignName}
                 </Text>
 
                 <View className="flex-row items-center">
@@ -72,61 +133,34 @@ const CampaignCard = ({ campaign, onPress, fullWidth = false }: CampaignCardProp
                         <Feather name="map-pin" size={12} color="#059669" />
                     </View>
                     <Text className="text-[10px] font-extrabold uppercase tracking-wide text-zinc-500 opacity-80" numberOfLines={1}>
-                        {campaign.location?.city || "Visit Clinic"} • {campaign.location?.address}
+                        {campaign.location?.city || "Visit Clinic"}
                     </Text>
                 </View>
+                {distanceLabel && (
+                    <View className="flex-row items-center mt-2">
+                        <View className="bg-blue-500/10 p-1.5 rounded-lg mr-2">
+                            <Feather name="navigation" size={12} color="#2563EB" />
+                        </View>
+                        <Text className="text-[10px] font-extrabold uppercase tracking-wide text-blue-600 dark:text-blue-400" numberOfLines={1}>
+                            {distanceLabel}
+                        </Text>
+                    </View>
+                )}
             </View>
 
             {/* Description */}
             <View className="px-6 py-2 border-l-2 border-emerald-500/10 ml-6 mb-4">
-                <Text className="text-xs text-zinc-500 dark:text-zinc-400 font-medium italic opacity-70" numberOfLines={3}>
-                    "{campaign.description}"
+                <Text className="text-xs text-zinc-500 dark:text-zinc-400 font-medium opacity-80 leading-5" numberOfLines={3}>
+                    {bioPreview}
                 </Text>
             </View>
-
-            {/* Doctor/Lab specific info line */}
-            {campaign.source === 'doctor' && campaign.doctor && (
-                <View className="px-6 mb-4">
-                    <Text className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400 tracking-wider">
-                        {campaign.doctor.specializations?.map(s => s.name).join(", ") || "Specialist Consultant"}
-                    </Text>
-                </View>
-            )}
 
             {/* Footer / Booking Bar */}
             <View className="px-5 pb-6">
                 <View className="bg-white dark:bg-zinc-900 p-4 rounded-3xl flex-row items-center justify-between border border-zinc-100 dark:border-zinc-800 shadow-xl shadow-zinc-200/5">
                     <View className="flex-row items-center flex-1 mr-2">
-                        {/* Profile Image (Doctor or Lab) next to Price */}
-                        <View className="relative mr-3">
-                            <View className="w-11 h-11 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-100 dark:border-zinc-800">
-                                {campaign.source === 'doctor' ? (
-                                    campaign.image || campaign.doctor?.profilePhoto ? (
-                                        <Image
-                                            source={{ uri: campaign.image || campaign.doctor?.profilePhoto }}
-                                            className="w-full h-full"
-                                            resizeMode="cover"
-                                        />
-                                    ) : (
-                                        <Feather name="user" size={18} color="#10B981" />
-                                    )
-                                ) : (
-                                    campaign.image || campaign.lab?.profilePhoto ? (
-                                        <Image
-                                            source={{ uri: campaign.image || campaign.lab?.profilePhoto }}
-                                            className="w-full h-full"
-                                            resizeMode="cover"
-                                        />
-                                    ) : (
-                                        <Feather name="activity" size={18} color="#10B981" />
-                                    )
-                                )}
-                            </View>
-                            {campaign.source === 'doctor' && (
-                                <View className="absolute -bottom-0.5 -right-0.5 bg-emerald-500 rounded-full p-0.5 border-2 border-white dark:border-zinc-900 shadow-sm">
-                                    <Feather name="activity" size={6} color="white" />
-                                </View>
-                            )}
+                        <View className="w-11 h-11 rounded-full bg-emerald-500/5 dark:bg-emerald-900/20 items-center justify-center mr-3 border border-emerald-500/10">
+                            <Feather name="activity" size={20} color="#10B981" />
                         </View>
 
                         <View className="flex-1">
